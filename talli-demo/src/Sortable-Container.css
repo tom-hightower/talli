@@ -1,5 +1,5 @@
 .SortContainer {
-  background-color: #FFF;
+  background-color: #fafafa;
   text-align: center;
   width: 250px;
   margin: 0 auto;
@@ -35,7 +35,7 @@ ol {
   width: 200px;
   margin: 0;
   padding: 5px 0px 0px 20px;
-  background-color: #fff;
+  background-color: #fafafa;
   counter-reset: item;
   list-style-type: decimal;
 }
@@ -49,6 +49,7 @@ li{
   text-align: center;
   width: 200px;
   padding: 0px 0px 8px 0px;
+  background-color: #fafafa;
   margin: 5px;
   color: #000;
   list-style-type: none;
