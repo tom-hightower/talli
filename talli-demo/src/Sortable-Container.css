@@ -7,7 +7,7 @@
 
 .SortBorder {
   border: 5px solid #22b573;
-  margin: 10px 20px 0px 20px;
+  margin: 10px 50px 0px 50px;
   padding: 0px 0px 10px 0px;
   box-shadow: 0px 1px #AAA;
 }
@@ -41,11 +41,11 @@ ol {
 }
 
 ol li:before {
-  content: counter(item, decimal) '  |   ';
+  content: counter(item, decimal) "\00a0 | \00a0 \00a0";
   counter-increment: item;
 }
 
-li{
+li {
   text-align: center;
   width: 200px;
   padding: 0px 0px 8px 0px;
@@ -55,4 +55,8 @@ li{
   list-style-type: none;
   border: 2px solid #666;
   box-shadow: 1px 1px #AAA;
+}
+
+.sortHelp {
+    padding-bottom: 1.25rem;
 }

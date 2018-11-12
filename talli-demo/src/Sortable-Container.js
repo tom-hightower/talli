@@ -46,7 +46,7 @@ class SortContainer extends Component {
         <div class="SortBorder">
           <div class="SortContainer">
             <SortableList items={this.state.items} onSortEnd={this.onSortEnd} lockAxis='y'
-            useDragHandle='true' />
+            useDragHandle='true' helperClass='sortHelp' />
           </div>
         </div>
       </div>
