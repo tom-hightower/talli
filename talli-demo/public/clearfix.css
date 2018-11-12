@@ -5,7 +5,6 @@
 .App-logo {
   animation: App-logo-spin infinite 20s linear;
   height: 40vmin;
-  text-align: center;
 }
 
 .App-header {
@@ -25,7 +24,6 @@
 
 .appBarLogo {
     max-height: 10vmin;
-    margin-left: 30px;
 }
 
 @keyframes App-logo-spin {
@@ -38,11 +36,23 @@
 }
 
 .clearfix:after {
-    content: " ";
+    content: ".";
     display: block;
     clear: both;
+    visibility: hidden;
+    line-height: 0;
+    height: 0;
 }
 
 .clearfix {
+    display: inline-block;
     display: 'flex';
+}
+
+html[xmlns] .clearfix {
+    display: block;
+}
+
+* html .clearfix {
+    height: 1%;
 }

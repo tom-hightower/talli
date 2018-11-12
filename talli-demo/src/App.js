@@ -13,9 +13,6 @@ import './App.css';
 const drawerWidth = 240;
 
 const styles = theme => ({
-  root: {
-    display: 'flex',
-  },
   toolbar: {
     paddingRight: 24, // keep right padding when drawer closed
   },
@@ -106,7 +103,7 @@ class App extends Component {
     return (  
       <React.Fragment>
         <CssBaseline />
-        <div className={classes.root}>
+        <div class="clearfix">
           <AppBar
             position="absolute"
             className={classNames(classes.appBar, this.state.open && classes.appBar)}
