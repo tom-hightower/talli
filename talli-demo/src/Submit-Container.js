@@ -11,7 +11,7 @@ class SubmitContainer extends Component {
     this.timer = 0;
     this.countDown = this.countDown.bind(this);
   }
-
+    
   handleBellClick(e) {
     e.preventDefault();
     this.resetTimer();

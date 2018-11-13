@@ -1,0 +1,47 @@
+.SubmissionPage {
+  margin: 6rem 5rem 2rem 5rem; 
+}
+
+.submissionText {
+  font-size: 30px;
+  font-weight: bold;
+  margin-left: .5rem;
+}
+
+.questionText {
+  font-size: 25px;
+  margin-top: 2rem;
+  margin-left: .5rem;
+}
+
+.buttonContainer {
+  text-align: center;
+  width: 200px;
+  margin: auto;
+  margin-top: 3rem;
+  overflow: hidden;
+  padding: .5rem .5rem;
+}
+
+.confirmButton {
+  width: 60px;
+  float: right;
+  text-align: center;
+  border: 2px solid #BBB;
+  border-left: 7px solid #22b573;
+}
+
+.goBackButton {
+  width: 60px;
+  float: left;
+  text-align: center;
+  border: 2px solid #BBB;
+  border-left: 7px solid #B53622;
+}
+
+.homeButton {
+  width: 60px;
+  text-align: center;
+  border: 2px solid #BBB;
+  border-left: 7px solid #22b573;
+}
