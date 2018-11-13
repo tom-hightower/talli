@@ -5,14 +5,25 @@ import './Submit-Container.css';
 class SubmitContainer extends Component {
   constructor(props) {
     super(props);
-    this.handleClick = this.handleClick.bind(this);
-    this.state = { time: {}, seconds: 1000 };
+    this.handleSubmitClick = this.handleSubmitClick.bind(this);
+    this.handleBellClick = this.handleBellClick.bind(this);
+    this.state = { time: {}, seconds: 1000, submitted: false };
     this.timer = 0;
     this.countDown = this.countDown.bind(this);
   }
 
-  handleClick(e) {
+  handleBellClick(e) {
     e.preventDefault();
+    this.resetTimer();
+  }
+
+  handleSubmitClick(e) {
+    e.preventDefault();
+    this.setState({ submitted: true });
+    this.props.callbackFromParent(this.state.submitted);
+  }
+
+  resetTimer() {
     if (this.timer === 0 && this.state.seconds > 0) {
       this.timer = setInterval(this.countDown, 1000);
     } else {
@@ -58,17 +69,17 @@ class SubmitContainer extends Component {
   
   render() {
     return(
-      <div class='SubmitDiv'>
-        <BellIcon class='BellIcon' />
-          <div class='SubmitText'>
+      <div className='SubmitDiv'>
+          <BellIcon class='BellIcon' onClick={this.handleBellClick} />
+          <div className='SubmitText'>
             {/* this awful syntax is a quick'n'dirty way to
                 make sure that minutes/seconds are always
                 displayed as two digits
             */}
-            Voting closes at {("0" + this.state.time.m).slice(-2)}:{("0" + this.state.time.s).slice(-2)}
+            Voting closes in {("0" + this.state.time.m).slice(-2)}:{("0" + this.state.time.s).slice(-2)}
         </div>
-	<div class='buttonDiv'>
-          <button class='buttonOut' onClick={this.handleClick}>
+	<div className='buttonDiv'>
+          <button className='buttonOut' onClick={this.handleSubmitClick}>
             Submit
           </button>
         </div>

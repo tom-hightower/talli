@@ -91,6 +91,7 @@ class App extends Component {
   state = {
     open: true,
   };
+    
   handleDrawerOpen = () => {
     this.setState({ open: true });
   };

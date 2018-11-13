@@ -26,9 +26,24 @@ const SortableList = SortableContainer(({items}) => {
 });
 
 class SortContainer extends Component {
-  state = {
-      items: ['Entry A', 'Entry B', 'Entry C'],
-  };
+  constructor(props) {
+    super(props);
+    this.state = { items: ['Entry A', 'Entry B', 'Entry C'] };
+    this.handleAddEvent = this.handleAddEvent.bind(this);
+  }
+
+  handleAddEvent(e) {
+    e.preventDefault();
+    var num = this.state.items.length;
+    if (num < 4) {
+      this.setState({ items: this.state.items.concat('Entry D')});
+    } else if (num === 4) {
+      this.setState({ items: this.state.items.concat('Entry E')});
+    } else {
+      this.setState({ items: this.state.items.concat('New Entry')});
+    }  
+  }
+    
   onSortEnd = ({oldIndex, newIndex}) => {
     this.setState({
       items: arrayMove(this.state.items, oldIndex, newIndex),
@@ -41,7 +56,7 @@ class SortContainer extends Component {
           <p>Event 1</p>
         </div>
         <div class="AddEvent">  
-          <PlusIcon style={iconStyles} />
+          <PlusIcon style={iconStyles} onClick={this.handleAddEvent}/>
         </div>
         <div class="SortBorder">
           <div class="SortContainer">
