@@ -1,13 +1,13 @@
 import React, { Component } from 'react';
 import { SortableContainer, SortableElement, SortableHandle, arrayMove } from 'react-sortable-hoc';
-import SliderIcon from '@material-ui/icons/UnfoldMore';
+import SliderIcon from '@material-ui/icons/Menu';
 import PlusIcon from '@material-ui/icons/ControlPoint';
 import './Sortable-Container.css';
 
 const iconStyles = {
   marginRight: 24,
 };
-const sliderStyle = { paddingTop: '10px', marginLeft: 10, paddingLeft: '10px', height: '150%', };
+const sliderStyle = { marginLeft: '30px', position: 'relative', top: '6px'};
 
 const DragHandle = SortableHandle(() => <span> <SliderIcon style={sliderStyle} /></span>);
 
