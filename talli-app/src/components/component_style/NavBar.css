@@ -1,0 +1,16 @@
+.root {
+    flex-grow: 1;
+    text-align: center;
+}
+
+.navTitle {
+    flex: 1;
+    max-height: 64px;
+    background-color: transparent;
+    padding-right: 48px;
+}
+
+.menuButton {
+    margin-left: -12px;
+    margin-right: 20px;
+}
