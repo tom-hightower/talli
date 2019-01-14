@@ -13,6 +13,10 @@ import './component_style/NavBar.css';
 import logoSvg from '../logo.svg';
 import { navigate } from 'react-mini-router';
 
+/**
+ * The NavBar contains the top AppBar as well as the navigation Drawer on
+ * the left side, activated by the hamburger menu icon 
+ */
 export default class NavBar extends React.Component {
     constructor(props) {
         super(props);
@@ -26,6 +30,7 @@ export default class NavBar extends React.Component {
     ChangeView(page) { navigate(page); }
 
     render(){
+        // List of buttons for the navigation drawer
         const drawerList = (
             <div width="250">
                 <ListItem button key='Home' onClick={() => this.ChangeView('/')}>

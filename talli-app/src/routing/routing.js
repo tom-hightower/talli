@@ -6,10 +6,16 @@ import Organizer from '../components/Organizer';
 import HelpView from '../components/Help';
 var RouterMixin = require('react-mini-router').RouterMixin;
 
+/**
+ * RoutedApp handles routing between each of the main views as well
+ * as error handling when a non-existant page is queried
+ */
 var RoutedApp = createReactClass({
 
     mixins: [RouterMixin],
 
+    // TODO: Set up /vote/:text (voteWithID) to handle url-injected event IDs
+    //      (currently displays the same as /vote)
     routes: {
         '/': 'home',
         '/vote': 'vote',
@@ -31,7 +37,7 @@ var RoutedApp = createReactClass({
     },
 
     voteWithID: function (text) {
-        return <div>{text}</div>;
+        return <Voter />;
     },
 
     organizer: function () {

@@ -4,6 +4,10 @@ import './index.css';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
 
+/**
+ * index.js separates the actual rendering from the rest of the
+ * application, mostly to prevent unintentional changes
+ */
 ReactDOM.render(<App />, document.getElementById('root'));
 
 

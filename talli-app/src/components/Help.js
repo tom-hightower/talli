@@ -1,6 +1,9 @@
 import React from 'react';
 import { Typography } from '@material-ui/core';
 
+/**
+ * Help view, unimplemented
+ */
 export default class HelpView extends React.Component {
     render() {
         return(

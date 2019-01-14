@@ -1,6 +1,9 @@
 import React from 'react';
 import { Typography } from '@material-ui/core';
 
+/**
+ * Organizer/Event Management view, unimplemented
+ */
 export default class Organizer extends React.Component {
     render() {
         return(
