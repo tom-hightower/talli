@@ -11,6 +11,7 @@ import { Drawer, ListItemIcon, ListItemText, ListItem, Divider } from '@material
 
 import './component_style/NavBar.css';
 import logoSvg from '../logo.svg';
+var navigate = require('react-mini-router').navigate;
 
 export default class NavBar extends React.Component {
     constructor(props) {
@@ -18,33 +19,36 @@ export default class NavBar extends React.Component {
         this.state = {
             open: false,
         };
-    }   
+    }
 
     toggleDrawer = () => this.setState({open: !this.state.open});
     closeDrawer = () => this.setState({open: false});
+    ChangeView(page) {
+        navigate(page);
+    }
 
     render(){
         const drawerList = (
             <div width="250">
-                <ListItem button key='Home'>
-                    <ListItemIcon><HomeIcon/></ListItemIcon>
-                    <ListItemText primary='Home'></ListItemText>
+                <ListItem button key='Home' onClick={() => this.ChangeView('/')}>
+                    <ListItemIcon><HomeIcon /></ListItemIcon>
+                    <ListItemText primary='Home' />
                 </ListItem>
-                <ListItem button key='Vote'>
-                    <ListItemIcon><VoteIcon/></ListItemIcon>
-                    <ListItemText primary='Vote'></ListItemText>
+                <ListItem button key='Vote' onClick={() => this.ChangeView('/vote')}>
+                    <ListItemIcon><VoteIcon /></ListItemIcon>
+                    <ListItemText primary='Vote' />
                 </ListItem>
-                <ListItem button key='Organizer Login'>
-                    <ListItemIcon><OrganizerIcon/></ListItemIcon>
-                    <ListItemText primary='Organizer Login'></ListItemText>
+                <ListItem button key='Organizer Login' onClick={() => this.ChangeView('/organizer')}>
+                    <ListItemIcon><OrganizerIcon /></ListItemIcon>
+                    <ListItemText primary='Organizer Login' />
                 </ListItem>
                 <Divider />
-                <ListItem button key='Help'>
-                    <ListItemIcon><HelpOutlineIcon/></ListItemIcon>
-                    <ListItemText primary='Help'></ListItemText>
+                <ListItem button key='Help' onClick={() => this.ChangeView('/help')}>
+                    <ListItemIcon><HelpOutlineIcon /></ListItemIcon>
+                    <ListItemText primary='Help' />
                 </ListItem>
             </div>
-          );
+        );
 
         return(
             <div className="root">

@@ -5,7 +5,7 @@ export default class Organizer extends React.Component {
     render() {
         return(
             <div>
-                <Typography variant='display1' align='center' gutterBottom>organizer test</Typography>
+                <Typography variant='display1' align='center' gutterBottom>Organizer View</Typography>
             </div>
         );
     }

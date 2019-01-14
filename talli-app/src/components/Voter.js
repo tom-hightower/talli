@@ -5,7 +5,7 @@ export default class Voter extends React.Component {
     render() {
         return(
             <div>
-                <Typography variant='display1' align='center' gutterBottom>voter test</Typography>
+                <Typography variant='display1' align='center' gutterBottom>Voting View</Typography>
             </div>
         );
     }
