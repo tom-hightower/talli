@@ -1,13 +1,12 @@
 import React, { Component } from 'react';
 import NavBar from './components/NavBar';
-import Typography from '@material-ui/core/Typography';
 import { MuiThemeProvider } from '@material-ui/core/styles';
-import theme from './components/theme';
+import theme from './components/Theme';
 import './App.css';
 
 export default class App extends Component {
   state = {
-    page:'',
+    page:0,
   };
 
   render() {
@@ -15,7 +14,6 @@ export default class App extends Component {
       <MuiThemeProvider theme={theme}>
         <div>
           <NavBar />
-          <Typography variant='display1' align='center' gutterBottom>test</Typography>
         </div>
       </MuiThemeProvider>
     );

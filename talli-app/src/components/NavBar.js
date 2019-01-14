@@ -5,8 +5,9 @@ import IconButton from '@material-ui/core/IconButton';
 import MenuIcon from '@material-ui/icons/Menu';
 import HomeIcon from '@material-ui/icons/Home';
 import HelpOutlineIcon from '@material-ui/icons/HelpOutline';
-import OrganizerIcon from '@material-ui/icons/AssignmentInd'
-import { Drawer, ListItemIcon, ListItemText, ListItem, List, Divider } from '@material-ui/core';
+import OrganizerIcon from '@material-ui/icons/AssignmentInd';
+import VoteIcon from '@material-ui/icons/HowToVote';
+import { Drawer, ListItemIcon, ListItemText, ListItem, Divider } from '@material-ui/core';
 
 import './component_style/NavBar.css';
 import logoSvg from '../logo.svg';
@@ -25,23 +26,23 @@ export default class NavBar extends React.Component {
     render(){
         const drawerList = (
             <div width="250">
-              <List>
-                {['Home', 'Organizer Login',].map((text, index) => (
-                  <ListItem button key={text}>
-                    <ListItemIcon>{index % 2 === 0 ? <HomeIcon /> : <OrganizerIcon />}</ListItemIcon>
-                    <ListItemText primary={text} />
-                  </ListItem>
-                ))}
-              </List>
-              <Divider />
-              <List>
-                {['Help',].map((text, index) => (
-                  <ListItem button key={text}>
-                    <ListItemIcon>{index % 2 === 0 ? <HelpOutlineIcon /> : <HelpOutlineIcon />}</ListItemIcon>
-                    <ListItemText primary={text} />
-                  </ListItem>
-                ))}
-              </List>
+                <ListItem button key='Home'>
+                    <ListItemIcon><HomeIcon/></ListItemIcon>
+                    <ListItemText primary='Home'></ListItemText>
+                </ListItem>
+                <ListItem button key='Vote'>
+                    <ListItemIcon><VoteIcon/></ListItemIcon>
+                    <ListItemText primary='Vote'></ListItemText>
+                </ListItem>
+                <ListItem button key='Organizer Login'>
+                    <ListItemIcon><OrganizerIcon/></ListItemIcon>
+                    <ListItemText primary='Organizer Login'></ListItemText>
+                </ListItem>
+                <Divider />
+                <ListItem button key='Help'>
+                    <ListItemIcon><HelpOutlineIcon/></ListItemIcon>
+                    <ListItemText primary='Help'></ListItemText>
+                </ListItem>
             </div>
           );
 
