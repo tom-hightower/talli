@@ -1,10 +1,9 @@
 import { createMuiTheme } from '@material-ui/core/styles';
-import blue from '@material-ui/core/colors/blue';
-import green from '@material-ui/core/colors/green';
+import { lightBlue, green } from '@material-ui/core/colors';
 
 export default createMuiTheme({
     palette: {
-        primary: blue,
+        primary: lightBlue,
         secondary: green 
     }
 });

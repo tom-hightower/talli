@@ -11,7 +11,7 @@ import { Drawer, ListItemIcon, ListItemText, ListItem, Divider } from '@material
 
 import './component_style/NavBar.css';
 import logoSvg from '../logo.svg';
-var navigate = require('react-mini-router').navigate;
+import { navigate } from 'react-mini-router';
 
 export default class NavBar extends React.Component {
     constructor(props) {
@@ -23,9 +23,7 @@ export default class NavBar extends React.Component {
 
     toggleDrawer = () => this.setState({open: !this.state.open});
     closeDrawer = () => this.setState({open: false});
-    ChangeView(page) {
-        navigate(page);
-    }
+    ChangeView(page) { navigate(page); }
 
     render(){
         const drawerList = (
