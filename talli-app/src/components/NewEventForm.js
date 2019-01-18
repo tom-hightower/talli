@@ -4,6 +4,9 @@ import './component_style/NewEventForm.css';
 
 export default class NewEventForm extends React.Component {
     render() {
+        /**
+         * TODO: Cleanup this div and replace <input/>'s
+         */
         return (
              <div className='newEventForm'>
                 <Typography variant='display1' align='center' gutterBottom>Create a new event</Typography>
