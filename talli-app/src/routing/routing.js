@@ -4,6 +4,7 @@ import MainPage from '../components/MainPage';
 import Voter from '../components/Voter';
 import Organizer from '../components/Organizer';
 import HelpView from '../components/Help';
+import NewEventForm from '../components/NewEventForm';
 var RouterMixin = require('react-mini-router').RouterMixin;
 
 /**
@@ -21,7 +22,8 @@ var RoutedApp = createReactClass({
         '/vote': 'vote',
         '/vote/:text': 'voteWithID',
         '/organizer': 'organizer',
-        '/help': 'help'
+        '/help': 'help',
+        '/createevent' : 'createevent'
     },
 
     render: function () {
@@ -46,6 +48,10 @@ var RoutedApp = createReactClass({
 
     help: function () {
         return <HelpView />;
+    },
+
+    createevent: function () {
+        return <NewEventForm />;
     },
 
     notFound: function (path) {
