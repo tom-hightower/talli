@@ -33,16 +33,8 @@ export default class SortContainer extends Component {
     }
 
     handleAddEvent(e) {
-        // TODO: Put entry adding code here (currently just adds a default entry)
         e.preventDefault();
-        var num = this.state.items.length;
-        if (num < 4) {
-            this.setState({ items: this.state.items.concat('Entry D') });
-        } else if (num === 4) {
-            this.setState({ items: this.state.items.concat('Entry E') });
-        } else {
-            this.setState({ items: this.state.items.concat('New Entry') });
-        }
+        this.props.handler(this.props.voteViews.ADD);
     }
 
     // TODO: Set event name here

@@ -1,8 +1,8 @@
 import React from 'react';
-import NewEvent from './NewEventForm';
-import EventList from './EventList';
-import AddEntry from './AddEntry';
-import ViewEvent from './ViewEvent';
+import NewEvent from './OrganizerView/NewEventForm';
+import EventList from './OrganizerView/EventList';
+import AddEntry from './OrganizerView/AddEntryOrg';
+import ViewEvent from './OrganizerView/ViewEvent';
 import './component_style/Organizer.css';
 
 const orgViews = {
