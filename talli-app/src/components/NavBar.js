@@ -25,7 +25,7 @@ export default class NavBar extends React.Component {
         };
     }
 
-    toggleDrawer = () => this.setState({open: !this.state.open});
+    toggleDrawer = () => this.setState({ open: !this.state.open });
     closeDrawer = () => this.setState({open: false});
     ChangeView(page) { navigate(page); }
 
