@@ -21,7 +21,7 @@ var RoutedApp = createReactClass({
         '/vote': 'vote',
         '/vote/:text': 'voteWithID',
         '/organizer': 'organizer',
-        '/help': 'help'
+        '/help': 'help',
     },
 
     render: function () {
