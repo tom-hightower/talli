@@ -18,16 +18,16 @@ const orgViews = {
 export default class Organizer extends React.Component {
     constructor(props) {
         super(props);
-        this.state = { curPage: orgViews.MAIN }
+        this.state = { curView: orgViews.MAIN };
         this.changeView = this.changeView.bind(this);
     }
 
     changeView(newView) {
-        this.setState({ curPage: newView });
+        this.setState({ curView: newView });
     }
 
     render() {
-        switch(this.state.curPage) {
+        switch(this.state.curView) {
             case orgViews.CREATE:
                 return( <NewEvent orgViews={orgViews} handler={this.changeView}/> );
             case orgViews.ADD:
