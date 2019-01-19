@@ -10,7 +10,7 @@ export default class JoinEvent extends React.Component {
     render() {
         return(
             <div>
-                <Typography variant='display1' align='center' gutterBottom>Join Event</Typography>
+                <Typography variant='h4' align='center' gutterBottom>Join Event</Typography>
             </div>
         );
     }

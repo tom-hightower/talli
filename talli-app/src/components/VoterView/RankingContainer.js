@@ -57,7 +57,7 @@ export default class SortContainer extends Component {
                 <div>
                     <div className="SortContainer">
                         <SortableList items={this.state.items} onSortEnd={this.onSortEnd} lockAxis='y'
-                            useDragHandle='true' helperClass='sortHelp' />
+                            useDragHandle={true} helperClass='sortHelp' />
                     </div>
                 </div>
             </div>

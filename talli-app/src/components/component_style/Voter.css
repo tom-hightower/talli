@@ -1,0 +1,47 @@
+/* SubmitConfirm.js Style */
+.SubmissionPage {
+    text-align: center;
+}
+  
+.submissionText {
+    padding: 60px 20px 20px;
+}
+
+.questionText {
+    padding: 0px 20px;
+    margin-top: 2rem;
+    margin-left: .5rem;
+}
+
+.buttonContainer {
+    text-align: center;
+    width: 200px;
+    margin: auto;
+    margin-top: 3rem;
+    overflow: hidden;
+    padding: .5rem .5rem;
+}
+
+.confirmButton {
+    width: 60px;
+    float: right;
+    text-align: center;
+    border: 2px solid #BBB !important;
+    border-left: 7px solid #22b573 !important;
+}
+
+.goBackButton {
+    width: 60px;
+    float: left;
+    text-align: center;
+    border: 2px solid #BBB !important;
+    border-left: 7px solid #B53622 !important;
+}
+
+/* Submitted.js Style */
+.homeButton {
+    width: 60px;
+    text-align: center;
+    border: 2px solid #BBB !important;
+    border-left: 7px solid #22b573 !important;
+}

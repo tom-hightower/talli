@@ -10,7 +10,7 @@ export default class AddEntryVote extends React.Component {
     render() {
         return(
             <div>
-                <Typography variant='display1' align='center' gutterBottom>Add Entries</Typography>
+                <Typography variant='h4' align='center' gutterBottom>Add Entries</Typography>
             </div>
         );
     }

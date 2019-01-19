@@ -10,12 +10,13 @@ import '../component_style/Organizer.css';
 export default class EventList extends React.Component {
     AddEvent() { 
         this.props.handler(this.props.orgViews.CREATE);
-        /* unimplemented */ }
+        /* unimplemented */
+    }
 
     render() {
         return(
             <div>
-                <Typography variant='display1' align='center' gutterBottom>Organizer View</Typography>
+                <Typography variant='h4' align='center' gutterBottom>Organizer View</Typography>
                 <div className='organizerEvents'>
                     <div className='eventContainer' id='addEvent'>
                         <AddCircleIcon color='primary' id='addCircleIcon' onClick={() => this.AddEvent()}/>

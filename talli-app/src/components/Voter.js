@@ -36,7 +36,7 @@ export default class Voter extends React.Component {
             case voteViews.RANK:
                 return(
                     <div>
-                        <Typography variant='display1' align='center' gutterBottom>Voting View</Typography>
+                        <Typography variant='h4' align='center' gutterBottom>Voting View</Typography>
                         <Ranking voteViews={voteViews} handler={this.changeView}/>
                         <SubmitRankings voteViews={voteViews} handler={this.changeView}/>
                     </div>
