@@ -1,0 +1,70 @@
+.Icons {
+    padding-bottom: 10;
+}
+
+.Sliders {
+    margin-left: 40px;
+    position: relative;
+    top: 6px;
+}
+
+.SortContainer {
+    background-color: #fafafa;
+    box-shadow: 0px 1px #AAA;
+    border: 5px solid #22b573;
+    text-align: center;
+    width: 250px;
+    margin: 0 auto;
+    padding-bottom: 10px;
+}
+
+.eventName {
+    text-align: center;
+    font-size: 30px;
+    font-weight: bold;
+    height: 50px;
+    color: #666;
+    margin-top: 50px;
+}
+
+.eventName p {
+    text-align: center;
+}
+
+.AddEvent {
+    text-align: center;
+    padding-left: 15px;
+    color: #666;
+}
+
+ol {
+    text-align: center;
+    width: 200px;
+    margin: 0;
+    padding: 5px 0px 0px 20px;
+    background-color: #fafafa;
+    counter-reset: item;
+    list-style-type: decimal;
+}
+
+ol li:before {
+    content: counter(item, decimal) "\00a0 | \00a0 \00a0";
+    counter-increment: item;
+}
+
+li.rankings {
+    text-align: center;
+    width: 200px;
+    padding: 0px 0px 8px 0px;
+    background-color: #fafafa;
+    margin: 5px;
+    color: #000;
+    list-style-type: none;
+    border: 2px solid #666;
+    box-shadow: 1px 1px #AAA;
+}
+
+.sortHelp {
+        padding-bottom: 1.25rem;
+        padding-left: 2.4rem;
+}

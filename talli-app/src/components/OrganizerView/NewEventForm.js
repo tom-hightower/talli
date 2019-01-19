@@ -1,6 +1,6 @@
 import React from 'react';
 import { Typography } from '@material-ui/core';
-import './component_style/NewEventForm.css';
+import '../component_style/NewEventForm.css';
 
 export default class NewEventForm extends React.Component {
     render() {
