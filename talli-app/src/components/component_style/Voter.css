@@ -45,3 +45,13 @@
     border: 2px solid #BBB !important;
     border-left: 7px solid #22b573 !important;
 }
+
+/* JoinEvent.js Style */
+.textField {
+    margin: 0px 10px;
+    text-align: center;
+}
+
+.QRText {
+    padding: 10px 30px;
+}
