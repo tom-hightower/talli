@@ -3,6 +3,7 @@ import { SortableContainer, SortableElement, SortableHandle, arrayMove } from 'r
 import SliderIcon from '@material-ui/icons/Sort';
 import PlusIcon from '@material-ui/icons/ControlPoint';
 import '../component_style/RankingContainer.css';
+import { Typography } from '@material-ui/core';
 
 const DragHandle = SortableHandle(() => <span> <SliderIcon className="Sliders" /></span>);
 
@@ -48,16 +49,14 @@ export default class SortContainer extends Component {
     render() {
         return (
             <div>
-                <div className="eventName">
-                    <p>{this.eventName}</p>
-                </div>
-                <div className="AddEvent">
-                    <PlusIcon className="Icons" onClick={this.handleAddEvent} />
+                <Typography variant='h4' align='center' className="eventName" gutterBottom>{this.eventName}</Typography>
+                <div style={{textAlign: 'center'}}>
+                    <PlusIcon className="AddEvent" onClick={this.handleAddEvent} />
                 </div>
                 <div>
                     <div className="SortContainer">
                         <SortableList items={this.state.items} onSortEnd={this.onSortEnd} lockAxis='y'
-                            useDragHandle='true' helperClass='sortHelp' />
+                            useDragHandle={true} helperClass='sortHelp' />
                     </div>
                 </div>
             </div>

@@ -49,7 +49,7 @@ var RoutedApp = createReactClass({
     },
 
     notFound: function (path) {
-        return <div class="not-found">Page Not Found: {path}</div>;
+        return <div className="not-found">Page Not Found: {path}</div>;
     },
 });
 

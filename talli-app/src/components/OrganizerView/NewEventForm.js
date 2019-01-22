@@ -9,9 +9,9 @@ export default class NewEventForm extends React.Component {
          */
         return (
              <div className='newEventForm'>
-                <Typography variant='display1' align='center' gutterBottom>Create a new event</Typography>
+                <Typography variant='h4' align='center' gutterBottom>Create a new event</Typography>
                 <form className='eventForm'>
-                    <Typography variant='title'>Event Details</Typography>
+                    <Typography variant='h6'>Event Details</Typography>
                     <input type='text' name='event_name' id='event_name' placeholder='Event Name'/>
                     <input type='text' name='event_id' id='event_id' placeholder='ID (leave blank to autogenerate)'/>
                     <input type='text' name='event_loc' id='event_loc' placeholder='Location'/>
@@ -19,7 +19,7 @@ export default class NewEventForm extends React.Component {
                     <input type='date' name='event_date_start' id='event_date_start'/>
                     <div className='data_label'>End Date:</div>
                     <input type='date' name='event_date_end' id='event_date_end'/>
-                    <Typography variant='title'>Automate Voting Time Period?</Typography>
+                    <Typography variant='h6'>Automate Voting Time Period?</Typography>
                     <input type='checkbox' name='event_automate_time' id='event_automate_time'/>
                     <div className='data_label'>Start Voting:</div>
                     <input type='datetime-local' name='event_vote_start' id='event_vote_start'/>

@@ -1,5 +1,4 @@
 import React from 'react';
-import { Typography } from '@material-ui/core';
 import Ranking from './VoterView/RankingContainer';
 import SubmitRankings from './VoterView/SubmitContainer';
 import AddEntry from './VoterView/AddEntryVote';
@@ -21,7 +20,7 @@ const voteViews = {
 export default class Voter extends React.Component {
     constructor(props) {
         super(props);
-        this.state = { curView: voteViews.RANK };
+        this.state = { curView: voteViews.JOIN };
         this.changeView = this.changeView.bind(this);
     }
 
@@ -32,11 +31,10 @@ export default class Voter extends React.Component {
     render() {
         switch(this.state.curView) {
             case voteViews.ADD:
-                return ( <AddEntry /> );
+                return ( <AddEntry voteViews={voteViews} handler={this.changeView} /> );
             case voteViews.RANK:
                 return(
                     <div>
-                        <Typography variant='display1' align='center' gutterBottom>Voting View</Typography>
                         <Ranking voteViews={voteViews} handler={this.changeView}/>
                         <SubmitRankings voteViews={voteViews} handler={this.changeView}/>
                     </div>
