@@ -1,4 +1,5 @@
 import React from 'react';
+import GoogleLogin from 'react-google-login';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import IconButton from '@material-ui/core/IconButton';
@@ -29,7 +30,18 @@ export default class NavBar extends React.Component {
     closeDrawer = () => this.setState({open: false});
     ChangeView(page) { navigate(page); }
 
-    render(){
+
+    // TODO: update state in App.js
+    onSuccess = (response) => {
+        console.log(response);
+        this.ChangeView('/organizer');
+    }
+
+    onFailure = () => {
+        console.log("Failed to Login");
+    }
+
+    render() {
         // List of buttons for the navigation drawer
         const drawerList = (
             <div width="250">
@@ -41,10 +53,17 @@ export default class NavBar extends React.Component {
                     <ListItemIcon><VoteIcon /></ListItemIcon>
                     <ListItemText primary='Vote' />
                 </ListItem>
-                <ListItem button key='Organizer Login' onClick={() => this.ChangeView('/organizer')}>
-                    <ListItemIcon><OrganizerIcon /></ListItemIcon>
-                    <ListItemText primary='Organizer Login' />
-                </ListItem>
+                {/* TODO: Make it so if they are already logged in, nothing happens when they click */}
+                <GoogleLogin 
+                    clientId="1061225539650-cp3lrdn3p1u49tsq320l648hcuvg8plb.apps.googleusercontent.com"
+                    render={renderProps => (
+                        <ListItem button key='Organizer Login' onClick={renderProps.onClick}>
+                            <ListItemIcon><OrganizerIcon /></ListItemIcon>
+                            <ListItemText primary='Organizer Login' />
+                        </ListItem>
+                    )}
+                    onSuccess={this.onSuccess.bind(this)}
+                    onFailure={this.onFailure.bind(this)} />
                 <Divider />
                 <ListItem button key='Help' onClick={() => this.ChangeView('/help')}>
                     <ListItemIcon><HelpOutlineIcon /></ListItemIcon>
@@ -53,7 +72,7 @@ export default class NavBar extends React.Component {
             </div>
         );
 
-        return(
+        return (
             <div className="root">
                 <AppBar position="static" >
                     <Toolbar>
