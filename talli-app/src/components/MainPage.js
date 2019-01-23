@@ -14,8 +14,9 @@ export default class MainPage extends React.Component {
         navigate(page);
     }
 
-    constructor() {
-        super();
+    constructor(props) {
+        super(props);
+        // console.log(this.props.loggedIn);
         this.state = {
             loggedIn: false,
         };
@@ -38,8 +39,8 @@ export default class MainPage extends React.Component {
                                 render={renderProps => (
                                     <Button variant="contained" color="secondary" className="buttons" onClick={renderProps.onClick}>Organizer Login (Google)</Button>
                                 )}
-                                onSuccess={this.success.bind(this)}
-                                onFailure={this.failure.bind(this)} />
+                                onSuccess={this.onSuccess.bind(this)}
+                                onFailure={this.onFailure.bind(this)} />
                         </ListItem>
                     </div>
                 </Grid>
@@ -47,13 +48,14 @@ export default class MainPage extends React.Component {
         );
     }
 
-    success(response) {
-        this.setState({loggedIn: true});
-        console.log(response);
+    onSuccess(response) {
+        // this.setState({loggedIn: true});
+        // console.log(response);
+        this.props.onSuccess(response);
         this.ChangeView('/organizer');
     }
 
-    failure() {
+    onFailure() {
         console.log("Login failed");
     }
 }

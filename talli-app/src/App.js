@@ -14,14 +14,35 @@ import './App.css';
 */
 export default class App extends Component {
 
+    constructor() {
+        super();
+        this.state = {
+            loggedIn: false,
+        };
+    }
+
     render() {
         return (
             <MuiThemeProvider theme={theme}>
                 <div>
                     <NavBar />
-                    <RoutedApp />
+                    <RoutedApp 
+                        loggedIn={this.state.loggedIn}
+                        onSuccess={this.onSuccess.bind(this)}
+                        logout={this.logout.bind(this)} />
                 </div>
             </MuiThemeProvider>
         );
+    }
+
+    onSuccess(response) {
+        console.log(response);
+        this.setState({loggedIn: true});
+        // console.log(this.state.loggedIn);
+    }
+
+    logout() {
+        this.setState({loggedIn: false});
+        // console.log(this.state.loggedIn);
     }
 }

@@ -32,9 +32,9 @@ export default class Organizer extends React.Component {
         this.setState({ curView: newView });
     }
 
-    logout(response) {
-        // console.log(response);
+    logout() {
         this.ChangeView('/');
+        this.props.logout();
     }
 
     render() {
