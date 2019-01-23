@@ -10,7 +10,9 @@ import './component_style/MainPage.css';
  * TODO: Clean up the button styling a bit
  */
 export default class MainPage extends React.Component {
-    ChangeView(page) { navigate(page); }
+    ChangeView(page) {
+        navigate(page);
+    }
 
     constructor() {
         super();
@@ -45,8 +47,9 @@ export default class MainPage extends React.Component {
         );
     }
 
-    success() {
+    success(response) {
         this.setState({loggedIn: true});
+        console.log(response);
         this.ChangeView('/organizer');
     }
 

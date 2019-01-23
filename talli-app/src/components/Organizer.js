@@ -33,7 +33,7 @@ export default class Organizer extends React.Component {
     }
 
     logout(response) {
-        console.log(response);
+        // console.log(response);
         this.ChangeView('/');
     }
 
