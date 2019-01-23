@@ -18,6 +18,14 @@
     margin-right: 15px;
 }
 
+.entryForm {
+    margin-top: 15px;
+}
+
+.entryFormText {
+    margin: 0px 5px !important;
+}
+
 .addEntryForm {
     text-align: center;
 }
@@ -41,4 +49,12 @@
 
 #event_name, #event_id, #event_loc {
     width: 50%;
+}
+
+.buttons {
+    flex: 1;
+    margin-top: 15px !important;
+    margin-left: 25%;
+    margin-right: 25%;
+    border: none;
 }
