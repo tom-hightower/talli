@@ -1,5 +1,3 @@
-
-
 .organizerEvents {
     display: flex;
     flex-flow: row;
@@ -20,6 +18,17 @@
     margin-right: 15px;
 }
 
+.addEntryForm {
+    text-align: center;
+}
+
+.addEntry {
+    display: flex;
+    flex-flow: row;
+    align-items: center;
+    justify-content: center;
+}
+
 #addEvent {
     background-color: white;
     border: solid 2px 'primary';
@@ -28,4 +37,8 @@
 #addCircleIcon {
     font-size: 100px;
     padding: 50px;
+}
+
+#event_name, #event_id, #event_loc {
+    width: 50%;
 }
