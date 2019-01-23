@@ -11,7 +11,7 @@ export default class ViewEvent extends React.Component {
     render() {
         return(
             <div>
-                <Typography variant='display1' align='center' gutterBottom>View Event Details</Typography>
+                <Typography variant='h4' align='center' gutterBottom>View Event Details</Typography>
             </div>
         );
     }

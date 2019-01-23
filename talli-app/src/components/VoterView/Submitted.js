@@ -1,5 +1,7 @@
 import React from 'react';
-import { Typography } from '@material-ui/core';
+import { Typography, Button } from '@material-ui/core';
+import HomeIcon from '@material-ui/icons/Home';
+import { navigate } from 'react-mini-router';
 import '../component_style/Voter.css';
 
 /**
@@ -8,9 +10,21 @@ import '../component_style/Voter.css';
 export default class RanksSubmitted extends React.Component {
 
     render() {
-        return(
+        return (
             <div>
-                <Typography variant='display1' align='center' gutterBottom>Rankings Submitted Confirmations</Typography>
+                <div className="SubmissionPage">
+                    <Typography variant='h4' align='center' className='submissionText' gutterBottom>
+                        Submission Successful.
+                    </Typography>
+                    <Typography variant='h5' align='center' className='questionText' gutterBottom>
+                        Thank you for your participation!
+                    </Typography>
+                    <div className="buttonContainer">
+                        <Button variant="contained" color="default" className="homeButton" onClick={() => navigate('/')}>
+                            <HomeIcon />
+                        </Button>
+                    </div>
+                </div>
             </div>
         );
     }

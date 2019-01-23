@@ -24,7 +24,7 @@ export default class MainPage extends React.Component {
     render() {
         return(
             <div>
-                <Typography variant="display1" align="center" gutterBottom>Main Page</Typography>
+                <Typography variant="h4" align="center" gutterBottom>Main Page</Typography>
                 <Grid container justify="center">
                     <div className="buttons"> 
                         <ListItem>

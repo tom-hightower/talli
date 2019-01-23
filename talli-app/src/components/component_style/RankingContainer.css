@@ -1,7 +1,3 @@
-.Icons {
-    padding-bottom: 10;
-}
-
 .Sliders {
     margin-left: 40px;
     position: relative;
@@ -19,21 +15,13 @@
 }
 
 .eventName {
-    text-align: center;
-    font-size: 30px;
-    font-weight: bold;
-    height: 50px;
     color: #666;
-    margin-top: 50px;
-}
-
-.eventName p {
-    text-align: center;
+    margin-top: 20px !important;
 }
 
 .AddEvent {
     text-align: center;
-    padding-left: 15px;
+    padding-bottom: 15px;
     color: #666;
 }
 
