@@ -5,6 +5,7 @@ import AddEntry from './OrganizerView/AddEntryOrg';
 import ViewEvent from './OrganizerView/ViewEvent';
 import { GoogleLogout } from 'react-google-login';
 import { navigate } from 'react-mini-router';
+import { Button } from '@material-ui/core';
 import './component_style/Organizer.css';
 
 const orgViews = {
@@ -37,7 +38,7 @@ export default class Organizer extends React.Component {
         this.props.logout();
     }
 
-    render() {
+    getCurrView() {
         switch(this.state.curView) {
             case orgViews.CREATE:
                 return( <NewEvent orgViews={orgViews} handler={this.setView}/> );
@@ -46,14 +47,21 @@ export default class Organizer extends React.Component {
             case orgViews.VIEW:
                 return( <ViewEvent orgViews={orgViews} handler={this.setView}/> );
             default:
-                return( 
-                    <div className="main">
-                        <GoogleLogout 
-                            buttonText="Logout"
-                            onLogoutSuccess={this.logout.bind(this)} />
-                        <EventList orgViews={orgViews} handler={this.setView}/> 
-                    </div>
-                );
+                return( <EventList orgViews={orgViews} handler={this.setView}/> ); 
         }
+    }
+
+    render() {
+        return (
+            <div className="content">
+                <GoogleLogout 
+                    buttonText="Logout"
+                    render={renderProps => (
+                        <Button variant="contained" color="secondary" className="buttons" onClick={renderProps.onClick}>Logout</Button>
+                    )}
+                    onLogoutSuccess={this.logout.bind(this)} />
+                <div>{this.getCurrView()}</div>
+            </div>
+        )
     }
 }

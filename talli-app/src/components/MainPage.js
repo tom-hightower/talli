@@ -14,17 +14,16 @@ export default class MainPage extends React.Component {
         navigate(page);
     }
 
-    constructor(props) {
-        super(props);
-        // console.log(this.props.loggedIn);
-        this.state = {
-            loggedIn: false,
-        };
-    }
+    // constructor(props) {
+    //     super(props);
+    //     this.state = {
+    //         loggedIn: false,
+    //     };
+    // }
     
     render() {
         return(
-            <div>
+            <div className="content">
                 <Typography variant="h4" align="center" gutterBottom>Main Page</Typography>
                 <Grid container justify="center">
                     <div className="buttons"> 
