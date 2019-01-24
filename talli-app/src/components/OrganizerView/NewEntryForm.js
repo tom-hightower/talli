@@ -83,7 +83,6 @@ export default class NewEntryForm extends React.Component {
                         this.state.submitted
                         && <RemoveCircleOutlineIcon color='primary' id='entryIcon' onClick={this.delEntry}/>
                     }
-                    
                 </div>
             );
         } else {

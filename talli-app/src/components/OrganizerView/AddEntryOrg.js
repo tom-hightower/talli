@@ -31,7 +31,7 @@ export default class AddEntryOrg extends React.Component {
     }
 
     render() {
-        let {entries} = this.state;
+        let { entries } = this.state;
         return (
             <div className='addEntryForm'>
                 <Typography variant='h4' align='center' gutterBottom>Add Entries</Typography>
@@ -41,10 +41,11 @@ export default class AddEntryOrg extends React.Component {
                 <Divider variant="middle" />
                 <form className="entryForm">
                     {
-                        entries.map((val, idx)=> {
+                        entries.map((val, idx) => {
                             return (
                                 <div>
-                                <NewEntryForm addEntry={this.addEntry} />
+                                    <NewEntryForm addEntry={this.addEntry} />
+                                    <br/>
                                 </div>
                             )
                         })
