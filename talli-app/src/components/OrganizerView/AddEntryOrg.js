@@ -44,7 +44,6 @@ export default class AddEntryOrg extends React.Component {
                             return (
                                 <div>
                                     <NewEntryForm addEntry={this.addEntry} />
-                                    <br/>
                                 </div>
                             )
                         })

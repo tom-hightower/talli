@@ -1,5 +1,4 @@
 import React from 'react';
-import AddCircleIcon from '@material-ui/icons/AddCircle';
 import RemoveCircleOutlineIcon from '@material-ui/icons/RemoveCircleOutline';
 import '../component_style/Organizer.css';
 import { TextField } from '@material-ui/core';
@@ -41,6 +40,7 @@ export default class NewEntryForm extends React.Component {
         if (this.state.show) {
             return (
                 <div className='addEntry'>
+                <br />
                     <div>
                         <TextField
                             required
