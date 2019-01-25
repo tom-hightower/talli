@@ -38,12 +38,16 @@ export default class NewEventForm extends React.Component {
         this.setState({
             eventData: { [name]: event.target.value, }
         });
-    };
+    }
 
     handleDateChange = name => date => {
         this.setState({
             eventData: { [name]: date, }
         });
+    }
+
+    cancelAddition = () => {
+        this.props.handler(this.props.orgViews.MAIN);
     }
 
     render() {
@@ -181,6 +185,14 @@ export default class NewEventForm extends React.Component {
                         </div>
                     }
                     <br /> <br />
+                    <Button
+                        variant="contained"
+                        className="buttons"
+                        type="button"
+                        onClick={this.cancelAddition}
+                    >
+                        Cancel
+                    </Button>
                     <Button
                         variant="contained"
                         className="buttons"

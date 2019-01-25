@@ -1,5 +1,6 @@
 import React from 'react';
 import { Typography, Button, Divider } from '@material-ui/core';
+import AddCircleIcon from '@material-ui/icons/AddCircle';
 import NewEntryForm from './NewEntryForm';
 import '../component_style/Organizer.css';
 
@@ -9,15 +10,8 @@ import '../component_style/Organizer.css';
  */
 export default class AddEntryOrg extends React.Component {
     state = {
-        entries: [
-            {
-                title: '',
-                id: '',
-                presenters: '',
-                dates: ''
-            }
-        ],
-    };
+        entries: [],
+    }
 
     addEntry = () => {
         const newEntries = this.state.entries.slice();
@@ -28,6 +22,11 @@ export default class AddEntryOrg extends React.Component {
             dates: ''
         });
         this.setState({ entries: newEntries });
+    }
+
+    cancelAddition = () => {
+        this.props.handler(this.props.orgViews.MAIN);
+        // delete the event and any entries added to the current event
     }
 
     render() {
@@ -50,7 +49,16 @@ export default class AddEntryOrg extends React.Component {
                             )
                         })
                     }
+                    <AddCircleIcon color='primary' id='entryIcon' onClick={this.addEntry}/>
                     <br />
+                    <Button
+                        variant="contained"
+                        className="buttons"
+                        type="button"
+                        onClick={this.cancelAddition}
+                    >
+                        Cancel
+                    </Button>
                     <Button type="submit" variant="contained" className='buttons'>Done</Button>
                 </form>
             </div>
