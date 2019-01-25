@@ -26,7 +26,9 @@ export default class App extends Component {
             <MuiThemeProvider theme={theme}>
                 <div>
                     <NavBar
-                        loggedIn={this.state.loggedIn} />
+                        loggedIn={this.state.loggedIn}
+                        onSuccess={this.onSuccess.bind(this)}
+                        logout={this.logout.bind(this)} />
                     <RoutedApp
                         onSuccess={this.onSuccess.bind(this)}
                         logout={this.logout.bind(this)} />

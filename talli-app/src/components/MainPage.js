@@ -36,7 +36,7 @@ export default class MainPage extends React.Component {
                             <GoogleLogin 
                                 clientId="1061225539650-cp3lrdn3p1u49tsq320l648hcuvg8plb.apps.googleusercontent.com"
                                 render={renderProps => (
-                                    <Button variant="contained" color="secondary" className="buttons" onClick={renderProps.onClick}>Organizer Login (Google)</Button>
+                                    <Button variant="contained" color="primary" className="buttons" onClick={renderProps.onClick}>Organizer Login (Google)</Button>
                                 )}
                                 onSuccess={this.onSuccess.bind(this)}
                                 onFailure={this.onFailure.bind(this)} />
