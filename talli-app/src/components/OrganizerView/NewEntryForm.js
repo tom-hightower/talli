@@ -1,5 +1,4 @@
 import React from 'react';
-import AddCircleIcon from '@material-ui/icons/AddCircle';
 import RemoveCircleOutlineIcon from '@material-ui/icons/RemoveCircleOutline';
 import '../component_style/Organizer.css';
 import { TextField } from '@material-ui/core';
@@ -41,6 +40,7 @@ export default class NewEntryForm extends React.Component {
         if (this.state.show) {
             return (
                 <div className='addEntry'>
+                <br />
                     <div>
                         <TextField
                             required
@@ -57,7 +57,6 @@ export default class NewEntryForm extends React.Component {
                             value={this.state.id}
                             onChange={this.handleChange('id')}
                         />
-                        <br />
                         <TextField
                             required
                             label="Presenters"
@@ -75,14 +74,7 @@ export default class NewEntryForm extends React.Component {
                             onChange={this.handleChange('entry_dates')}
                         />
                     </div>
-                    {
-                        !(this.state.submitted)
-                        && <AddCircleIcon color='primary' id='entryIcon' onClick={this.saveEntry}/>
-                    }
-                    {
-                        this.state.submitted
-                        && <RemoveCircleOutlineIcon color='primary' id='entryIcon' onClick={this.delEntry}/>
-                    }
+                    <RemoveCircleOutlineIcon color='primary' id='entryIcon' onClick={this.delEntry}/>
                 </div>
             );
         } else {
