@@ -1,5 +1,6 @@
 import React from 'react';
 import { Typography, Button, ListItem, Grid } from '@material-ui/core';
+import GoogleLogin from 'react-google-login';
 import { navigate } from 'react-mini-router';
 import './component_style/MainPage.css';
 
@@ -9,11 +10,20 @@ import './component_style/MainPage.css';
  * TODO: Clean up the button styling a bit
  */
 export default class MainPage extends React.Component {
-    ChangeView(page) { navigate(page); }
+    ChangeView(page) {
+        navigate(page);
+    }
+
+    // constructor(props) {
+    //     super(props);
+    //     this.state = {
+    //         loggedIn: false,
+    //     };
+    // }
     
     render() {
         return(
-            <div>
+            <div className="content">
                 <Typography variant="h4" align="center" gutterBottom>Main Page</Typography>
                 <Grid container justify="center">
                     <div className="buttons"> 
@@ -22,11 +32,29 @@ export default class MainPage extends React.Component {
                         </ListItem>
                         
                         <ListItem>
-                            <Button variant="contained" color="primary" className="buttons" onClick={() => this.ChangeView('/organizer')}>Organizer Login</Button>
+                            {/* <Button variant="contained" color="primary" className="buttons" onClick={() => this.ChangeView('/organizer')}>Organizer Login</Button> */}
+                            <GoogleLogin 
+                                clientId="1061225539650-cp3lrdn3p1u49tsq320l648hcuvg8plb.apps.googleusercontent.com"
+                                render={renderProps => (
+                                    <Button variant="contained" color="primary" className="buttons" onClick={renderProps.onClick}>Organizer Login (Google)</Button>
+                                )}
+                                onSuccess={this.onSuccess.bind(this)}
+                                onFailure={this.onFailure.bind(this)} />
                         </ListItem>
                     </div>
                 </Grid>
             </div>
         );
+    }
+
+    onSuccess(response) {
+        // this.setState({loggedIn: true});
+        // console.log(response);
+        this.props.onSuccess(response);
+        this.ChangeView('/organizer');
+    }
+
+    onFailure() {
+        console.log("Login failed");
     }
 }

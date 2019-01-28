@@ -6,11 +6,22 @@ import Organizer from '../components/Organizer';
 import HelpView from '../components/Help';
 var RouterMixin = require('react-mini-router').RouterMixin;
 
+// class RoutedApp extends React.Component {
+
+//     render() {
+
+//     }
+// }
+
 /**
  * RoutedApp handles routing between each of the main views as well
  * as error handling when a non-existant page is queried
  */
 var RoutedApp = createReactClass({
+
+    getInitialState: function() {
+        return {loggedIn: this.props.loggedIn};
+    },
 
     mixins: [RouterMixin],
 
@@ -29,7 +40,11 @@ var RoutedApp = createReactClass({
     },
 
     home: function () {
-        return <MainPage />;
+        return (
+            <MainPage 
+                loggedIn={this.props.loggedIn}
+                onSuccess={this.onSuccess} />
+        );
     },
 
     vote: function () {
@@ -41,7 +56,10 @@ var RoutedApp = createReactClass({
     },
 
     organizer: function () {
-        return <Organizer />;
+        return (
+            <Organizer
+                logout={this.logout} />
+        );
     },
 
     help: function () {
@@ -51,6 +69,14 @@ var RoutedApp = createReactClass({
     notFound: function (path) {
         return <div className="not-found">Page Not Found: {path}</div>;
     },
+
+    onSuccess: function(response) {
+        this.props.onSuccess(response);
+    },
+
+    logout: function() {
+        this.props.logout();
+    }
 });
 
 export default RoutedApp;

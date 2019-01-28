@@ -3,6 +3,9 @@ import NewEvent from './OrganizerView/NewEventForm';
 import EventList from './OrganizerView/EventList';
 import AddEntry from './OrganizerView/AddEntryOrg';
 import ViewEvent from './OrganizerView/ViewEvent';
+import { GoogleLogout } from 'react-google-login';
+import { navigate } from 'react-mini-router';
+import { Button } from '@material-ui/core';
 import './component_style/Organizer.css';
 
 const orgViews = {
@@ -19,23 +22,46 @@ export default class Organizer extends React.Component {
     constructor(props) {
         super(props);
         this.state = { curView: orgViews.MAIN };
-        this.changeView = this.changeView.bind(this);
+        this.setView = this.setView.bind(this);
     }
 
-    changeView(newView) {
+    ChangeView(page) {
+        navigate(page);
+    }
+
+    setView(newView) {
         this.setState({ curView: newView });
     }
 
-    render() {
+    logout() {
+        this.ChangeView('/');
+        this.props.logout();
+    }
+
+    getCurrView() {
         switch(this.state.curView) {
             case orgViews.CREATE:
-                return( <NewEvent orgViews={orgViews} handler={this.changeView}/> );
+                return( <NewEvent orgViews={orgViews} handler={this.setView}/> );
             case orgViews.ADD:
-                return( <AddEntry orgViews={orgViews} handler={this.changeView}/> );
+                return( <AddEntry orgViews={orgViews} handler={this.setView}/> );
             case orgViews.VIEW:
-                return ( <ViewEvent orgViews={orgViews} handler={this.changeView}/> );
+                return( <ViewEvent orgViews={orgViews} handler={this.setView}/> );
             default:
-                return( <EventList orgViews={orgViews} handler={this.changeView}/> );
+                return( <EventList orgViews={orgViews} handler={this.setView}/> ); 
         }
+    }
+
+    render() {
+        return (
+            <div className="content">
+                <GoogleLogout 
+                    buttonText="Logout"
+                    render={renderProps => (
+                        <Button variant="contained" color="secondary" className="buttons" onClick={renderProps.onClick}>Logout</Button>
+                    )}
+                    onLogoutSuccess={this.logout.bind(this)} />
+                <div>{this.getCurrView()}</div>
+            </div>
+        )
     }
 }

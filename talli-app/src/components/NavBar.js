@@ -1,4 +1,5 @@
 import React from 'react';
+import GoogleLogin, { GoogleLogout } from 'react-google-login';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import IconButton from '@material-ui/core/IconButton';
@@ -29,7 +30,26 @@ export default class NavBar extends React.Component {
     closeDrawer = () => this.setState({open: false});
     ChangeView(page) { navigate(page); }
 
-    render(){
+
+    // TODO: update state in App.js
+    onSuccess = (response) => {
+        console.log(response);
+        this.props.onSuccess(response);
+        this.ChangeView('/organizer');
+    }
+
+    onFailure = () => {
+        console.log("Failed to Login");
+    }
+
+    logout() {
+        this.ChangeView('/');
+        this.props.logout();
+    }
+
+    // TODO: Add logout to hamburger menu
+
+    render() {
         // List of buttons for the navigation drawer
         const drawerList = (
             <div width="250">
@@ -41,10 +61,17 @@ export default class NavBar extends React.Component {
                     <ListItemIcon><VoteIcon /></ListItemIcon>
                     <ListItemText primary='Vote' />
                 </ListItem>
-                <ListItem button key='Organizer Login' onClick={() => this.ChangeView('/organizer')}>
-                    <ListItemIcon><OrganizerIcon /></ListItemIcon>
-                    <ListItemText primary='Organizer Login' />
-                </ListItem>
+                {/* TODO: Make it so if they are already logged in, nothing happens when they click */}
+                <GoogleLogin 
+                    clientId="1061225539650-cp3lrdn3p1u49tsq320l648hcuvg8plb.apps.googleusercontent.com"
+                    render={renderProps => (
+                        <ListItem button key='Organizer Login' onClick={renderProps.onClick}>
+                            <ListItemIcon><OrganizerIcon /></ListItemIcon>
+                            <ListItemText primary='Organizer Login' />
+                        </ListItem>
+                    )}
+                    onSuccess={this.onSuccess.bind(this)}
+                    onFailure={this.onFailure.bind(this)} />
                 <Divider />
                 <ListItem button key='Help' onClick={() => this.ChangeView('/help')}>
                     <ListItemIcon><HelpOutlineIcon /></ListItemIcon>
@@ -53,22 +80,75 @@ export default class NavBar extends React.Component {
             </div>
         );
 
-        return(
-            <div className="root">
-                <AppBar position="static" >
-                    <Toolbar>
-                        <IconButton className="menuButton" color="inherit" aria-label="Menu" onClick={this.toggleDrawer}>
-                            <MenuIcon />
-                        </IconButton>
-                        <img src={logoSvg} className="navTitle" alt="talli" />
-                    </Toolbar>
-                </AppBar>
-                <Drawer open={this.state.open} onClose={this.closeDrawer}>
-                    <div tabIndex={0} role="button" onClick={this.closeDrawer}>
-                        {drawerList}
-                    </div>
-                </Drawer>
+        // i apologize
+        // this is horrible but it works i'll fix it later
+
+        const drawerListLoggedIn = (
+            <div width="250">
+                <ListItem button key='Home' onClick={() => this.ChangeView('/')}>
+                    <ListItemIcon><HomeIcon /></ListItemIcon>
+                    <ListItemText primary='Home' />
+                </ListItem>
+                <ListItem button key='Vote' onClick={() => this.ChangeView('/vote')}>
+                    <ListItemIcon><VoteIcon /></ListItemIcon>
+                    <ListItemText primary='Vote' />
+                </ListItem>
+                {/* TODO: Make it so if they are already logged in, nothing happens when they click */}
+                <GoogleLogout 
+                    buttonText="Logout"
+                    render={renderProps => (
+                        <ListItem button key='Organizer Logout' onClick={renderProps.onClick}>
+                            <ListItemIcon><OrganizerIcon /></ListItemIcon>
+                            <ListItemText primary='Organizer Logout' />
+                        </ListItem>
+                    )}
+                    onLogoutSuccess={this.logout.bind(this)} />
+                <Divider />
+                <ListItem button key='Help' onClick={() => this.ChangeView('/help')}>
+                    <ListItemIcon><HelpOutlineIcon /></ListItemIcon>
+                    <ListItemText primary='Help' />
+                </ListItem>
             </div>
         );
+
+        // :( don't look at it
+        
+        if (this.props.loggedIn) {
+            return (
+                <div className="root">
+                    <AppBar position="static" >
+                        <Toolbar>
+                            <IconButton className="menuButton" color="inherit" aria-label="Menu" onClick={this.toggleDrawer}>
+                                <MenuIcon />
+                            </IconButton>
+                            <img src={logoSvg} className="navTitle" alt="talli" />
+                        </Toolbar>
+                    </AppBar>
+                    <Drawer open={this.state.open} onClose={this.closeDrawer}>
+                        <div tabIndex={0} role="button" onClick={this.closeDrawer}>
+                            {drawerListLoggedIn}
+                        </div>
+                    </Drawer>
+                </div>
+            );
+        } else {
+            return (
+                <div className="root">
+                    <AppBar position="static" >
+                        <Toolbar>
+                            <IconButton className="menuButton" color="inherit" aria-label="Menu" onClick={this.toggleDrawer}>
+                                <MenuIcon />
+                            </IconButton>
+                            <img src={logoSvg} className="navTitle" alt="talli" />
+                        </Toolbar>
+                    </AppBar>
+                    <Drawer open={this.state.open} onClose={this.closeDrawer}>
+                        <div tabIndex={0} role="button" onClick={this.closeDrawer}>
+                            {drawerList}
+                        </div>
+                    </Drawer>
+                </div>
+            );
+        }
     }
 }
