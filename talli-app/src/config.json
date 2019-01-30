@@ -1,0 +1,7 @@
+{
+    "Global":
+        {
+            "hostURL" : "tallivote.com",
+            "entryQRPrefix" : "entry//"
+        }
+}
