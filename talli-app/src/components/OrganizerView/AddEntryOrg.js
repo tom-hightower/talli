@@ -19,7 +19,6 @@ export default class AddEntryOrg extends React.Component {
 
         this.infoPopup = React.createRef();
     }
-    
 
     openInfo = () => {
         this.infoPopup.current.handleOpen();
@@ -28,17 +27,29 @@ export default class AddEntryOrg extends React.Component {
     addEntry = () => {
         const newEntries = this.state.entries.slice();
         newEntries.push({
+            show: true,
             title: '',
             id: '',
             presenters: '',
-            dates: ''
+            entry_dates: ''
         });
         this.setState({ entries: newEntries });
     }
 
+    updateEntry(status, idx) {
+        let updateEntries = this.state.entries;
+        updateEntries[idx] = status;
+        this.setState({ entries: updateEntries });
+    }
+
     cancelAddition = () => {
         this.props.handler(this.props.orgViews.MAIN);
-        // delete the event and any entries added to the current event
+    }
+
+    submitEntries() {
+        // DATABASE:
+        // add the entries in this.state.entries to the current event
+        this.props.handler(this.props.orgViews.MAIN);
     }
 
     render() {
@@ -51,12 +62,12 @@ export default class AddEntryOrg extends React.Component {
                 <br/>
                 <Button variant="text" className='buttons' onClick={this.openInfo} >Click here for import requirements.</Button>
                 <Divider variant="middle" />
-                <form className="entryForm">
+                <form className="entryForm" onSubmit={() => this.submitEntries()}>
                     {
                         entries.map((val, idx) => {
                             return (
-                                <div>
-                                    <NewEntryForm addEntry={this.addEntry} />
+                                <div key={idx}>
+                                    <NewEntryForm updateEntry={(status, index) => this.updateEntry(status, index)} index={idx} />
                                 </div>
                             )
                         })
