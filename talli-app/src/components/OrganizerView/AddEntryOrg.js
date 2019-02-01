@@ -48,7 +48,15 @@ export default class AddEntryOrg extends React.Component {
 
     submitEntries() {
         // DATABASE:
-        // add the entries in this.state.entries to the current event
+        // add the entries with shown = true in this.state.entries 
+        // to the current event
+        let entriesToSend = [];
+        for (var entry in this.state.entries) {
+            if (entry.show) {
+                entriesToSend.push(entry);
+            }
+        }
+        // at this point you can just add all items in 'entriesToSend'
         this.props.handler(this.props.orgViews.MAIN);
     }
 
