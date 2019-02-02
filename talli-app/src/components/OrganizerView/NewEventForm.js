@@ -27,8 +27,8 @@ export default class NewEventForm extends React.Component {
         let item = this.state.eventData;
         if (!item.id) {
             item.id = Math.floor((Math.random() * 10000) + 1);
-        }        
-        const itemsRef = firebase.database().ref('event/' + item.id);
+        }
+        const itemsRef = firebase.database().ref('event/' + item.id + '/eventData');
         item.startDate = item.startDate.toLocaleString();
         item.endDate = item.endDate.toLocaleString();
         item.startVote = item.startVote.toLocaleString();

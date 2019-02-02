@@ -9,6 +9,57 @@ import firebase from '../../firebase.js'
  * TODO: read existing events from database and render
  */
 export default class EventList extends React.Component {
+
+    state = {
+        events: []
+    }
+
+    componentDidMount() {
+        var query = firebase.database().ref('event');
+        let allEvents = [];
+        query.on('value', (snapshot) => {
+            let events = snapshot.val();
+            for (let event in events) {
+                var key = events[event]['eventData']
+                var tempkey;
+                for (var k in key) {
+                    tempkey = k;
+                }
+                var id = snapshot.child('' + event + '/eventData/' + tempkey + '/id').val();
+                var name = snapshot.child('' + event + '/eventData/' + tempkey + '/name').val();
+                var location = snapshot.child('' + event + '/eventData/' + tempkey + '/location').val();
+                var startDate = snapshot.child('' + event + '/eventData/' + tempkey + '/startDate').val();
+                var endDate = snapshot.child('' + event + '/eventData/' + tempkey + '/endDate').val();
+                var automate = snapshot.child('' + event + '/eventData/' + tempkey + '/automate').val();
+                var startVote = snapshot.child('' + event + '/eventData/' + tempkey + '/startVote').val();
+                var endVote = snapshot.child('' + event + '/eventData/' + tempkey + '/endVote').val();
+
+                if (automate) {
+                    automate = 'true';
+                } else {
+                    automate = 'false';
+                }
+                allEvents.push({
+                    id: id,
+                    name: name,
+                    location: location,
+                    startDate: startDate,
+                    endDate: endDate,
+                    automate: automate,
+                    startVote: startVote,
+                    endVote: endVote
+                });
+            }
+            this.setState({
+                events: allEvents
+            });
+        })
+    }
+
+    renderProduct = ({id, name, location, startDate, endDate, automate, startVote, endVote}) => <div>id:{id}, name:{name}, location:{location}, startDate:{startDate}, endDate:{endDate}, automate:{automate}, startVote:{startVote}, endVote:{endVote}</div>;
+
+
+
     AddEvent() {
         this.props.handler(this.props.orgViews.CREATE);
         /* unimplemented */
@@ -24,6 +75,9 @@ export default class EventList extends React.Component {
                     </div>
                     <div className='eventContainer' id='openEvent'>
                     </div>
+                </div>
+                <div>
+                    {this.state.events.map(this.renderProduct)}
                 </div>
             </div>
         );
