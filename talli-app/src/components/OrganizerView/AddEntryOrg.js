@@ -4,6 +4,7 @@ import AddCircleIcon from '@material-ui/icons/AddCircle';
 import NewEntryForm from './NewEntryForm';
 import EntryImportInfo from './EntryImportInfo';
 import '../component_style/Organizer.css';
+import firebase from '../../firebase.js'
 
 /**
  * Entry Add/Remove, unimplemented
@@ -48,15 +49,19 @@ export default class AddEntryOrg extends React.Component {
 
     submitEntries() {
         // DATABASE:
-        // add the entries with shown = true in this.state.entries 
+        // add the entries with shown = true in this.state.entries
         // to the current event
-        let entriesToSend = [];
-        for (var entry in this.state.entries) {
-            if (entry.show) {
-                entriesToSend.push(entry);
-            }
-        }
+        // let entriesToSend = [];
+        // for (var entry in this.state.entries) {
+        //     if (entry.show) {
+        //         entriesToSend.push(entry);
+        //     }
+        // }
         // at this point you can just add all items in 'entriesToSend'
+        for (var item in this.state.entries) {
+            const itemsRef = firebase.database().ref('entry/' + item.id);
+            itemsRef.push(item);
+        }
         this.props.handler(this.props.orgViews.MAIN);
     }
 

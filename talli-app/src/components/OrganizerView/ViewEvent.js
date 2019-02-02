@@ -1,6 +1,7 @@
 import React from 'react';
 import { Typography } from '@material-ui/core';
 import '../component_style/Organizer.css';
+import firebase from '../../firebase.js'
 
 /**
  * Event View, unimplemented

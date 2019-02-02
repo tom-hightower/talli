@@ -2,13 +2,14 @@ import React from 'react';
 import { Typography } from '@material-ui/core';
 import AddCircleIcon from '@material-ui/icons/AddCircle';
 import '../component_style/Organizer.css';
+import firebase from '../../firebase.js'
 
 /**
  * Event List, unimplemented
  * TODO: read existing events from database and render
  */
 export default class EventList extends React.Component {
-    AddEvent() { 
+    AddEvent() {
         this.props.handler(this.props.orgViews.CREATE);
         /* unimplemented */
     }

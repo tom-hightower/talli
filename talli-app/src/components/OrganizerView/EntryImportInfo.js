@@ -2,6 +2,7 @@ import React from 'react';
 import { Dialog, DialogTitle, DialogContent, Slide } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
 import '../component_style/EntryImportInfo.css';
+import firebase from '../../firebase.js'
 
 function Transition(props) {
     return <Slide direction="up" {...props} />;
@@ -41,7 +42,7 @@ export default class EntryImportInfo extends React.Component {
                                 <td>ID</td>
                                 <td>Presenters</td>
                                 <td>Date(s) Attending</td>
-                            </tr> 
+                            </tr>
                             <tr> <td></td><td></td><td></td><td></td> </tr>
                             <tr> <td></td><td></td><td></td><td></td> </tr>
                             <tr> <td></td><td></td><td></td><td></td> </tr>
