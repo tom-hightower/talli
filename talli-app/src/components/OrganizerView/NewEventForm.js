@@ -24,14 +24,17 @@ export default class NewEventForm extends React.Component {
 
     // Sends form data to Firebase and navigates to the next page
     AddEntries = (event) => {
-        const itemsRef = firebase.database().ref('event/' + this.state.eventData.id);
         let item = this.state.eventData;
+        if (!item.id) {
+            item.id = Math.floor((Math.random() * 10000) + 1);
+        }        
+        const itemsRef = firebase.database().ref('event/' + item.id);
         item.startDate = item.startDate.toLocaleString();
         item.endDate = item.endDate.toLocaleString();
         item.startVote = item.startVote.toLocaleString();
         item.endVote = item.endVote.toLocaleString();
         itemsRef.push(item);
-
+        this.props.setEvent(item.id);
         this.props.handler(this.props.orgViews.ADD);
     }
 

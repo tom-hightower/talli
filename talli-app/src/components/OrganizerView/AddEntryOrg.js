@@ -51,10 +51,15 @@ export default class AddEntryOrg extends React.Component {
         // DATABASE:
         // add the entries with shown = true in this.state.entries
         // to the current event
+        let eventID = this.props.curEvent;
         for (var i = 0; i < this.state.entries.length; i++) {
-            if (this.state.entries[i].show) {
-                const itemsRef = firebase.database().ref('entry/' + this.state.entries[i].id);
-                itemsRef.push(this.state.entries[i]);
+            let item = this.state.entries[i];
+            if (item.show) {
+                if (!item.id) {
+                    item.id = Math.floor((Math.random() * 10000) + 1);
+                }
+                const itemsRef = firebase.database().ref('event/' + eventID + '/entries/' + item.id);
+                itemsRef.push(item);
             }
         }
         this.props.handler(this.props.orgViews.MAIN);
