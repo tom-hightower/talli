@@ -51,16 +51,11 @@ export default class AddEntryOrg extends React.Component {
         // DATABASE:
         // add the entries with shown = true in this.state.entries
         // to the current event
-        // let entriesToSend = [];
-        // for (var entry in this.state.entries) {
-        //     if (entry.show) {
-        //         entriesToSend.push(entry);
-        //     }
-        // }
-        // at this point you can just add all items in 'entriesToSend'
-        for (var item in this.state.entries) {
-            const itemsRef = firebase.database().ref('entry/' + item.id);
-            itemsRef.push(item);
+        for (var i = 0; i < this.state.entries.length; i++) {
+            if (this.state.entries[i].show) {
+                const itemsRef = firebase.database().ref('entry/' + this.state.entries[i].id);
+                itemsRef.push(this.state.entries[i]);
+            }
         }
         this.props.handler(this.props.orgViews.MAIN);
     }
@@ -69,10 +64,10 @@ export default class AddEntryOrg extends React.Component {
         let { entries } = this.state;
         return (
             <div className='addEntryForm'>
-                <EntryImportInfo ref={this.infoPopup}/>
+                <EntryImportInfo ref={this.infoPopup} />
                 <Typography variant='h4' align='center' gutterBottom>Add Entries</Typography>
                 <Button variant="contained" className='buttons' name='import_entries'>Import Entries</Button>
-                <br/>
+                <br />
                 <Button variant="text" className='buttons' onClick={this.openInfo} >Click here for import requirements.</Button>
                 <Divider variant="middle" />
                 <form className="entryForm" onSubmit={() => this.submitEntries()}>
@@ -85,7 +80,7 @@ export default class AddEntryOrg extends React.Component {
                             )
                         })
                     }
-                    <AddCircleIcon color='primary' id='entryIcon' onClick={this.addEntry}/>
+                    <AddCircleIcon color='primary' id='entryIcon' onClick={this.addEntry} />
                     <br />
                     <Button
                         variant="contained"
