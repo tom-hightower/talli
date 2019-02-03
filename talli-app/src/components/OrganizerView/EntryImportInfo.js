@@ -2,7 +2,6 @@ import React from 'react';
 import { Dialog, DialogTitle, DialogContent, Slide } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
 import '../component_style/EntryImportInfo.css';
-import firebase from '../../firebase.js'
 
 function Transition(props) {
     return <Slide direction="up" {...props} />;

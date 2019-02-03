@@ -1,12 +1,11 @@
 import React from 'react';
-import { Typography } from '@material-ui/core';
+import { Typography, Grid, Button } from '@material-ui/core';
 import AddCircleIcon from '@material-ui/icons/AddCircle';
 import '../component_style/Organizer.css';
 import firebase from '../../firebase.js'
 
 /**
  * Event List, unimplemented
- * TODO: read existing events from database and render
  */
 export default class EventList extends React.Component {
 
@@ -25,20 +24,16 @@ export default class EventList extends React.Component {
                 for (var k in key) {
                     tempkey = k;
                 }
-                var id = snapshot.child('' + event + '/eventData/' + tempkey + '/id').val();
-                var name = snapshot.child('' + event + '/eventData/' + tempkey + '/name').val();
-                var location = snapshot.child('' + event + '/eventData/' + tempkey + '/location').val();
-                var startDate = snapshot.child('' + event + '/eventData/' + tempkey + '/startDate').val();
-                var endDate = snapshot.child('' + event + '/eventData/' + tempkey + '/endDate').val();
-                var automate = snapshot.child('' + event + '/eventData/' + tempkey + '/automate').val();
-                var startVote = snapshot.child('' + event + '/eventData/' + tempkey + '/startVote').val();
-                var endVote = snapshot.child('' + event + '/eventData/' + tempkey + '/endVote').val();
+                let refPrefix = '' + event + '/eventData/' + tempkey;
+                var id = snapshot.child(refPrefix + '/id').val();
+                var name = snapshot.child(refPrefix + '/name').val();
+                var location = snapshot.child(refPrefix + '/location').val();
+                var startDate = snapshot.child(refPrefix + '/startDate').val();
+                var endDate = snapshot.child(refPrefix + '/endDate').val();
+                var automate = snapshot.child(refPrefix + '/automate').val();
+                var startVote = snapshot.child(refPrefix + '/startVote').val();
+                var endVote = snapshot.child(refPrefix + '/endVote').val();
 
-                if (automate) {
-                    automate = 'true';
-                } else {
-                    automate = 'false';
-                }
                 allEvents.push({
                     id: id,
                     name: name,
@@ -56,28 +51,41 @@ export default class EventList extends React.Component {
         })
     }
 
-    renderProduct = ({id, name, location, startDate, endDate, automate, startVote, endVote}) => <div>id:{id}, name:{name}, location:{location}, startDate:{startDate}, endDate:{endDate}, automate:{automate}, startVote:{startVote}, endVote:{endVote}</div>;
-
-
+    parseDate(localeDate) {
+        let ind = localeDate.indexOf(",");
+        return localeDate.substring(0, ind);
+    }
 
     AddEvent() {
         this.props.handler(this.props.orgViews.CREATE);
         /* unimplemented */
     }
 
+    viewEvent(id) {
+        this.props.setEvent(id);
+        this.props.handler(this.props.orgViews.VIEW);
+    }
+
     render() {
-        return(
+        return (
             <div>
                 <Typography variant='h4' align='center' gutterBottom>Organizer View</Typography>
-                <div className='organizerEvents'>
-                    <div className='eventContainer' id='addEvent'>
-                        <AddCircleIcon color='primary' id='addCircleIcon' onClick={() => this.AddEvent()}/>
-                    </div>
-                    <div className='eventContainer' id='openEvent'>
-                    </div>
-                </div>
+                <Grid container className='organizerEvents'>
+                    <Grid item className='eventContainer' id='addEvent'>
+                        <AddCircleIcon color='primary' id='addCircleIcon' onClick={() => this.AddEvent()} />
+                    </Grid>
+                    {this.state.events.map((event, index) => (
+                        <Button className='eventContainer' variant="contained" color="primary" id='openEvent' onClick={() => this.viewEvent(event.id)} key={index}>
+                            {event.name}
+                            <br/>
+                            {this.parseDate(event.startDate)} - {this.parseDate(event.endDate)}
+                            <br/>
+                            <br/>
+                            Voting period is {event.automate ? "automated." : "not automated."}
+                        </Button>
+                    ))}
+                </Grid>
                 <div>
-                    {this.state.events.map(this.renderProduct)}
                 </div>
             </div>
         );
