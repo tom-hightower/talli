@@ -1,0 +1,31 @@
+.main {
+    text-align: center;
+}
+
+.manageEvent {
+    background-color: pink;
+}
+
+.options {
+    margin-top: 30px;
+    margin-bottom: 40px;
+}
+
+.box {
+    border: 2px solid #99C;
+    margin-left: 12%;
+    margin-right: 12%;
+    font-size: 150%;
+    /* Should this be center aligned??? */
+    text-align: left;
+}
+
+.box > * {
+    padding: 2%;
+    border: 1px solid #99C;
+    cursor: pointer;
+}
+
+.box > *:nth-child(odd) {
+    background-color: #EEE;
+}

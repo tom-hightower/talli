@@ -13,6 +13,10 @@ export default class EventList extends React.Component {
         /* unimplemented */
     }
 
+    viewEvent() {
+        this.props.handler(this.props.orgViews.VIEW);
+    }
+
     render() {
         return(
             <div>
@@ -21,7 +25,7 @@ export default class EventList extends React.Component {
                     <div className='eventContainer' id='addEvent'>
                         <AddCircleIcon color='primary' id='addCircleIcon' onClick={() => this.AddEvent()}/>
                     </div>
-                    <div className='eventContainer' id='openEvent'>
+                    <div className='eventContainer' id='openEvent' onClick={() => this.viewEvent()}>
                     </div>
                 </div>
             </div>
