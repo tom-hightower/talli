@@ -15,15 +15,17 @@ export default class NewEntryForm extends React.Component {
     delEntry = () => {
         this.setState({
             show: false,
+        }, () => {
+            this.props.updateEntry(this.state, this.props.index);
         });
-        this.props.updateEntry(this.state, this.props.index);
     }
 
     handleChange = name => event => {
         this.setState({
             [name]: event.target.value,
+        }, () => {
+            this.props.updateEntry(this.state, this.props.index);
         });
-        this.props.updateEntry(this.state, this.props.index);
     };
 
     render() {

@@ -21,8 +21,9 @@ const orgViews = {
 export default class Organizer extends React.Component {
     constructor(props) {
         super(props);
-        this.state = { curView: orgViews.MAIN };
+        this.state = { curView: orgViews.MAIN, curEventID: '' };
         this.setView = this.setView.bind(this);
+        this.setEvent = this.setEvent.bind(this);
     }
 
     ChangeView(page) {
@@ -33,6 +34,10 @@ export default class Organizer extends React.Component {
         this.setState({ curView: newView });
     }
 
+    setEvent(eventID) {
+        this.setState({ curEventID: eventID });
+    }
+
     logout() {
         this.ChangeView('/');
         this.props.logout();
@@ -41,13 +46,13 @@ export default class Organizer extends React.Component {
     getCurrView() {
         switch(this.state.curView) {
             case orgViews.CREATE:
-                return( <NewEvent orgViews={orgViews} handler={this.setView}/> );
+                return( <NewEvent orgViews={orgViews} handler={this.setView} setEvent={this.setEvent} /> );
             case orgViews.ADD:
-                return( <AddEntry orgViews={orgViews} handler={this.setView}/> );
+                return( <AddEntry orgViews={orgViews} handler={this.setView} curEvent={this.state.curEventID} /> );
             case orgViews.VIEW:
-                return( <ViewEvent orgViews={orgViews} handler={this.setView}/> );
+                return( <ViewEvent orgViews={orgViews} handler={this.setView} curEvent={this.state.curEventID} /> );
             default:
-                return( <EventList orgViews={orgViews} handler={this.setView}/> ); 
+                return( <EventList orgViews={orgViews} handler={this.setView} setEvent={this.setEvent} /> ); 
         }
     }
 

@@ -21,5 +21,12 @@ export default createMuiTheme({
         h5: {
             fontSize: 25,
         }
+    },
+    overrides: {
+        MuiButton: {
+            raisedPrimary: {
+                color: 'white',
+            },
+        },
     }
 });

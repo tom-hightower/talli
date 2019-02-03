@@ -1,48 +1,64 @@
 import React from 'react';
 import 'date-fns';
 import DateFnsUtils from '@date-io/date-fns';
+import { MuiPickersUtilsProvider, DateTimePicker, DatePicker } from 'material-ui-pickers';
 import { Typography, TextField, InputAdornment, Button, FormControlLabel, Switch } from '@material-ui/core';
-import { MuiPickersUtilsProvider, TimePicker, DatePicker } from 'material-ui-pickers';
 import CalendarIcon from '@material-ui/icons/DateRange';
 import '../component_style/NewEventForm.css';
 import '../component_style/Organizer.css';
-
-var blankEvent = {
-    name: '',
-    id: '',
-    location: '',
-    startDate: Date('0000-01-01T00:00:00'),
-    endDate: Date('0000-01-01T00:00:00'),
-    automate: false,
-    startVote: Date('0000-01-01T00:00:00'),
-    endVote: Date('0000-01-01T00:00:00'),
-}
+import firebase from '../../firebase.js';
 
 export default class NewEventForm extends React.Component {
     state = {
-        eventData: blankEvent
+        eventData: {
+            name: '',
+            id: '',
+            location: '',
+            startDate: new Date(),
+            endDate: new Date(),
+            automate: false,
+            startVote: new Date(),
+            endVote: new Date(),
+        }
     }
 
-    toggleTime = () => {
-        this.setState({
-            eventData: { automate: !this.state.eventData.automate, }
-        });
-    }
-
-    AddEntries() {
+    // Sends form data to Firebase and navigates to the next page
+    AddEntries = (event) => {
+        let item = this.state.eventData;
+        if (!item.id) {
+            item.id = Math.floor((Math.random() * 10000) + 1);
+        }
+        const itemsRef = firebase.database().ref('event/' + item.id + '/eventData');
+        item.startDate = item.startDate.toLocaleString();
+        item.endDate = item.endDate.toLocaleString();
+        item.startVote = item.startVote.toLocaleString();
+        item.endVote = item.endVote.toLocaleString();
+        itemsRef.push(item);
+        this.props.setEvent(item.id);
         this.props.handler(this.props.orgViews.ADD);
-        /* unimplemented */
     }
 
-    handleEventChange = name => event => {
+    toggleAutomation = () => {
+        var oldData = this.state.eventData;
+        oldData.automate = !this.state.eventData.automate;
         this.setState({
-            eventData: { [name]: event.target.value, }
+            eventData: oldData,
         });
     }
 
-    handleDateChange = name => date => {
+    handleEventChange = field => event => {
+        var oldData = this.state.eventData;
+        oldData[field] = event.target.value;
         this.setState({
-            eventData: { [name]: date, }
+            eventData: oldData,
+        });
+    }
+
+    handleDateChange = field => date => {
+        var oldData = this.state.eventData;
+        oldData[field] = date;
+        this.setState({
+            eventData: oldData,
         });
     }
 
@@ -57,7 +73,7 @@ export default class NewEventForm extends React.Component {
         return (
             <div className='newEventForm'>
                 <Typography variant='h4' align='center' gutterBottom>Create a new event</Typography>
-                <form className='eventForm' onSubmit={() => this.AddEntries()}>
+                <form className='eventForm' onSubmit={this.AddEntries}>
                     <Typography variant='h6'>Event Details</Typography>
                     <TextField
                         required
@@ -89,9 +105,10 @@ export default class NewEventForm extends React.Component {
                     <br /> <br />
                     <MuiPickersUtilsProvider utils={DateFnsUtils}>
                         <DatePicker
+                            required
+                            label="Start Date"
                             margin="dense"
                             className="entryFormText"
-                            label="Start Date"
                             value={this.state.eventData.startDate}
                             onChange={this.handleDateChange('startDate')}
                             InputProps={{
@@ -102,12 +119,11 @@ export default class NewEventForm extends React.Component {
                                 ),
                             }}
                         />
-                    </MuiPickersUtilsProvider>
-                    <MuiPickersUtilsProvider utils={DateFnsUtils}>
                         <DatePicker
+                            required
+                            label="End Date"
                             margin="dense"
                             className="entryFormText"
-                            label="End Date"
                             value={this.state.eventData.endDate}
                             onChange={this.handleDateChange('endDate')}
                             InputProps={{
@@ -124,8 +140,8 @@ export default class NewEventForm extends React.Component {
                         control={
                             <Switch
                                 checked={this.state.eventData.automate}
-                                onChange={() => this.toggleTime()}
-                                value="automate"
+                                onChange={() => this.toggleAutomation()}
+                                value={this.state.eventData.automate}
                                 color="primary"
                             />
                         }
@@ -134,12 +150,12 @@ export default class NewEventForm extends React.Component {
                     />
                     {this.state.eventData.automate &&
                         <div>
-                            <Typography className="votePeriodText">Start Voting:</Typography>
+
                             <MuiPickersUtilsProvider utils={DateFnsUtils}>
-                                <DatePicker
+                                <Typography className="votePeriodText">Start Voting:</Typography>
+                                <DateTimePicker
                                     margin="dense"
                                     className="entryFormText"
-                                    label="Date"
                                     value={this.state.eventData.startVote}
                                     onChange={this.handleDateChange('startVote')}
                                     InputProps={{
@@ -150,20 +166,10 @@ export default class NewEventForm extends React.Component {
                                         ),
                                     }}
                                 />
-                                <TimePicker
+                                <Typography className="votePeriodText">End Voting:</Typography>
+                                <DateTimePicker
                                     margin="dense"
                                     className="entryFormText"
-                                    label="Time"
-                                    value={this.state.eventData.startVote}
-                                    onChange={this.handleDateChange('startVote')}
-                                />
-                            </MuiPickersUtilsProvider>
-                            <Typography className="votePeriodText">End Voting:</Typography>
-                            <MuiPickersUtilsProvider utils={DateFnsUtils}>
-                                <DatePicker
-                                    margin="dense"
-                                    className="entryFormText"
-                                    label="Date"
                                     value={this.state.eventData.endVote}
                                     onChange={this.handleDateChange('endVote')}
                                     InputProps={{
@@ -173,13 +179,6 @@ export default class NewEventForm extends React.Component {
                                             </InputAdornment>
                                         ),
                                     }}
-                                />
-                                <TimePicker
-                                    margin="dense"
-                                    className="entryFormText"
-                                    label="Time"
-                                    value={this.state.eventData.endVote}
-                                    onChange={this.handleDateChange('endVote')}
                                 />
                             </MuiPickersUtilsProvider>
                         </div>

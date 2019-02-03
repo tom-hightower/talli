@@ -41,7 +41,7 @@ export default class EntryImportInfo extends React.Component {
                                 <td>ID</td>
                                 <td>Presenters</td>
                                 <td>Date(s) Attending</td>
-                            </tr> 
+                            </tr>
                             <tr> <td></td><td></td><td></td><td></td> </tr>
                             <tr> <td></td><td></td><td></td><td></td> </tr>
                             <tr> <td></td><td></td><td></td><td></td> </tr>
