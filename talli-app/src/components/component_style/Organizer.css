@@ -20,6 +20,19 @@
     margin: 15px !important;
 }
 
+.eventDetails {
+    margin-left: 20%;
+    margin-top: 2%;
+}
+
+.eventDetails > * {
+    margin-bottom: 1%;
+}
+
+.entriesList {
+    margin-left: 1%;
+}
+
 .entryForm {
     margin-top: 15px;
 }
