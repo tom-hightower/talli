@@ -6,33 +6,25 @@ import { TextField } from '@material-ui/core';
 export default class NewEntryForm extends React.Component {
     state = {
         show: true,
-        submitted: false,
         title: '',
         id: '',
         presenters: '',
         entry_dates: '',
     }
 
-    saveEntry = () => {
-        this.setState({
-            show: true,
-            submitted: true,
-        });
-        this.props.addEntry();
-        // this will write the data to the database
-    }
-
     delEntry = () => {
         this.setState({
             show: false,
-            submitted: false
+        }, () => {
+            this.props.updateEntry(this.state, this.props.index);
         });
-        // this will remove from the database
     }
 
     handleChange = name => event => {
         this.setState({
             [name]: event.target.value,
+        }, () => {
+            this.props.updateEntry(this.state, this.props.index);
         });
     };
 

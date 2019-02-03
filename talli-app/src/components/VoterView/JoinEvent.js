@@ -3,6 +3,7 @@ import QrReader from 'react-qr-reader';
 import { TextField, Typography, Button } from '@material-ui/core';
 import EntryConfirmation from './EntryConfirmation';
 import '../component_style/Voter.css';
+var config = require('../../config.json');
 
 /**
  * Join Event via QR Code or UID, unimplemented
@@ -34,8 +35,9 @@ export default class JoinEvent extends React.Component {
     }
 
     handleScan(data) {
-        if (data && data.length > 4) {
-            this.setState({ eventID: data });
+        if (data && data.toLowerCase().includes((config.Global.hostURL + "/vote/").toLowerCase())) {
+            var id = data.substring(data.indexOf("/vote/") + 6).replace(/\W/g,'');
+            this.setState({ eventID: id });
             this.requestConfirm();
         }
     }

@@ -3,6 +3,7 @@ import { Typography, TextField, Button } from '@material-ui/core';
 import QrReader from 'react-qr-reader';
 import EntryConfirmation from './EntryConfirmation';
 import '../component_style/Voter.css';
+var config = require('../../config.json');
 
 /**
  * Entry Add, unimplemented
@@ -34,8 +35,9 @@ export default class AddEntryVote extends React.Component {
     }
 
     handleScan(data) {
-        if (data && data.length > 4) {
-            this.setState({ entryID: data });
+        if (data && data.toLowerCase().includes(config.Global.entryQRPrefix)) {
+            var id = data.substring(data.indexOf("entry//") + 7).replace(/\W/g,'');
+            this.setState({ entryID: id });
             this.requestConfirm();
         }
     }
