@@ -8,10 +8,11 @@ import EditEvent from './Dialogs/EditEvent';
 import EditVoting from './Dialogs/EditVoting';
 
 /**
- * Event View, unimplemented
+ * OrganizerView > ViewEvent
+ * Allows organizers to view the details of an event
+ * that they have already created.
  * TODO: read existing events from database and render
  */
-
 export default class ViewEvent extends React.Component {
     constructor(props) {
         super(props);
@@ -82,7 +83,7 @@ export default class ViewEvent extends React.Component {
     render() {
         return (
             <div className="main">
-                <ExportOrgData ref={this.exportChild}/>
+                <ExportOrgData ref={this.exportChild} event={this.state.event}/>
                 <EditEntries ref={this.entryChild}/>
                 <EditEvent ref={this.eventChild}/>
                 <EditVoting ref={this.votingChild}/>
