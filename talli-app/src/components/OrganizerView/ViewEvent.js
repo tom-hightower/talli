@@ -1,9 +1,11 @@
 import React from 'react';
 import { Typography, Button } from '@material-ui/core';
-// import '../component_style/Organizer.css';
 import '../component_style/ViewEvent.css';
-import qr from 'qr-image';
-import jsPDF from 'jspdf';
+import firebase from '../../firebase';
+import ExportOrgData from './Dialogs/ExportOrgData';
+import EditEntries from './Dialogs/EditEntries';
+import EditEvent from './Dialogs/EditEvent';
+import EditVoting from './Dialogs/EditVoting';
 
 /**
  * OrganizerView > ViewEvent
@@ -12,63 +14,89 @@ import jsPDF from 'jspdf';
  * TODO: read existing events from database and render
  */
 export default class ViewEvent extends React.Component {
-    constructor() {
-        super();
+    constructor(props) {
+        super(props);
         this.state = {
             view: 'main',
-            // mock entries for ui testing purposes
-            // Aren't used here so we probably can just delete these if they are on the wrong page
-            entries: [
-                "Entry 1 (Dates attending) - Presenter 1, Presenter 2",
-                "Entry 2 (Dates attending) - Presenter 1",
-                "Entry 3 (Dates attending) - Presenter 1, Presenter 2"
-            ],
+            event: {
+                id: '', 
+                name: '', 
+                location:'', 
+                startDate: '', 
+                endDate: '', 
+                automate: false, 
+                startVote: '', 
+                endVote: ''
+            },
         };
+        this.exportChild = React.createRef();
+        this.eventChild = React.createRef();
+        this.entryChild = React.createRef();
+        this.votingChild = React.createRef();
+    }
+
+    componentDidMount() {
+        var query = firebase.database().ref('event');
+        query.on('value', (snapshot) => {
+            let events = snapshot.val();
+            var key = events[this.props.curEvent]['eventData']
+            var tempkey;
+            for (var k in key) {
+                tempkey = k;
+            }
+            let eventBase = events[this.props.curEvent].eventData[tempkey];
+            this.setState({ 
+                event: {
+                    id: eventBase['id'],
+                    name: eventBase['name'],
+                    location: eventBase['location'],
+                    startDate: eventBase['startDate'],
+                    endDate: eventBase['endDate'],
+                    automate: eventBase['automate'],
+                    startVote: eventBase['startVote'],
+                    endVote: eventBase['endVote']
+                }
+            });
+        });
+    }
+
+    handleExport = () => {
+        this.exportChild.current.handleOpen();
+    }
+
+    handleEntryEdit = () => {
+        this.entryChild.current.handleOpen();
+    }
+
+    handleEventEdit = () => {
+        this.eventChild.current.handleOpen();
+    }
+
+    handleOpenCloseVoting = () => {
+        this.votingChild.current.handleOpen();
     }
 
     goBack = () => {
         this.props.handler(this.props.orgViews.MAIN);
     }
 
-    generatePDF = () => {
-        // set up document
-        var doc = new jsPDF("portrait", "mm","letter");
-        var title, qr_code;
-
-        // add event qr code
-        title = "[Event Name]" + " Event ID: " + "[Event ID]";
-        qr_code = qr.imageSync('https://twitter.com/');
-        doc.addImage(qr_code, 'PNG', 58, 10, 100, 100);
-        doc.text(title, 108, 20, "center");
-
-        // add entry qr codes
-        for (var i = 100; i < 600; i+=100) {
-          doc.addPage();
-          title = "Entry ID: " + i;
-          qr_code = qr.imageSync(String(i));
-          doc.addImage(qr_code, 'PNG', 58, 10, 100, 100);
-          doc.text(title, 108, 20, "center");
-        }
-
-        // save document to local machine
-        doc.save('testPDF.pdf');
-    }
-
     render() {
         return (
             <div className="main">
-                <Typography variant="h3" align='center' gutterBottom>Sample Event</Typography>
+                <ExportOrgData ref={this.exportChild} event={this.state.event}/>
+                <EditEntries ref={this.entryChild}/>
+                <EditEvent ref={this.eventChild}/>
+                <EditVoting ref={this.votingChild}/>
+                <Typography variant="h3" align='center' gutterBottom>{this.state.event.name}</Typography>
                 <div className="options">
-                    {/* TODO: Couldn't figure out how to add spacing between these buttons lol */}
                     <Button className="button1" variant="contained" color="primary">Manage Event</Button>
-                    <Button variant="contained">View Results</Button>
+                    <Button className="button1" variant="contained">View Results</Button>
                 </div>
                 <div className="box">
-                    {/* TODO: Each of these should take the user to the specified page when clicked */}
-                    <div onClick={this.generatePDF}>Export Event & Entry QR Codes</div>
-                    <div>View/Add/Edit Entries</div>
-                    <div>View/Edit Event Details</div>
-                    <div>Open/Close Voting</div>
+                    <Button className="listButtons" onClick={this.handleExport}>Export Event & Entry QR Codes</Button>
+                    <Button className="listButtons" onClick={this.handleEntryEdit}>View/Add/Edit Entries</Button>
+                    <Button className="listButtons" onClick={this.handleEventEdit}>View/Edit Event Details</Button>
+                    <Button className="listButtons" onClick={this.handleOpenCloseVoting}>Open/Close Voting</Button>
                 </div>
                 <Button
                     variant="contained"
