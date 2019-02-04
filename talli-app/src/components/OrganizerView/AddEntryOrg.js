@@ -7,7 +7,9 @@ import '../component_style/Organizer.css';
 import firebase from '../../firebase.js'
 
 /**
- * Entry Add/Remove, unimplemented
+ * OrganizerView > AddEntryOrg
+ * Allows organizers to add entries to their event
+ * after setting up the event details (NewEventForm).
  * TODO: read existing events from database and render
  */
 export default class AddEntryOrg extends React.Component {

@@ -16,7 +16,8 @@ const orgViews = {
 }
 
 /**
- * Organizer/Event Management view, unimplemented
+ * OrganizerView > Organizer
+ * Container which all organizer view will be rendered in.
  */
 export default class Organizer extends React.Component {
     constructor(props) {

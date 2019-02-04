@@ -2,12 +2,15 @@ import React from 'react';
 import { Typography, Button } from '@material-ui/core';
 // import '../component_style/Organizer.css';
 import '../component_style/ViewEvent.css';
+import qr from 'qr-image';
+import jsPDF from 'jspdf';
 
 /**
- * Event View, unimplemented
+ * OrganizerView > ViewEvent
+ * Allows organizers to view the details of an event
+ * that they have already created.
  * TODO: read existing events from database and render
  */
-
 export default class ViewEvent extends React.Component {
     constructor() {
         super();
@@ -27,6 +30,30 @@ export default class ViewEvent extends React.Component {
         this.props.handler(this.props.orgViews.MAIN);
     }
 
+    generatePDF = () => {
+        // set up document
+        var doc = new jsPDF("portrait", "mm","letter");
+        var title, qr_code;
+
+        // add event qr code
+        title = "[Event Name]" + " Event ID: " + "[Event ID]";
+        qr_code = qr.imageSync('https://twitter.com/');
+        doc.addImage(qr_code, 'PNG', 58, 10, 100, 100);
+        doc.text(title, 108, 20, "center");
+
+        // add entry qr codes
+        for (var i = 100; i < 600; i+=100) {
+          doc.addPage();
+          title = "Entry ID: " + i;
+          qr_code = qr.imageSync(String(i));
+          doc.addImage(qr_code, 'PNG', 58, 10, 100, 100);
+          doc.text(title, 108, 20, "center");
+        }
+
+        // save document to local machine
+        doc.save('testPDF.pdf');
+    }
+
     render() {
         return (
             <div className="main">
@@ -38,7 +65,7 @@ export default class ViewEvent extends React.Component {
                 </div>
                 <div className="box">
                     {/* TODO: Each of these should take the user to the specified page when clicked */}
-                    <div>Export Event & Entry QR Codes</div>
+                    <div onClick={this.generatePDF}>Export Event & Entry QR Codes</div>
                     <div>View/Add/Edit Entries</div>
                     <div>View/Edit Event Details</div>
                     <div>Open/Close Voting</div>

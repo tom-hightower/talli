@@ -5,7 +5,9 @@ import '../component_style/Organizer.css';
 import firebase from '../../firebase.js'
 
 /**
- * Event List, unimplemented
+ * OrganizerView > EventList
+ * Organizer landing page which shows them all
+ * of their events and the option to add a new one.
  */
 export default class EventList extends React.Component {
 
