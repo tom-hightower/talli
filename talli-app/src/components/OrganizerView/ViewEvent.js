@@ -1,7 +1,11 @@
 import React from 'react';
 import { Typography, Button } from '@material-ui/core';
-// import '../component_style/Organizer.css';
 import '../component_style/ViewEvent.css';
+import firebase from '../../firebase';
+import ExportOrgData from './Dialogs/ExportOrgData';
+import EditEntries from './Dialogs/EditEntries';
+import EditEvent from './Dialogs/EditEvent';
+import EditVoting from './Dialogs/EditVoting';
 
 /**
  * Event View, unimplemented
@@ -9,18 +13,66 @@ import '../component_style/ViewEvent.css';
  */
 
 export default class ViewEvent extends React.Component {
-    constructor() {
-        super();
+    constructor(props) {
+        super(props);
         this.state = {
             view: 'main',
-            // mock entries for ui testing purposes
-            // Aren't used here so we probably can just delete these if they are on the wrong page
-            entries: [
-                "Entry 1 (Dates attending) - Presenter 1, Presenter 2",
-                "Entry 2 (Dates attending) - Presenter 1",
-                "Entry 3 (Dates attending) - Presenter 1, Presenter 2"
-            ],
+            event: {
+                id: '', 
+                name: '', 
+                location:'', 
+                startDate: '', 
+                endDate: '', 
+                automate: false, 
+                startVote: '', 
+                endVote: ''
+            },
         };
+        this.exportChild = React.createRef();
+        this.eventChild = React.createRef();
+        this.entryChild = React.createRef();
+        this.votingChild = React.createRef();
+    }
+
+    componentDidMount() {
+        var query = firebase.database().ref('event');
+        query.on('value', (snapshot) => {
+            let events = snapshot.val();
+            var key = events[this.props.curEvent]['eventData']
+            var tempkey;
+            for (var k in key) {
+                tempkey = k;
+            }
+            let eventBase = events[this.props.curEvent].eventData[tempkey];
+            this.setState({ 
+                event: {
+                    id: eventBase['id'],
+                    name: eventBase['name'],
+                    location: eventBase['location'],
+                    startDate: eventBase['startDate'],
+                    endDate: eventBase['endDate'],
+                    automate: eventBase['automate'],
+                    startVote: eventBase['startVote'],
+                    endVote: eventBase['endVote']
+                }
+            });
+        });
+    }
+
+    handleExport = () => {
+        this.exportChild.current.handleOpen();
+    }
+
+    handleEntryEdit = () => {
+        this.entryChild.current.handleOpen();
+    }
+
+    handleEventEdit = () => {
+        this.eventChild.current.handleOpen();
+    }
+
+    handleOpenCloseVoting = () => {
+        this.votingChild.current.handleOpen();
     }
 
     goBack = () => {
@@ -30,18 +82,20 @@ export default class ViewEvent extends React.Component {
     render() {
         return (
             <div className="main">
-                <Typography variant="h3" align='center' gutterBottom>Sample Event</Typography>
+                <ExportOrgData ref={this.exportChild}/>
+                <EditEntries ref={this.entryChild}/>
+                <EditEvent ref={this.eventChild}/>
+                <EditVoting ref={this.votingChild}/>
+                <Typography variant="h3" align='center' gutterBottom>{this.state.event.name}</Typography>
                 <div className="options">
-                    {/* TODO: Couldn't figure out how to add spacing between these buttons lol */}
                     <Button className="button1" variant="contained" color="primary">Manage Event</Button>
-                    <Button variant="contained">View Results</Button>
+                    <Button className="button1" variant="contained">View Results</Button>
                 </div>
                 <div className="box">
-                    {/* TODO: Each of these should take the user to the specified page when clicked */}
-                    <div>Export Event & Entry QR Codes</div>
-                    <div>View/Add/Edit Entries</div>
-                    <div>View/Edit Event Details</div>
-                    <div>Open/Close Voting</div>
+                    <Button className="listButtons" onClick={this.handleExport}>Export Event & Entry QR Codes</Button>
+                    <Button className="listButtons" onClick={this.handleEntryEdit}>View/Add/Edit Entries</Button>
+                    <Button className="listButtons" onClick={this.handleEventEdit}>View/Edit Event Details</Button>
+                    <Button className="listButtons" onClick={this.handleOpenCloseVoting}>Open/Close Voting</Button>
                 </div>
                 <Button
                     variant="contained"

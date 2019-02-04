@@ -52,7 +52,7 @@ export default class EventList extends React.Component {
     }
 
     parseDate(localeDate) {
-        let ind = localeDate.indexOf(",");
+        let ind = localeDate.indexOf(',');
         return localeDate.substring(0, ind);
     }
 
@@ -69,13 +69,13 @@ export default class EventList extends React.Component {
     render() {
         return (
             <div>
-                <Typography variant='h4' align='center' gutterBottom>Organizer View</Typography>
-                <Grid container className='organizerEvents'>
-                    <Grid item className='eventContainer' id='addEvent'>
-                        <AddCircleIcon color='primary' id='addCircleIcon' onClick={() => this.AddEvent()} />
+                <Typography variant="h4" align="center" gutterBottom>Organizer View</Typography>
+                <Grid container className="organizerEvents">
+                    <Grid item className="eventContainer" id="addEvent">
+                        <AddCircleIcon color="primary" id="addCircleIcon" onClick={() => this.AddEvent()} />
                     </Grid>
                     {this.state.events.map((event, index) => (
-                        <Button className='eventContainer' variant="contained" color="primary" id='openEvent' onClick={() => this.viewEvent(event.id)} key={index}>
+                        <Button className="eventContainer" variant="contained" color="primary" id="openEvent" onClick={() => this.viewEvent(event.id)} key={index}>
                             {event.name}
                             <br/>
                             {this.parseDate(event.startDate)} - {this.parseDate(event.endDate)}
