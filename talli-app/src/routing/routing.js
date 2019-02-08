@@ -58,7 +58,8 @@ var RoutedApp = createReactClass({
     organizer: function () {
         return (
             <Organizer
-                logout={this.logout} />
+                logout={this.logout}
+                user={this.props.user} />
         );
     },
 

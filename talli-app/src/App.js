@@ -16,8 +16,14 @@ export default class App extends Component {
 
     constructor() {
         super();
+        let user = sessionStorage.getItem('id') ? {
+            googleId: sessionStorage.getItem('id'),
+            email: sessionStorage.getItem('email'),
+            name: sessionStorage.getItem('name')
+        } : null;
         this.state = {
-            loggedIn: false,
+            loggedIn: user ? true : false,
+            user: user
         };
     }
 
@@ -31,7 +37,8 @@ export default class App extends Component {
                         logout={this.logout.bind(this)} />
                     <RoutedApp
                         onSuccess={this.onSuccess.bind(this)}
-                        logout={this.logout.bind(this)} />
+                        logout={this.logout.bind(this)}
+                        user={this.state.user} />
                 </div>
             </MuiThemeProvider>
         );
@@ -39,12 +46,24 @@ export default class App extends Component {
 
     onSuccess(response) {
         console.log(response);
-        this.setState({loggedIn: true});
-        // console.log(this.state.loggedIn);
+        this.setState({
+            loggedIn: true,
+            user: {
+                googleId: response.googleId,
+                email: response.profileObj.email,
+                name: response.profileObj.givenName
+            }
+        });
+        sessionStorage.setItem('id', response.googleId);
+        sessionStorage.setItem('email', response.profileObj.email);
+        sessionStorage.setItem('name', response.profileObj.givenName);
     }
 
     logout() {
-        this.setState({loggedIn: false});
+        this.setState({
+            loggedIn: false,
+            user: null
+        });
         // console.log(this.state.loggedIn);
     }
 }
