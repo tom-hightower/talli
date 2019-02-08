@@ -13,13 +13,6 @@ export default class MainPage extends React.Component {
     ChangeView(page) {
         navigate(page);
     }
-
-    // constructor(props) {
-    //     super(props);
-    //     this.state = {
-    //         loggedIn: false,
-    //     };
-    // }
     
     render() {
         return(
@@ -32,7 +25,6 @@ export default class MainPage extends React.Component {
                         </ListItem>
                         
                         <ListItem>
-                            {/* <Button variant="contained" color="primary" className="buttons" onClick={() => this.ChangeView('/organizer')}>Organizer Login</Button> */}
                             <GoogleLogin 
                                 clientId="1061225539650-cp3lrdn3p1u49tsq320l648hcuvg8plb.apps.googleusercontent.com"
                                 render={renderProps => (
@@ -48,8 +40,6 @@ export default class MainPage extends React.Component {
     }
 
     onSuccess(response) {
-        // this.setState({loggedIn: true});
-        // console.log(response);
         this.props.onSuccess(response);
         this.ChangeView('/organizer');
     }

@@ -3,7 +3,6 @@ import NavBar from './components/NavBar';
 import { MuiThemeProvider } from '@material-ui/core/styles';
 import theme from './components/Theme';
 import RoutedApp from './routing/routing';
-import firebase from './firebase.js';
 import './App.css';
 import firebase from './firebase';
 
@@ -47,7 +46,6 @@ export default class App extends Component {
     }
 
     onSuccess(response) {
-        console.log(response);
         this.setState({
             loggedIn: true,
             user: {
@@ -73,6 +71,5 @@ export default class App extends Component {
             loggedIn: false,
             user: null
         });
-        // console.log(this.state.loggedIn);
     }
 }

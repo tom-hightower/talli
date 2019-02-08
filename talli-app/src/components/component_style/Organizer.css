@@ -19,6 +19,7 @@
     height: 200px;
     width: 200px;
     border: solid 2px #03a9f4;
+    color: white !important;
     margin: 15px !important;
 }
 
