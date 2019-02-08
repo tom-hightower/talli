@@ -72,17 +72,10 @@ export default class EventList extends React.Component {
         console.log(this.props.user.googleId);
         return (
             <div>
-<<<<<<< HEAD
                 <Typography variant='h4' align='center' gutterBottom>Hello, {sessionStorage.getItem('name')}</Typography>
                 <Grid container className='organizerEvents'>
                     <Grid item className='eventContainer' id='addEvent'>
                         <AddCircleIcon color='primary' id='addCircleIcon' onClick={() => this.AddEvent()} />
-=======
-                <Typography variant="h4" align="center" gutterBottom>Organizer View</Typography>
-                <Grid container className="organizerEvents">
-                    <Grid item className="eventContainer" id="addEvent">
-                        <AddCircleIcon color="primary" id="addCircleIcon" onClick={() => this.AddEvent()} />
->>>>>>> 1b864793c002cbf5e4ec9d44a76b18e278beed55
                     </Grid>
                     {this.state.events.map((event, index) => (
                         <Button className="eventContainer" variant="contained" color="primary" id="openEvent" onClick={() => this.viewEvent(event.id)} key={index}>
