@@ -5,7 +5,9 @@ import '../component_style/Organizer.css';
 import firebase from '../../firebase.js'
 
 /**
- * Event List, unimplemented
+ * OrganizerView > EventList
+ * Organizer landing page which shows them all
+ * of their events and the option to add a new one.
  */
 export default class EventList extends React.Component {
 
@@ -52,7 +54,7 @@ export default class EventList extends React.Component {
     }
 
     parseDate(localeDate) {
-        let ind = localeDate.indexOf(",");
+        let ind = localeDate.indexOf(',');
         return localeDate.substring(0, ind);
     }
 
@@ -67,15 +69,16 @@ export default class EventList extends React.Component {
     }
 
     render() {
+        console.log(this.props.user.googleId);
         return (
             <div>
-                <Typography variant='h4' align='center' gutterBottom>Organizer View</Typography>
+                <Typography variant='h4' align='center' gutterBottom>Hello, {sessionStorage.getItem('name')}</Typography>
                 <Grid container className='organizerEvents'>
                     <Grid item className='eventContainer' id='addEvent'>
                         <AddCircleIcon color='primary' id='addCircleIcon' onClick={() => this.AddEvent()} />
                     </Grid>
                     {this.state.events.map((event, index) => (
-                        <Button className='eventContainer' variant="contained" color="primary" id='openEvent' onClick={() => this.viewEvent(event.id)} key={index}>
+                        <Button className="eventContainer" variant="contained" color="primary" id="openEvent" onClick={() => this.viewEvent(event.id)} key={index}>
                             {event.name}
                             <br/>
                             {this.parseDate(event.startDate)} - {this.parseDate(event.endDate)}

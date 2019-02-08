@@ -11,6 +11,8 @@
     margin-left: 20%;
     margin-right: 20%;
     margin-top: 5%;
+    max-width: 65%;
+    border: solid 1px white;
 }
 
 .eventContainer {
@@ -55,11 +57,16 @@
 #addEvent {
     background-color: white;
     border: solid 2px 'primary';
+    border-radius: 5px;
 }
 
 #addCircleIcon {
     font-size: 100px;
     padding: 50px;
+}
+
+#addCircleIcon:hover {
+    color: #0288D1;
 }
 
 #event_name, #event_id, #event_loc {
