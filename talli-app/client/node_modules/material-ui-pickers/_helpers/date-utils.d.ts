@@ -1,0 +1,14 @@
+import { IUtils } from '@date-io/core/IUtils';
+import { DateType } from '../constants/prop-types';
+import { MaterialUiPickersDate } from '../typings/date';
+interface FindClosestDateParams {
+    date: MaterialUiPickersDate;
+    utils: IUtils<MaterialUiPickersDate>;
+    minDate: DateType;
+    maxDate: DateType;
+    disableFuture: boolean;
+    disablePast: boolean;
+    shouldDisableDate: (date: MaterialUiPickersDate) => boolean;
+}
+export declare const findClosestEnabledDate: ({ date, utils, minDate, maxDate, disableFuture, disablePast, shouldDisableDate, }: FindClosestDateParams) => any;
+export {};

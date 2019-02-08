@@ -1,0 +1,1 @@
+{"ast":null,"code":"export default function cloneObject(dirtyObject) {\n  dirtyObject = dirtyObject || {};\n  var object = {};\n\n  for (var property in dirtyObject) {\n    if (dirtyObject.hasOwnProperty(property)) {\n      object[property] = dirtyObject[property];\n    }\n  }\n\n  return object;\n}","map":null,"metadata":{},"sourceType":"module"}
