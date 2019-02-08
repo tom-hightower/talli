@@ -40,8 +40,6 @@ export default class App extends Component {
 
     onSuccess(response) {
         console.log(response);
-        this.setState({loggedIn: true});
-        // console.log(this.state.loggedIn);
         var organizer = {
         	email: response.profileObj.email,
         	name: response.profileObj.name
