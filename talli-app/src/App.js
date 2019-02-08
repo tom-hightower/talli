@@ -3,6 +3,7 @@ import NavBar from './components/NavBar';
 import { MuiThemeProvider } from '@material-ui/core/styles';
 import theme from './components/Theme';
 import RoutedApp from './routing/routing';
+import firebase from './firebase.js';
 import './App.css';
 
 /** 
@@ -57,6 +58,13 @@ export default class App extends Component {
         sessionStorage.setItem('id', response.googleId);
         sessionStorage.setItem('email', response.profileObj.email);
         sessionStorage.setItem('name', response.profileObj.givenName);
+      
+        var organizer = {
+        	email: response.profileObj.email,
+        	name: response.profileObj.name
+        }
+        const ref = firebase.database().ref("organizer/" + response.profileObj.googleId + "/organizerData");
+        ref.set(organizer);
     }
 
     logout() {
