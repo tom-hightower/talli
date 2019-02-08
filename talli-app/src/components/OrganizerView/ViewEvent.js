@@ -36,15 +36,11 @@ export default class ViewEvent extends React.Component {
     }
 
     componentDidMount() {
-        var query = firebase.database().ref('event');
+        var googleId = this.props.user.googleId;
+        var query = firebase.database().ref('organizer/' + googleId + '/event');
         query.on('value', (snapshot) => {
             let events = snapshot.val();
-            var key = events[this.props.curEvent]['eventData']
-            var tempkey;
-            for (var k in key) {
-                tempkey = k;
-            }
-            let eventBase = events[this.props.curEvent].eventData[tempkey];
+            let eventBase = events[this.props.curEvent]['eventData']
             this.setState({ 
                 event: {
                     id: eventBase['id'],

@@ -28,12 +28,14 @@ export default class NewEventForm extends React.Component {
         if (!item.id) {
             item.id = Math.floor((Math.random() * 10000) + 1);
         }
-        const itemsRef = firebase.database().ref('event/' + item.id + '/eventData');
+        let googleId = this.props.user.googleId;
+
+        const itemsRef = firebase.database().ref('organizer/' + googleId + '/event/' + item.id);
         item.startDate = item.startDate.toLocaleString();
         item.endDate = item.endDate.toLocaleString();
         item.startVote = item.startVote.toLocaleString();
         item.endVote = item.endVote.toLocaleString();
-        itemsRef.push(item);
+        itemsRef.child('eventData').set(item);
         this.props.setEvent(item.id);
         this.props.handler(this.props.orgViews.ADD);
     }
