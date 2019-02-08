@@ -46,13 +46,13 @@ export default class Organizer extends React.Component {
     getCurrView() {
         switch(this.state.curView) {
             case orgViews.CREATE:
-                return( <NewEvent orgViews={orgViews} handler={this.setView} setEvent={this.setEvent} /> );
+                return( <NewEvent orgViews={orgViews} handler={this.setView} setEvent={this.setEvent} user={this.props.user} /> );
             case orgViews.ADD:
-                return( <AddEntry orgViews={orgViews} handler={this.setView} curEvent={this.state.curEventID} /> );
+                return( <AddEntry orgViews={orgViews} handler={this.setView} curEvent={this.state.curEventID} user={this.props.user} /> );
             case orgViews.VIEW:
-                return( <ViewEvent orgViews={orgViews} handler={this.setView} curEvent={this.state.curEventID} /> );
+                return( <ViewEvent orgViews={orgViews} handler={this.setView} curEvent={this.state.curEventID} user={this.props.user} /> );
             default:
-                return( <EventList orgViews={orgViews} handler={this.setView} setEvent={this.setEvent} /> ); 
+                return( <EventList orgViews={orgViews} handler={this.setView} setEvent={this.setEvent} user={this.props.user} /> ); 
         }
     }
 
@@ -65,6 +65,8 @@ export default class Organizer extends React.Component {
                         <Button variant="contained" color="secondary" className="buttons" onClick={renderProps.onClick}>Logout</Button>
                     )}
                     onLogoutSuccess={this.logout.bind(this)} />
+                {/* temp solution to logout issue */}
+                {/* <Button variant="contained" color="secondary" className="buttons" onClick={this.logout.bind(this)}>Logout</Button> */}
                 <div>{this.getCurrView()}</div>
             </div>
         )

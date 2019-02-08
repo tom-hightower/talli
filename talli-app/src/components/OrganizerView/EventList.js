@@ -67,9 +67,10 @@ export default class EventList extends React.Component {
     }
 
     render() {
+        console.log(this.props.user.googleId);
         return (
             <div>
-                <Typography variant='h4' align='center' gutterBottom>Organizer View</Typography>
+                <Typography variant='h4' align='center' gutterBottom>Hello, {sessionStorage.getItem('name')}</Typography>
                 <Grid container className='organizerEvents'>
                     <Grid item className='eventContainer' id='addEvent'>
                         <AddCircleIcon color='primary' id='addCircleIcon' onClick={() => this.AddEvent()} />
