@@ -3,6 +3,11 @@ import { Dialog, DialogTitle, DialogContent, Slide } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
 import '../component_style/EntryImportInfo.css';
 
+/**
+ * OrganizerView > AddEntryOrg > EntryImportInfo
+ * Pop up message for showing import requirements
+ * for automatically syncing of entries.
+ */
 function Transition(props) {
     return <Slide direction="up" {...props} />;
   }

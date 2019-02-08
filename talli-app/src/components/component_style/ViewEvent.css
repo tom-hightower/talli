@@ -29,3 +29,12 @@
 .box > *:nth-child(odd) {
     background-color: #EEE;
 }
+
+.button1 {
+    margin: 10px !important;
+}
+
+.listButtons {
+    display: flex;
+    width: 100%;
+}
