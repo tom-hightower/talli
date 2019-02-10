@@ -17,24 +17,27 @@ export default class MainPage extends React.Component {
     render() {
         return(
             <div className="content">
-                <Typography variant="h4" align="center" gutterBottom>Main Page</Typography>
+                <br/>
+                <Typography variant="h4" align="center">Welcome to Talli!</Typography>
                 <Grid container justify="center">
                     <div className="buttons"> 
                         <ListItem>
-                            <Button variant="contained" color="secondary" className="buttons" onClick={() => this.ChangeView('/vote')}>Event Voting</Button>
+                            <Button variant="contained" color="secondary" className="buttons" onClick={() => this.ChangeView('/vote')}>Vote as an Event Attendee</Button>
                         </ListItem>
                         
                         <ListItem>
                             <GoogleLogin 
                                 clientId="1061225539650-cp3lrdn3p1u49tsq320l648hcuvg8plb.apps.googleusercontent.com"
                                 render={renderProps => (
-                                    <Button variant="contained" color="primary" className="buttons" onClick={renderProps.onClick}>Organizer Login (Google)</Button>
+                                    <Button variant="contained" color="primary" className="buttons" onClick={renderProps.onClick}>Login as an Event Organizer</Button>
                                 )}
                                 onSuccess={this.onSuccess.bind(this)}
                                 onFailure={this.onFailure.bind(this)} />
                         </ListItem>
                     </div>
                 </Grid>
+                <br/>
+                <p align="center">About Talli</p>
             </div>
         );
     }

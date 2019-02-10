@@ -41,15 +41,17 @@ export default class EntryImportInfo extends React.Component {
                         <br/><br/>
                         Example file:
                         <table id='table'>
-                            <tr>
-                                <td>Entry Title</td>
-                                <td>ID</td>
-                                <td>Presenters</td>
-                                <td>Date(s) Attending</td>
-                            </tr>
-                            <tr> <td></td><td></td><td></td><td></td> </tr>
-                            <tr> <td></td><td></td><td></td><td></td> </tr>
-                            <tr> <td></td><td></td><td></td><td></td> </tr>
+                            <tbody>
+                                <tr>
+                                    <td>Entry Title</td>
+                                    <td>ID</td>
+                                    <td>Presenters</td>
+                                    <td>Date(s) Attending</td>
+                                </tr>
+                                <tr><td></td><td></td><td></td><td></td></tr>
+                                <tr><td></td><td></td><td></td><td></td></tr>
+                                <tr><td></td><td></td><td></td><td></td></tr>
+                            </tbody>
                         </table>
                     </DialogContent>
                 </Dialog>

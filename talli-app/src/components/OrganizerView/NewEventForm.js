@@ -198,6 +198,7 @@ export default class NewEventForm extends React.Component {
                         variant="contained"
                         className="buttons"
                         type="submit"
+                        color="primary"
                     >
                         Next
                     </Button>
