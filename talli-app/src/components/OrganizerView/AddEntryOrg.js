@@ -100,7 +100,7 @@ export default class AddEntryOrg extends React.Component {
                     >
                         Cancel
                     </Button>
-                    <Button type="submit" variant="contained" className='buttons'>Done</Button>
+                    <Button type="submit" variant="contained" color="primary" className='buttons'>Done</Button>
                 </form>
             </div>
         );

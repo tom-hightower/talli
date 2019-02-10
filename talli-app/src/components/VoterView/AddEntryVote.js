@@ -36,7 +36,7 @@ export default class AddEntryVote extends React.Component {
 
     handleScan(data) {
         if (data && data.toLowerCase().includes(config.Global.entryQRPrefix)) {
-            var id = data.substring(data.indexOf("entry//") + 7).replace(/\W/g,'');
+            var id = data.substring(data.indexOf(config.Global.entryQRPrefix) + 7).replace(/\W/g,'');
             this.setState({ entryID: id });
             this.requestConfirm();
         }

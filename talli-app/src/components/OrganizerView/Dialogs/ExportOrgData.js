@@ -2,6 +2,7 @@ import React from 'react';
 import { Slide, Dialog, DialogTitle, DialogContent, DialogActions, Button, FormControlLabel, Switch } from '@material-ui/core';
 import qr from 'qr-image';
 import jsPDF from 'jspdf';
+var config = require('../../../config.json');
 
 function Transition(props) {
     return <Slide direction="up" {...props} />;
@@ -39,27 +40,35 @@ export default class ExportOrgData extends React.Component {
             // set up document
             var doc = new jsPDF("portrait", "mm", "letter");
             var title, qr_code;
+            var contents = '';
 
             if (this.state.exportEvent) {
                 // add event qr code
-                title = this.props.event.name + " Event ID: " + this.props.event.id;
-                qr_code = qr.imageSync('https://twitter.com/');
-                doc.addImage(qr_code, 'PNG', 58, 10, 100, 100);
-                doc.text(title, 108, 20, "center");
+                contents = "Event";
+                title = "Event ID: " + this.props.event.id;
+                qr_code = qr.imageSync((config.Global.hostURL + "/vote/") + this.props.event.id);
+                doc.addImage(qr_code, 'PNG', 58, 20, 100, 100); // (image, type, x, y, w, h)
+                doc.text(this.props.event.name, 108, 20, "center"); // (string, x, y, align)
+                doc.text(title, 108, 125, "center");
             }
 
             if (this.state.exportEntry) {
                 // add entry qr codes
-                for (var i = 100; i < 600; i += 100) {
+                contents = contents + "Entries";
+                var entry;
+                for (var entryID in this.props.event.entries) {
+                    entry = this.props.event.entries[entryID];
                     doc.addPage();
-                    title = "Entry ID: " + i;
-                    qr_code = qr.imageSync(String(i));
-                    doc.addImage(qr_code, 'PNG', 58, 10, 100, 100);
-                    doc.text(title, 108, 20, "center");
+                    title = "Entry ID: " + entry['id'];
+                    qr_code = qr.imageSync(config.Global.entryQRPrefix + String(entry['id']));
+                    doc.addImage(qr_code, 'PNG', 58, 20, 100, 100);
+                    doc.text(entry['title'], 108, 20, "center");
+                    doc.text(title, 108, 125, "center");
                 }
             }
             // save document to local machine
-            doc.save('testPDF.pdf');
+            var nameNoSpaces = this.props.event.name.replace(/\s+/g, '');
+            doc.save(nameNoSpaces + contents + 'QRCodes.pdf');
         }
     }
 
