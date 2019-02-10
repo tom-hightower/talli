@@ -46,7 +46,7 @@ export default class ExportOrgData extends React.Component {
                 // add event qr code
                 contents = "Event";
                 title = "Event ID: " + this.props.event.id;
-                qr_code = qr.imageSync('tallivote.com/vote/' + this.props.event.id);
+                qr_code = qr.imageSync((config.Global.hostURL + "/vote/") + this.props.event.id);
                 doc.addImage(qr_code, 'PNG', 58, 20, 100, 100); // (image, type, x, y, w, h)
                 doc.text(this.props.event.name, 108, 20, "center"); // (string, x, y, align)
                 doc.text(title, 108, 125, "center");
