@@ -17,8 +17,9 @@ const SortableItem = SortableElement(({ value }) =>
 const SortableList = SortableContainer(({ items }) => {
     return (
         <ol>
+            {items.length !== 0 ? <div></div>: <div>Tap the Plus to add an entry</div>}
             {items.map((value, index) => (
-                <SortableItem key={`item-${index}`} index={index} value={value} />
+                <SortableItem key={`item-${index}`} index={index} value={value.name} />
             ))}
         </ol>
     );
@@ -27,13 +28,8 @@ const SortableList = SortableContainer(({ items }) => {
 export default class SortContainer extends Component {
     constructor(props) {
         super(props);
-        /**
-         * TODO: This list should be populated as empty for first-time
-         *       voters or with the previous entries for voters returning
-         *       to their previous session
-         */ 
         this.state = { 
-            items: ['Entry A', 'Entry B', 'Entry C'],
+            items: [],
             event: {
                 id: '', 
                 name: '', 
@@ -62,7 +58,7 @@ export default class SortContainer extends Component {
             let eventEntries = events[this.props.eventID]['entries'];
             var itemList = this.state.items;
             if (this.props.entryToAdd) {
-                itemList.push(eventEntries[this.props.entryToAdd].title);
+                itemList.push({name: eventEntries[this.props.entryToAdd].title, id: this.props.entryToAdd});
             }
             this.setState({ 
                 event: {

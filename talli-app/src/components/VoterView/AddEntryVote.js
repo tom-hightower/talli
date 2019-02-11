@@ -7,7 +7,7 @@ import '../component_style/Voter.css';
 var config = require('../../config.json');
 
 /**
- * Entry Add, unimplemented
+ * Entry Add
  */
 export default class AddEntryVote extends React.Component {
     constructor(props) {
@@ -58,7 +58,6 @@ export default class AddEntryVote extends React.Component {
     }
 
     handleAddEntry() {
-        //TODO: Add the Entry and return to ranking
         this.props.handler(this.props.voteViews.RANK, 'na', 'na', this.state.entryID);
     }
 
