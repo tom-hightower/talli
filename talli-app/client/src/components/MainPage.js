@@ -4,6 +4,9 @@ import GoogleLogin from 'react-google-login';
 import { navigate } from 'react-mini-router';
 import './component_style/MainPage.css';
 
+import openSocket from 'socket.io-client';
+const socket = openSocket('http://localhost:5000');
+
 /**
  * Main View, just contains buttons for navigating to organizer and voting
  * views.
@@ -14,11 +17,13 @@ export default class MainPage extends React.Component {
         navigate(page);
     }
 
-    // constructor(props) {
-    //     super(props);
-    //     this.state = {
-    //         loggedIn: false,
-    //     };
+    constructor(props) {
+        super(props);
+        // this.sendLoginRequest = this.sendLoginRequest.bind(this);
+    }
+
+    // sendLoginRequest() {
+    //     socket.emit('login_request', 'message');
     // }
     
     render() {
@@ -40,6 +45,8 @@ export default class MainPage extends React.Component {
                                 )}
                                 onSuccess={this.onSuccess.bind(this)}
                                 onFailure={this.onFailure.bind(this)} />
+                            {/* Nick messing around with other login possibilities */}
+                            {/* <Button variant="contained" color="primary" className="buttons" onClick={() => this.sendLoginRequest()}>Organizer Login</Button> */}
                         </ListItem>
                     </div>
                 </Grid>

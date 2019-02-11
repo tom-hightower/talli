@@ -15,9 +15,14 @@ export default class SubmitContainer extends React.Component {
                     Voting closes in xx:xx
                 </div>
                 <div className='buttonDiv'>
-                    <Button variant="contained" color="primary" onClick={() => this.props.handler(this.props.voteViews.CONFIRM)}> Submit </Button>
+                    <Button variant="contained" color="primary" onClick={this.handleSubmit.bind(this)}> Submit </Button>
                 </div>
             </div>
         );
+    }
+
+    handleSubmit() {
+        this.props.submitRankings();
+        this.props.handler(this.props.voteViews.CONFIRM);
     }
 }
