@@ -1,15 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- Generator: Adobe Illustrator 22.1.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
-<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
 	 viewBox="0 0 612 792" style="enable-background:new 0 0 612 792;" xml:space="preserve">
 <style type="text/css">
 	.st0{display:none;}
-	.st1{fill:none;stroke:#57C0E5;stroke-width:40;stroke-linecap:round;stroke-miterlimit:10;}
-	.st2{fill:none;stroke:#22B573;stroke-width:40;stroke-linecap:round;stroke-miterlimit:10;}
+	.st1{fill:none;stroke:#FFFFFF;stroke-width:40;stroke-linecap:round;stroke-miterlimit:10;}
 </style>
-<g id="Layer_1" class="st0">
+<g id="Layer_1_1_" class="st0">
 	
-		<image style="display:inline;overflow:visible;" width="576" height="325" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAkAAAAFFCAYAAAAEv1IYAAAACXBIWXMAAAsSAAALEgHS3X78AAAb
+		<image style="display:inline;overflow:visible;enable-background:new    ;" width="576" height="325" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAkAAAAFFCAYAAAAEv1IYAAAACXBIWXMAAAsSAAALEgHS3X78AAAb
 VUlEQVR4Ae3dTWtdSZon8NM1CQPNgHNg9tbgDyAVs+wBq7bepOsTWLWKpTXgvZXrMaS8PCvLnyBl
 GLwteTHLIWWYrWnpE4wFzUBDQzZhP9d5JevlSjovETd+P7i4MtOlGzr3nBP/+8TL+Yfff/+94/ZS
 Sltd1z3tui7/udF13eaFH3Ladd1J13XHXdcd5Vff958daqAmKaWNC/e6xxeafxb3uZOle92JD1k/
@@ -136,10 +135,10 @@ OXevYyYArakrOqv/Hn/+p67r/uMlv/m/dl33L9FB/a/4d7N1VgAwiq7r/h205htATSeqwQAAAABJ
 RU5ErkJggg==" transform="matrix(1 0 0 1 18 233)">
 	</image>
 </g>
-<g id="Layer_2">
-	<path class="st1" d="M102.1,249c0,0-0.9,223.9-0.1,227.4c0.8,3.5-0.3,61.9,43.2,61.9c43.3,0,45.5-57.1,46.3-60.6"/>
-	<line class="st2" x1="574" y1="345" x2="575.3" y2="345"/>
-	<line class="st2" x1="39" y1="345.1" x2="338" y2="344.9"/>
+<g id="Layer_2_1_">
+	<path class="st1" d="M102.1,249c0,0-0.9,223.9-0.1,227.4s-0.3,61.9,43.2,61.9c43.3,0,45.5-57.1,46.3-60.6"/>
+	<line class="st1" x1="574" y1="345" x2="575.3" y2="345"/>
+	<line class="st1" x1="23" y1="345.1" x2="338" y2="344.9"/>
 	<line class="st1" x1="417" y1="250" x2="417" y2="536.8"/>
 	<line class="st1" x1="497" y1="250" x2="497" y2="536.8"/>
 	<polyline class="st1" points="339,408.5 339,465.5 339,536.8 	"/>

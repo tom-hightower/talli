@@ -53,6 +53,9 @@ export default class AddEntryOrg extends React.Component {
         // DATABASE:
         // add the entries with shown = true in this.state.entries
         // to the current event
+
+        let googleId = this.props.user.googleId;
+
         let eventID = this.props.curEvent;
         for (var i = 0; i < this.state.entries.length; i++) {
             let item = this.state.entries[i];
@@ -60,8 +63,8 @@ export default class AddEntryOrg extends React.Component {
                 if (!item.id) {
                     item.id = Math.floor((Math.random() * 10000) + 1);
                 }
-                const itemsRef = firebase.database().ref('event/' + eventID + '/entries/' + item.id);
-                itemsRef.push(item);
+                const itemsRef = firebase.database().ref('organizer/' + googleId + '/event/' + eventID + '/entries');
+                itemsRef.child(item.id).set(item);
             }
         }
         this.props.handler(this.props.orgViews.MAIN);
@@ -97,7 +100,7 @@ export default class AddEntryOrg extends React.Component {
                     >
                         Cancel
                     </Button>
-                    <Button type="submit" variant="contained" className='buttons'>Done</Button>
+                    <Button type="submit" variant="contained" color="primary" className='buttons'>Done</Button>
                 </form>
             </div>
         );

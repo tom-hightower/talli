@@ -16,17 +16,13 @@ export default class EventList extends React.Component {
     }
 
     componentDidMount() {
-        var query = firebase.database().ref('event');
+        var googleId = this.props.user.googleId;
+        var query = firebase.database().ref('organizer/' + googleId + '/event');
         let allEvents = [];
         query.on('value', (snapshot) => {
             let events = snapshot.val();
             for (let event in events) {
-                var key = events[event]['eventData']
-                var tempkey;
-                for (var k in key) {
-                    tempkey = k;
-                }
-                let refPrefix = '' + event + '/eventData/' + tempkey;
+                let refPrefix = '' + event + '/eventData';
                 var id = snapshot.child(refPrefix + '/id').val();
                 var name = snapshot.child(refPrefix + '/name').val();
                 var location = snapshot.child(refPrefix + '/location').val();
@@ -71,7 +67,7 @@ export default class EventList extends React.Component {
     render() {
         return (
             <div>
-                <Typography variant='h4' align='center' gutterBottom>Hello, {sessionStorage.getItem('name')}</Typography>
+                <Typography variant='h4' align='center' gutterBottom>{sessionStorage.getItem('name')}'s Events</Typography>
                 <Grid container className='organizerEvents'>
                     <Grid item className='eventContainer' id='addEvent'>
                         <AddCircleIcon color='primary' id='addCircleIcon' onClick={() => this.AddEvent()} />

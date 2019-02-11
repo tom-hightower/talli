@@ -26,7 +26,8 @@ export default class ViewEvent extends React.Component {
                 endDate: '', 
                 automate: false, 
                 startVote: '', 
-                endVote: ''
+                endVote: '',
+                entries: []
             },
         };
         this.exportChild = React.createRef();
@@ -36,15 +37,12 @@ export default class ViewEvent extends React.Component {
     }
 
     componentDidMount() {
-        var query = firebase.database().ref('event');
+        var googleId = this.props.user.googleId;
+        var query = firebase.database().ref('organizer/' + googleId + '/event');
         query.on('value', (snapshot) => {
             let events = snapshot.val();
-            var key = events[this.props.curEvent]['eventData']
-            var tempkey;
-            for (var k in key) {
-                tempkey = k;
-            }
-            let eventBase = events[this.props.curEvent].eventData[tempkey];
+            let eventBase = events[this.props.curEvent]['eventData'];
+            let eventEntries = events[this.props.curEvent]['entries'];
             this.setState({ 
                 event: {
                     id: eventBase['id'],
@@ -54,7 +52,8 @@ export default class ViewEvent extends React.Component {
                     endDate: eventBase['endDate'],
                     automate: eventBase['automate'],
                     startVote: eventBase['startVote'],
-                    endVote: eventBase['endVote']
+                    endVote: eventBase['endVote'],
+                    entries: eventEntries
                 }
             });
         });
@@ -98,6 +97,7 @@ export default class ViewEvent extends React.Component {
                     <Button className="listButtons" onClick={this.handleEventEdit}>View/Edit Event Details</Button>
                     <Button className="listButtons" onClick={this.handleOpenCloseVoting}>Open/Close Voting</Button>
                 </div>
+                <br />
                 <Button
                     variant="contained"
                     className="buttons"

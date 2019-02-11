@@ -27,8 +27,9 @@ export default class MainPage extends React.Component {
     // }
     
     render() {
-        return(
+        return (
             <div className="content">
+                <br/>
                 <Typography variant="h4" align="center" gutterBottom>Main Page</Typography>
                 <Grid container justify="center">
                     <div className="buttons"> 
@@ -50,6 +51,8 @@ export default class MainPage extends React.Component {
                         </ListItem>
                     </div>
                 </Grid>
+                <br/>
+                <p align="center">About Talli</p>
             </div>
         );
     }
