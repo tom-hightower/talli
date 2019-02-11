@@ -6,6 +6,7 @@ import ExportOrgData from './Dialogs/ExportOrgData';
 import EditEntries from './Dialogs/EditEntries';
 import EditEvent from './Dialogs/EditEvent';
 import EditVoting from './Dialogs/EditVoting';
+import AddEntries from './Dialogs/AddEntries';
 
 /**
  * OrganizerView > ViewEvent
@@ -33,9 +34,11 @@ export default class ViewEvent extends React.Component {
         this.exportChild = React.createRef();
         this.eventChild = React.createRef();
         this.entryChild = React.createRef();
+        this.addChild = React.createRef();
         this.votingChild = React.createRef();
     }
 
+    // fix later adrianna
     componentDidMount() {
         var googleId = this.props.user.googleId;
         var query = firebase.database().ref('organizer/' + googleId + '/event');
@@ -44,6 +47,7 @@ export default class ViewEvent extends React.Component {
             let eventBase = events[this.props.curEvent]['eventData'];
             let eventEntries = events[this.props.curEvent]['entries'];
             this.setState({ 
+                view: this.state.view,
                 event: {
                     id: eventBase['id'],
                     name: eventBase['name'],
@@ -63,8 +67,19 @@ export default class ViewEvent extends React.Component {
         this.exportChild.current.handleOpen();
     }
 
-    handleEntryEdit = () => {
-        this.entryChild.current.handleOpen();
+    handleEntryEdit(entryID) {
+        this.entryChild.current.handleOpen(entryID);
+    }
+
+    handleOpenEntries = () => {
+        this.setState({
+                view: 'entries',
+                event: this.state.event
+        });
+    }
+
+    handleAddEntry = () => {
+        this.addChild.current.handleOpen();
     }
 
     handleEventEdit = () => {
@@ -76,27 +91,49 @@ export default class ViewEvent extends React.Component {
     }
 
     goBack = () => {
-        this.props.handler(this.props.orgViews.MAIN);
+        if (this.state.view === 'main') {
+            this.props.handler(this.props.orgViews.MAIN);
+        } else if (this.state.view === 'entries') {
+            this.setState({
+                view: 'main',
+                event: this.state.event
+            });
+        }
     }
 
     render() {
         return (
             <div className="main">
                 <ExportOrgData ref={this.exportChild} event={this.state.event}/>
-                <EditEntries ref={this.entryChild}/>
-                <EditEvent ref={this.eventChild}/>
-                <EditVoting ref={this.votingChild}/>
+                <EditEntries ref={this.entryChild} event={this.state.event} googleId={this.props.user.googleId}/>
+                <AddEntries ref={this.addChild} event={this.state.event} googleId={this.props.user.googleId}/>
+                <EditEvent ref={this.eventChild} event={this.state.event} googleId={this.props.user.googleId}/>
+                <EditVoting ref={this.votingChild} event={this.state.event} googleId={this.props.user.googleId}/>
                 <Typography variant="h3" align='center' gutterBottom>{this.state.event.name}</Typography>
                 <div className="options">
                     <Button className="button1" variant="contained" color="primary">Manage Event</Button>
                     <Button className="button1" variant="contained">View Results</Button>
                 </div>
-                <div className="box">
-                    <Button className="listButtons" onClick={this.handleExport}>Export Event & Entry QR Codes</Button>
-                    <Button className="listButtons" onClick={this.handleEntryEdit}>View/Add/Edit Entries</Button>
-                    <Button className="listButtons" onClick={this.handleEventEdit}>View/Edit Event Details</Button>
-                    <Button className="listButtons" onClick={this.handleOpenCloseVoting}>Open/Close Voting</Button>
-                </div>
+                { 
+                    this.state.view === 'main' && 
+                    <div className="box">
+                        <Button className="listButtons" onClick={this.handleExport}>Export Event & Entry QR Codes</Button>
+                        <Button className="listButtons" onClick={this.handleOpenEntries}>View/Add/Edit Entries</Button>
+                        <Button className="listButtons" onClick={this.handleEventEdit}>View/Edit Event Details</Button>
+                        <Button className="listButtons" onClick={this.handleOpenCloseVoting}>Open/Close Voting</Button>
+                    </div> 
+                }
+                { 
+                    this.state.view === 'entries' && 
+                    <div className="box">
+                        {Object.values(this.state.event.entries).map((entry, index) => 
+                            <Button className="listButtons" onClick={() => this.handleEntryEdit(entry.id)}>
+                                {entry.title} by {entry.presenters}
+                            </Button>
+                        )}
+                         <Button className="listButtons" color="primary" onClick={this.handleAddEntry}>Add New Entry</Button>
+                    </div> 
+                }
                 <br />
                 <Button
                     variant="contained"
