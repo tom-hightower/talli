@@ -3,6 +3,7 @@ import QrReader from 'react-qr-reader';
 import { TextField, Typography, Button } from '@material-ui/core';
 import EntryConfirmation from './EntryConfirmation';
 import '../component_style/Voter.css';
+import firebase from '../../firebase';
 var config = require('../../config.json');
 
 /**
@@ -15,7 +16,7 @@ export default class JoinEvent extends React.Component {
          *  eventID:        Event's UID, obtained either from QRcode or textfield
          *  idFieldValue:   The value currently in the textbox
          */
-        this.state = { eventID: '', idFieldValue: '' };
+        this.state = { eventID: '', idFieldValue: '', eventName: '', organizerID: '' };
         this.handleScan = this.handleScan.bind(this);
         this.handleError = this.handleError.bind(this);
         this.handleText = this.handleText.bind(this);
@@ -25,12 +26,24 @@ export default class JoinEvent extends React.Component {
         this.confirmChild = React.createRef();
     }
 
-    //TODO: server request to return Event name for given state.eventID
-    getNameFromID() {
-        return(this.state.eventID);
-    }
-
     requestConfirm = () => {
+        var query = firebase.database().ref('event/');
+        query.on('value', (snapshot) => {
+            let org = snapshot.val();
+            let orgID = org[this.state.eventID]['organizer']['id'];
+            this.setState({ organizerID: orgID });
+        });
+        var query2 = firebase.database().ref('organizer/');
+        query2.on('value', (snapshot) => {
+            let organizer = snapshot.val();
+            let event = organizer[this.state.organizerID]['event'][this.state.eventID];
+            if (!event) {
+                // TODO: Event not found
+                this.setState({ eventName: 'ERROR' });
+                return;
+            }
+            this.setState({ eventName: event['eventData']['name']});
+        });
         this.confirmChild.current.handleOpen();
     }
 
@@ -43,7 +56,7 @@ export default class JoinEvent extends React.Component {
     }
 
     handleText() {
-        if (this.state.idFieldValue.length > 5) {
+        if (this.state.idFieldValue.length > 2) {
             this.setState({ eventID: this.state.idFieldValue });
             this.requestConfirm();
         }
@@ -51,7 +64,7 @@ export default class JoinEvent extends React.Component {
 
     handleJoinEvent() {
         //TODO: Join the event
-        this.props.handler(this.props.voteViews.RANK);
+        this.props.handler(this.props.voteViews.RANK, this.state.eventID, this.state.organizerID);
     }
 
     handleError(err) {}
@@ -65,7 +78,7 @@ export default class JoinEvent extends React.Component {
     render() {
         return(
             <div>
-                <EntryConfirmation entryName={this.getNameFromID()} ref={this.confirmChild} handler={this.handleJoinEvent}/>
+                <EntryConfirmation entryName={this.state.eventName} ref={this.confirmChild} handler={this.handleJoinEvent}/>
                 <QrReader delay={300} onScan={this.handleScan} onError={this.handleError} style={{ width: '80%', margin: '20px auto 0px'}} />
                 <Typography variant='h5' align='center' className="QRText">Scan QR Code or enter Event ID:</Typography>
                 <div className="textField">

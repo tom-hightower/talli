@@ -2,8 +2,11 @@ import React, { Component } from 'react';
 import { SortableContainer, SortableElement, SortableHandle, arrayMove } from 'react-sortable-hoc';
 import SliderIcon from '@material-ui/icons/Sort';
 import PlusIcon from '@material-ui/icons/ControlPoint';
+import { Typography, Button } from '@material-ui/core';
+import BellIcon from '@material-ui/icons/NotificationImportant';
+import firebase from '../../firebase';
 import '../component_style/RankingContainer.css';
-import { Typography } from '@material-ui/core';
+import '../component_style/SubmitContainer.css';
 
 const DragHandle = SortableHandle(() => <span> <SliderIcon className="Sliders" /></span>);
 
@@ -29,7 +32,20 @@ export default class SortContainer extends Component {
          *       voters or with the previous entries for voters returning
          *       to their previous session
          */ 
-        this.state = { items: ['Entry A', 'Entry B', 'Entry C'] };
+        this.state = { 
+            items: ['Entry A', 'Entry B', 'Entry C'],
+            event: {
+                id: '', 
+                name: '', 
+                location:'', 
+                startDate: '', 
+                endDate: '', 
+                automate: false, 
+                startVote: '', 
+                endVote: '',
+                entries: []
+            },
+        };
         this.handleAddEvent = this.handleAddEvent.bind(this);
     }
 
@@ -38,18 +54,43 @@ export default class SortContainer extends Component {
         this.props.handler(this.props.voteViews.ADD);
     }
 
-    // TODO: Set event name here
-    eventName = 'My Event';
+    componentDidMount() {
+        var query = firebase.database().ref('organizer/' + this.props.organizer + '/event');
+        query.on('value', (snapshot) => {
+            let events = snapshot.val();
+            let eventBase = events[this.props.eventID]['eventData'];
+            let eventEntries = events[this.props.eventID]['entries'];
+            var itemList = this.state.items;
+            if (this.props.entryToAdd) {
+                itemList.push(eventEntries[this.props.entryToAdd].title);
+            }
+            this.setState({ 
+                event: {
+                    id: eventBase['id'],
+                    name: eventBase['name'],
+                    location: eventBase['location'],
+                    startDate: eventBase['startDate'],
+                    endDate: eventBase['endDate'],
+                    automate: eventBase['automate'],
+                    startVote: eventBase['startVote'],
+                    endVote: eventBase['endVote'],
+                    entries: eventEntries
+                },
+                items: itemList
+            });
+        });
+    }
 
     onSortEnd = ({ oldIndex, newIndex }) => {
         this.setState({
             items: arrayMove(this.state.items, oldIndex, newIndex),
         });
     };
+    
     render() {
         return (
             <div>
-                <Typography variant='h4' align='center' className="eventName" gutterBottom>{this.eventName}</Typography>
+                <Typography variant='h4' align='center' className="eventName" gutterBottom>{this.state.event.name}</Typography>
                 <div style={{textAlign: 'center'}}>
                     <PlusIcon className="AddEvent" onClick={this.handleAddEvent} />
                 </div>
@@ -59,6 +100,17 @@ export default class SortContainer extends Component {
                             useDragHandle={true} helperClass='sortHelp' />
                     </div>
                 </div>
+                <div className='SubmitDiv'>
+                <BellIcon className='BellIcon' />
+                <div className='SubmitText'>
+                    {/* TODO: have this generated off of the end time of the event
+                */}
+                    Voting closes in xx:xx
+                </div>
+                <div className='buttonDiv'>
+                    <Button variant="contained" color="primary" onClick={() => this.props.handler(this.props.voteViews.CONFIRM)}> Submit </Button>
+                </div>
+            </div>
             </div>
         );
     }
