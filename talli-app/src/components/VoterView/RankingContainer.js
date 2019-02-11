@@ -17,7 +17,7 @@ const SortableItem = SortableElement(({ value }) =>
 const SortableList = SortableContainer(({ items }) => {
     return (
         <ol>
-            {items.length !== 0 ? <div></div>: <div>Tap the Plus to add an entry</div>}
+            {items.length !== 0 ? <div></div> : <div>Tap the Plus to add an entry</div>}
             {items.map((value, index) => (
                 <SortableItem key={`item-${index}`} index={index} value={value.name} />
             ))}
@@ -28,51 +28,63 @@ const SortableList = SortableContainer(({ items }) => {
 export default class SortContainer extends Component {
     constructor(props) {
         super(props);
-        this.state = { 
+        this.state = {
             items: [],
             event: {
-                id: '', 
-                name: '', 
-                location:'', 
-                startDate: '', 
-                endDate: '', 
-                automate: false, 
-                startVote: '', 
+                id: '',
+                name: '',
+                location: '',
+                startDate: '',
+                endDate: '',
+                automate: false,
+                startVote: '',
                 endVote: '',
                 entries: []
             },
         };
         this.handleAddEvent = this.handleAddEvent.bind(this);
+        this.submitConfirm = this.submitConfirm.bind(this);
     }
 
     handleAddEvent(e) {
         e.preventDefault();
+        this.props.updateItemsHandler(this.state.items);
         this.props.handler(this.props.voteViews.ADD);
     }
 
     componentDidMount() {
-        var query = firebase.database().ref('organizer/' + this.props.organizer + '/event');
-        query.on('value', (snapshot) => {
-            let events = snapshot.val();
-            let eventBase = events[this.props.eventID]['eventData'];
-            let eventEntries = events[this.props.eventID]['entries'];
-            var itemList = this.state.items;
-            if (this.props.entryToAdd) {
-                itemList.push({name: eventEntries[this.props.entryToAdd].title, id: this.props.entryToAdd});
-            }
-            this.setState({ 
-                event: {
-                    id: eventBase['id'],
-                    name: eventBase['name'],
-                    location: eventBase['location'],
-                    startDate: eventBase['startDate'],
-                    endDate: eventBase['endDate'],
-                    automate: eventBase['automate'],
-                    startVote: eventBase['startVote'],
-                    endVote: eventBase['endVote'],
-                    entries: eventEntries
-                },
-                items: itemList
+        this.setState({
+            items: this.props.rankItems,
+        }, () => {
+            var query = firebase.database().ref('organizer/' + this.props.organizer + '/event');
+            query.on('value', (snapshot) => {
+                let events = snapshot.val();
+                if (!events || !events[this.props.eventID]) {
+                    //error
+                    console.log('DEV ERROR')
+                }
+                let eventBase = events[this.props.eventID]['eventData'];
+                let eventEntries = events[this.props.eventID]['entries'];
+                var itemList = this.state.items;
+                if (this.props.entryToAdd && !this.state.items.some(e => e.id === this.props.entryToAdd)) {
+                    itemList.push({ name: eventEntries[this.props.entryToAdd].title, id: this.props.entryToAdd });
+                }
+                this.setState({
+                    event: {
+                        id: eventBase['id'],
+                        name: eventBase['name'],
+                        location: eventBase['location'],
+                        startDate: eventBase['startDate'],
+                        endDate: eventBase['endDate'],
+                        automate: eventBase['automate'],
+                        startVote: eventBase['startVote'],
+                        endVote: eventBase['endVote'],
+                        entries: eventEntries
+                    },
+                    items: itemList
+                });
+            }, () => {
+                this.props.updateItemsHandler(this.state.items);
             });
         });
     }
@@ -82,12 +94,17 @@ export default class SortContainer extends Component {
             items: arrayMove(this.state.items, oldIndex, newIndex),
         });
     };
-    
+
+    submitConfirm() {
+        this.props.updateItemsHandler(this.state.items);
+        this.props.handler(this.props.voteViews.CONFIRM);
+    }
+
     render() {
         return (
             <div>
                 <Typography variant='h4' align='center' className="eventName" gutterBottom>{this.state.event.name}</Typography>
-                <div style={{textAlign: 'center'}}>
+                <div style={{ textAlign: 'center' }}>
                     <PlusIcon className="AddEvent" onClick={this.handleAddEvent} />
                 </div>
                 <div>
@@ -97,16 +114,16 @@ export default class SortContainer extends Component {
                     </div>
                 </div>
                 <div className='SubmitDiv'>
-                <BellIcon className='BellIcon' />
-                <div className='SubmitText'>
-                    {/* TODO: have this generated off of the end time of the event
+                    <BellIcon className='BellIcon' />
+                    <div className='SubmitText'>
+                        {/* TODO: have this generated off of the end time of the event
                 */}
-                    Voting closes in xx:xx
+                        Voting closes in xx:xx
                 </div>
-                <div className='buttonDiv'>
-                    <Button variant="contained" color="primary" onClick={() => this.props.handler(this.props.voteViews.CONFIRM)}> Submit </Button>
+                    <div className='buttonDiv'>
+                        <Button variant="contained" color="primary" onClick={this.submitConfirm}> Submit </Button>
+                    </div>
                 </div>
-            </div>
             </div>
         );
     }

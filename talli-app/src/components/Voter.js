@@ -14,7 +14,7 @@ const voteViews = {
 }
 
 /**
- * Voting view, unimplemented
+ * Voting view
  */
 export default class Voter extends React.Component {
     constructor(props) {
@@ -23,9 +23,15 @@ export default class Voter extends React.Component {
             curView: voteViews.JOIN,
             eventID: '',
             organizerID: '',
-            entryToAdd: ''
+            entryToAdd: '',
+            rankingItems: []
         };
         this.changeView = this.changeView.bind(this);
+        this.updateItems = this.updateItems.bind(this);
+    }
+
+    updateItems(itemList) {
+        this.setState({ rankingItems: itemList });
     }
 
     changeView(newView, event = 'na', organizer = 'na', addedEntry = '') {
@@ -46,7 +52,16 @@ export default class Voter extends React.Component {
             case voteViews.ADD:
                 return (<AddEntry voteViews={voteViews} eventID={this.state.eventID} organizer={this.state.organizerID} handler={this.changeView} />);
             case voteViews.RANK:
-                return (<Ranking voteViews={voteViews} eventID={this.state.eventID} organizer={this.state.organizerID} entryToAdd={this.state.entryToAdd} handler={this.changeView} />);
+                return (
+                    <Ranking
+                        voteViews={voteViews}
+                        eventID={this.state.eventID}
+                        organizer={this.state.organizerID}
+                        entryToAdd={this.state.entryToAdd}
+                        rankItems={this.state.rankingItems}
+                        updateItemsHandler={this.updateItems}
+                        handler={this.changeView}
+                    />);
             case voteViews.CONFIRM:
                 return (<SubmitConfirm voteViews={voteViews} handler={this.changeView} />);
             case voteViews.SUBMITTED:
