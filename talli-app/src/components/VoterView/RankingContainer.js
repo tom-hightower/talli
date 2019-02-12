@@ -56,8 +56,7 @@ export default class SortContainer extends Component {
         this.setState({
             items: this.props.rankItems,
         }, () => {
-            var query = firebase.database().ref('organizer/' + this.props.organizer + '/event');
-            query.on('value', (snapshot) => {
+            firebase.database().ref('/organizer/' + this.props.organizer + '/event/').once('value').then(snapshot => {
                 let events = snapshot.val();
                 if (!events || !events[this.props.eventID]) {
                     //error
@@ -82,9 +81,7 @@ export default class SortContainer extends Component {
                         entries: eventEntries
                     },
                     items: itemList
-                });
-            }, () => {
-                this.props.updateItemsHandler(this.state.items);
+                }, () => { this.props.updateItemsHandler(this.state.items)});
             });
         });
     }

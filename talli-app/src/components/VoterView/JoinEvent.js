@@ -27,29 +27,32 @@ export default class JoinEvent extends React.Component {
     }
 
     requestConfirm = () => {
-        var query = firebase.database().ref('event/');
-        query.on('value', (snapshot) => {
-            let org = snapshot.val();
-            let orgID = org[this.state.eventID]['organizer']['id'];
-            this.setState({ organizerID: orgID });
-        });
-        var query2 = firebase.database().ref('organizer/');
-        query2.on('value', (snapshot) => {
-            let organizer = snapshot.val();
-            let event = organizer[this.state.organizerID]['event'][this.state.eventID];
-            if (!event) {
-                // TODO: Event not found
-                this.setState({ eventName: 'ERROR' });
-                return;
-            }
-            this.setState({ eventName: event['eventData']['name']});
+        firebase.database().ref('event/').once('value').then(snap => {
+            let orgID = snap.val()[this.state.eventID];
+            this.setState({ organizerID: (orgID ? orgID['organizer']['id'] : '') }, () => {
+                if (this.state.organizerID !== '') {
+                    firebase.database().ref('/organizer/' + this.state.organizerID + '/event/' + this.state.eventID).once('value').then(snapshot => {
+                        let event = snapshot.val();
+                        if (!event) {
+                            //TODO: event not found
+                            this.setState({ eventName: 'ERROR' });
+                            console.log('error');
+                            return;
+                        }
+                        this.setState({ eventName: event['eventData']['name'] });
+                    });
+                } else {
+                    //TODO: event not found
+                    console.log('error');
+                }
+            });
         });
         this.confirmChild.current.handleOpen();
     }
 
     handleScan(data) {
         if (data && data.toLowerCase().includes((config.Global.hostURL + "/vote/").toLowerCase())) {
-            var id = data.substring(data.indexOf("/vote/") + 6).replace(/\W/g,'');
+            var id = data.substring(data.indexOf("/vote/") + 6).replace(/\W/g, '');
             this.setState({ eventID: id });
             this.requestConfirm();
         }
@@ -67,27 +70,27 @@ export default class JoinEvent extends React.Component {
         this.props.handler(this.props.voteViews.RANK, this.state.eventID, this.state.organizerID);
     }
 
-    handleError(err) {}
+    handleError(err) { }
 
     keyPress(e) {
-        if(e.key === 'Enter') {
+        if (e.key === 'Enter') {
             this.handleText();
         }
     }
 
     render() {
-        return(
+        return (
             <div>
-                <EntryConfirmation entryName={this.state.eventName} ref={this.confirmChild} handler={this.handleJoinEvent}/>
-                <QrReader delay={300} onScan={this.handleScan} onError={this.handleError} style={{ width: '80%', margin: '20px auto 0px'}} />
+                <EntryConfirmation entryName={this.state.eventName} ref={this.confirmChild} handler={this.handleJoinEvent} />
+                <QrReader delay={300} onScan={this.handleScan} onError={this.handleError} style={{ width: '80%', margin: '20px auto 0px' }} />
                 <Typography variant='h5' align='center' className="QRText">Scan QR Code or enter Event ID:</Typography>
                 <div className="textField">
-                    <TextField  
-                        id="outlined-dense" 
-                        label="Event ID" 
-                        margin="dense" 
-                        variant="outlined" 
-                        value={this.state.idFieldValue} 
+                    <TextField
+                        id="outlined-dense"
+                        label="Event ID"
+                        margin="dense"
+                        variant="outlined"
+                        value={this.state.idFieldValue}
                         onKeyDown={this.keyPress}
                         onChange={e => this.setState({ idFieldValue: e.target.value })}
                     />
