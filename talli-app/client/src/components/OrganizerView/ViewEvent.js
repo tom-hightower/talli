@@ -43,7 +43,7 @@ export default class ViewEvent extends React.Component {
             let events = snapshot.val();
             let eventBase = events[this.props.curEvent]['eventData'];
             let eventEntries = events[this.props.curEvent]['entries'];
-            this.setState({ 
+            this.setState({
                 event: {
                     id: eventBase['id'],
                     name: eventBase['name'],
@@ -79,23 +79,48 @@ export default class ViewEvent extends React.Component {
         this.props.handler(this.props.orgViews.MAIN);
     }
 
+    viewResults = () => {
+        this.setState({
+            view: "results"
+        })
+    }
+
+    manageEvent = () => {
+        this.setState({
+            view: "main"
+        })
+    }
+
     render() {
-        return (
-            <div className="main">
+        // TODO: put these in their own components
+        let mainContent = this.state.view === "main" ? (
+            <div>
                 <ExportOrgData ref={this.exportChild} event={this.state.event}/>
                 <EditEntries ref={this.entryChild}/>
                 <EditEvent ref={this.eventChild}/>
                 <EditVoting ref={this.votingChild}/>
-                <Typography variant="h3" align='center' gutterBottom>{this.state.event.name}</Typography>
-                <div className="options">
-                    <Button className="button1" variant="contained" color="primary">Manage Event</Button>
-                    <Button className="button1" variant="contained">View Results</Button>
-                </div>
                 <div className="box">
                     <Button className="listButtons" onClick={this.handleExport}>Export Event & Entry QR Codes</Button>
                     <Button className="listButtons" onClick={this.handleEntryEdit}>View/Add/Edit Entries</Button>
                     <Button className="listButtons" onClick={this.handleEventEdit}>View/Edit Event Details</Button>
                     <Button className="listButtons" onClick={this.handleOpenCloseVoting}>Open/Close Voting</Button>
+                </div>
+            </div>
+        ) : (
+            <div className="viewResults">
+                View Results
+            </div>
+        );
+        return (
+            <div className="main">
+                <Typography variant="h3" align='center' gutterBottom>{this.state.event.name}</Typography>
+                <div className="options">
+                    {/* TODO: Change css of these button according to the current state */}
+                    <Button className="button1" variant="contained" color="primary" onClick={this.manageEvent}>Manage Event</Button>
+                    <Button className="button1" variant="contained" onClick={this.viewResults}>View Results</Button>
+                </div>
+                <div>
+                    { mainContent }
                 </div>
                 <br />
                 <Button

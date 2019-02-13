@@ -61,14 +61,14 @@ export default class Organizer extends React.Component {
         return (
             <div className="content">
                 {/* onClick Changeview to homepage as well as delete session storage */}
-                <GoogleLogout 
+                {/* <GoogleLogout 
                     buttonText="Logout"
                     render={renderProps => (
                         <Button variant="contained" color="secondary" className="buttons" onClick={renderProps.onClick}>Logout</Button>
                     )}
-                    onLogoutSuccess={this.logout.bind(this)} />
+                    onLogoutSuccess={this.logout.bind(this)} /> */}
                 {/* temp solution to logout issue */}
-                {/* <Button variant="contained" color="secondary" className="buttons" onClick={this.logout.bind(this)}>Logout</Button> */}
+                <Button variant="contained" color="secondary" className="buttons" onClick={this.logout.bind(this)}>Logout</Button>
                 <div>{this.getCurrView()}</div>
             </div>
         )
