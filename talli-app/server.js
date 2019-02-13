@@ -6,6 +6,8 @@ const port = 5000;
 var GoogleSpreadsheet = require('google-spreadsheet');
 var creds = require('./client_secret.json');
 
+var urlGoogle = require('./google-util');
+
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
@@ -16,10 +18,10 @@ var doc = new GoogleSpreadsheet('1k1r8EvCTuRBcamM71lYSw3OK7cBwehHXFLGe2kFRy50');
 
 
 io.on('connection', function(socket){
-    console.log('a user connected');
-    socket.on('disconnect', () => {
-        console.log('User Disconnected');
-    });
+    // console.log('a user connected');
+    // socket.on('disconnect', () => {
+    //     console.log('User Disconnected');
+    // });
     
     socket.on('add_data', (data) => {
         console.log('message: ' + data);
@@ -31,13 +33,12 @@ io.on('connection', function(socket){
             });
         });
     });
+
+    let url = urlGoogle();
+    io.emit('send_url', url);
 });
 io.listen(port);
 
 // app.use('/auth', authRoutes);
 
 app.get('/', (req, res) => res.send('Hello World!'))
-
-// app.listen(port, () => {
-//     console.log(`Talli - listening on port ${port}!`)
-// })

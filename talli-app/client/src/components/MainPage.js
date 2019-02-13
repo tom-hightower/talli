@@ -7,6 +7,14 @@ import './component_style/MainPage.css';
 import openSocket from 'socket.io-client';
 const socket = openSocket('http://localhost:5000');
 
+// tried not to hardcode this but oh well
+let signInUrl = "https://accounts.google.com/o/oauth2/v2/auth?access_type=offline&prompt=consent&scope=https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fplus.me%20https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.email&response_type=code&client_id=1061225539650-cp3lrdn3p1u49tsq320l648hcuvg8plb.apps.googleusercontent.com&redirect_uri=http%3A%2F%2Flocalhost%3A3000%2Fgoogle-auth";
+
+socket.on('send_url', url => {
+    signInUrl = url;
+    // console.log('google sign in: ', url);
+})
+
 /**
  * Main View, just contains buttons for navigating to organizer and voting
  * views.
@@ -19,13 +27,12 @@ export default class MainPage extends React.Component {
 
     constructor(props) {
         super(props);
+        this.state = {
+            url: signInUrl
+        };
         // this.sendLoginRequest = this.sendLoginRequest.bind(this);
     }
 
-    // sendLoginRequest() {
-    //     socket.emit('login_request', 'message');
-    // }
-    
     render() {
         return (
             <div className="content">
@@ -34,7 +41,7 @@ export default class MainPage extends React.Component {
                 <Grid container justify="center">
                     <div className="buttons"> 
                         <ListItem>
-                            <Button variant="contained" color="secondary" className="buttons" onClick={() => this.ChangeView('/vote')}>Event Voting</Button>
+                            <Button variant="contained" color="secondary" className="buttons" onClick={() => this.ChangeView('/vote')}>Vote as an Event Attendee</Button>
                         </ListItem>
                         
                         <ListItem>
@@ -42,7 +49,7 @@ export default class MainPage extends React.Component {
                             <GoogleLogin 
                                 clientId="1061225539650-cp3lrdn3p1u49tsq320l648hcuvg8plb.apps.googleusercontent.com"
                                 render={renderProps => (
-                                    <Button variant="contained" color="primary" className="buttons" onClick={renderProps.onClick}>Organizer Login (Google)</Button>
+                                    <Button variant="contained" color="primary" className="buttons" onClick={renderProps.onClick}>Login as an Event Organizer</Button>
                                 )}
                                 onSuccess={this.onSuccess.bind(this)}
                                 onFailure={this.onFailure.bind(this)} />
@@ -51,6 +58,7 @@ export default class MainPage extends React.Component {
                         </ListItem>
                     </div>
                 </Grid>
+                {/* <a href={signInUrl}>Sign in w google new way</a> */}
                 <br/>
                 <p align="center">About Talli</p>
             </div>
@@ -58,8 +66,6 @@ export default class MainPage extends React.Component {
     }
 
     onSuccess(response) {
-        // this.setState({loggedIn: true});
-        // console.log(response);
         this.props.onSuccess(response);
         this.ChangeView('/organizer');
     }

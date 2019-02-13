@@ -2,11 +2,12 @@ import React from 'react';
 import { Typography, TextField, Button } from '@material-ui/core';
 import QrReader from 'react-qr-reader';
 import EntryConfirmation from './EntryConfirmation';
+import firebase from '../../firebase';
 import '../component_style/Voter.css';
 var config = require('../../config.json');
 
 /**
- * Entry Add, unimplemented
+ * Entry Add
  */
 export default class AddEntryVote extends React.Component {
     constructor(props) {
@@ -15,7 +16,7 @@ export default class AddEntryVote extends React.Component {
          *  entryID:        Entry's UID, obtained either from QRcode or textfield
          *  idFieldValue:   The value currently in the textbox
          */
-        this.state = { entryID: '', idFieldValue: '' };
+        this.state = { entryID: '', idFieldValue: '', entryTitle: '' };
         this.handleScan = this.handleScan.bind(this);
         this.handleError = this.handleError.bind(this);
         this.handleText = this.handleText.bind(this);
@@ -25,12 +26,19 @@ export default class AddEntryVote extends React.Component {
         this.confirmChild = React.createRef();
     }
 
-    //TODO: server request to return Entry name for given state.entryID
-    getNameFromID() {
-        return(this.state.entryID);
-    }
-
     requestConfirm = () => {
+        var query = firebase.database().ref('organizer/');
+        query.on('value', (snapshot) => {
+            let organizer = snapshot.val();
+            let event = organizer[this.props.organizer]['event'][this.props.eventID];
+            let entry = event['entries'][this.state.idFieldValue];
+            if (!entry) {
+                // TODO: Entry not found
+                this.setState({ entryID: 'ERROR', entryTitle: 'ERROR' });
+                return;
+            }
+            this.setState({ entryTitle: entry['title'] })
+        });
         this.confirmChild.current.handleOpen();
     }
 
@@ -43,15 +51,14 @@ export default class AddEntryVote extends React.Component {
     }
 
     handleText() {
-        if (this.state.idFieldValue.length > 5) {
+        if (this.state.idFieldValue.length > 2) {
             this.setState({ entryID: this.state.idFieldValue });
             this.requestConfirm();
         }
     }
 
     handleAddEntry() {
-        //TODO: Add the Entry and return to ranking
-        this.props.handler(this.props.voteViews.RANK);
+        this.props.handler(this.props.voteViews.RANK, 'na', 'na', this.state.entryID);
     }
 
     handleError(err) {}
@@ -65,7 +72,7 @@ export default class AddEntryVote extends React.Component {
     render() {
         return(
             <div>
-                <EntryConfirmation entryName={this.getNameFromID()} ref={this.confirmChild} handler={this.handleAddEntry}/>
+                <EntryConfirmation entryName={this.state.entryTitle} ref={this.confirmChild} handler={this.handleAddEntry}/>
                 <QrReader delay={300} onScan={this.handleScan} onError={this.handleError} style={{ width: '80%', margin: '20px auto 0px'}} />
                 <Typography variant='h5' align='center' className="QRText">Scan QR Code or enter Entry ID:</Typography>
                 <div className="textField">
