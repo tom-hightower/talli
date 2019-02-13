@@ -38,7 +38,6 @@ export default class ViewEvent extends React.Component {
         this.votingChild = React.createRef();
     }
 
-    // fix later adrianna
     componentDidMount() {
         var googleId = this.props.user.googleId;
         var query = firebase.database().ref('organizer/' + googleId + '/event');

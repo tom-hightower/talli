@@ -22,7 +22,13 @@ export default class AddEntries extends React.Component {
     };
 
     handleClose = () => {
-        this.setState({ open: false });
+        this.setState({ 
+            open: false,
+            title: '',
+            id: undefined,
+            presenters: '',
+            entry_dates: ''
+        });
     }
 
     handleSaveClose = () => {
@@ -31,24 +37,22 @@ export default class AddEntries extends React.Component {
         if (!tempId) {
              tempId = Math.floor((Math.random() * 10000) + 1);
         }
-        var itemsRef = firebase.database().ref('organizer/' + this.props.googleId +
+        // change ID to ensure uniqueness
+        var existingEntry = this.props.event.entries[tempId];
+        while (existingEntry !== undefined) {
+            tempId++;
+            existingEntry = this.props.event.entries[tempId];
+        }
+        // save new entry to database
+        let itemsRef = firebase.database().ref('organizer/' + this.props.googleId +
                                                '/event/' + this.props.event.id + 
                                                '/entries/' + tempId);
-        // change ID to ensure uniqueness
-        // while (itemsRef.child('title') !== null) {
-        //     tempId = Math.floor((Math.random() * 10000) + 1);
-        //     console.log(tempId);
-        //     itemsRef = firebase.database().ref('organizer/' + this.props.googleId +
-        //                                        '/event/' + this.props.event.id + 
-        //                                        '/entries/' + tempId);
-        // }
-        // save new entry to database
         itemsRef.child('title').set(this.state.title);
         itemsRef.child('id').set(tempId);
         itemsRef.child('presenters').set(this.state.presenters);
         itemsRef.child('entry_dates').set(this.state.entry_dates);
         // close dialog
-        this.setState({ open: false });
+        this.handleClose();
     }
 
     handleChange = name => event => {
