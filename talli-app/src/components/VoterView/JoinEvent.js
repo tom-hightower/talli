@@ -5,6 +5,7 @@ import EntryConfirmation from './EntryConfirmation';
 import '../component_style/Voter.css';
 import firebase from '../../firebase';
 import {getCookie} from '../../cookies.js'
+import HasVoteInfo from './HasVoteInfo.js';
 var config = require('../../config.json');
 
 /**
@@ -25,9 +26,11 @@ export default class JoinEvent extends React.Component {
         this.keyPress = this.keyPress.bind(this);
 
         this.confirmChild = React.createRef();
+        this.blockChild = React.createRef();
     }
 
     requestConfirm = () => {
+
         firebase.database().ref('event/').once('value').then(snap => {
             let orgID = snap.val()[this.state.eventID];
             this.setState({ organizerID: (orgID ? orgID['organizer']['id'] : '') }, () => {
@@ -51,6 +54,30 @@ export default class JoinEvent extends React.Component {
         this.confirmChild.current.handleOpen();
     }
 
+    alertInfo = () => {
+        firebase.database().ref('event/').once('value').then(snap => {
+            let orgID = snap.val()[this.state.eventID];
+            this.setState({ organizerID: (orgID ? orgID['organizer']['id'] : '') }, () => {
+                if (this.state.organizerID !== '') {
+                    firebase.database().ref('/organizer/' + this.state.organizerID + '/event/' + this.state.eventID).once('value').then(snapshot => {
+                        let event = snapshot.val();
+                        if (!event) {
+                            //TODO: event not found
+                            this.setState({ eventName: 'ERROR' });
+                            console.log('error');
+                            return;
+                        }
+                        this.setState({ eventName: event['eventData']['name']});
+                    });
+                } else {
+                    //TODO: event not found
+                    console.log('error');
+                }
+            });
+        });
+        this.blockChild.current.handleOpen();
+    }
+
     handleScan(data) {
         if (data && data.toLowerCase().includes((config.Global.hostURL + "/vote/").toLowerCase())) {
             var id = data.substring(data.indexOf("/vote/") + 6).replace(/\W/g, '');
@@ -62,7 +89,8 @@ export default class JoinEvent extends React.Component {
     handleText() {
         var checkVoteStatus = this.hasSubmitted();
         if (checkVoteStatus) {
-
+            this.setState({ eventID: this.state.idFieldValue });
+            this.alertInfo();
         }
         else if (this.state.idFieldValue.length > 2) {
             this.setState({ eventID: this.state.idFieldValue });
@@ -79,12 +107,7 @@ export default class JoinEvent extends React.Component {
 
     keyPress(e) {
         if (e.key === 'Enter') {
-            var checkVoteStatus = this.hasSubmitted();
-            if (checkVoteStatus) {
-
-            } else {
-                this.handleText();
-            }
+            this.handleText();
         }
     }
 
@@ -107,6 +130,7 @@ export default class JoinEvent extends React.Component {
         return (
             <div>
                 <EntryConfirmation entryName={this.state.eventName} ref={this.confirmChild} handler={this.handleJoinEvent} />
+                <HasVoteInfo entryName={this.state.eventName} ref={this.blockChild}/>
                 <QrReader delay={300} onScan={this.handleScan} onError={this.handleError} style={{ width: '80%', margin: '20px auto 0px' }} />
                 <Typography variant='h5' align='center' className="QRText">Scan QR Code or enter Event ID:</Typography>
                 <div className="textField">
