@@ -38,10 +38,12 @@ export default class AddEntries extends React.Component {
              tempId = Math.floor((Math.random() * 10000) + 1);
         }
         // change ID to ensure uniqueness
-        var existingEntry = this.props.event.entries[tempId];
-        while (existingEntry !== undefined) {
-            tempId++;
-            existingEntry = this.props.event.entries[tempId];
+        if (this.props.event.entries) {
+            var existingEntry = this.props.event.entries[tempId];
+            while (existingEntry !== undefined) {
+                tempId++;
+                existingEntry = this.props.event.entries[tempId];
+            }
         }
         // save new entry to database
         let itemsRef = firebase.database().ref('organizer/' + this.props.googleId +
