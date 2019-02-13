@@ -4,6 +4,7 @@ import { TextField, Typography, Button } from '@material-ui/core';
 import EntryConfirmation from './EntryConfirmation';
 import '../component_style/Voter.css';
 import firebase from '../../firebase';
+import {getCookie} from '../../cookies.js'
 var config = require('../../config.json');
 
 /**
@@ -39,7 +40,7 @@ export default class JoinEvent extends React.Component {
                             console.log('error');
                             return;
                         }
-                        this.setState({ eventName: event['eventData']['name'] });
+                        this.setState({ eventName: event['eventData']['name']});
                     });
                 } else {
                     //TODO: event not found
@@ -59,7 +60,11 @@ export default class JoinEvent extends React.Component {
     }
 
     handleText() {
-        if (this.state.idFieldValue.length > 2) {
+        var checkVoteStatus = this.hasSubmitted();
+        if (checkVoteStatus) {
+
+        }
+        else if (this.state.idFieldValue.length > 2) {
             this.setState({ eventID: this.state.idFieldValue });
             this.requestConfirm();
         }
@@ -74,8 +79,28 @@ export default class JoinEvent extends React.Component {
 
     keyPress(e) {
         if (e.key === 'Enter') {
-            this.handleText();
+            var checkVoteStatus = this.hasSubmitted();
+            if (checkVoteStatus) {
+
+            } else {
+                this.handleText();
+            }
         }
+    }
+
+    hasSubmitted() {
+        var cookies = getCookie('UserID');
+        var check = false;
+        const itemRef = firebase.database().ref('cookies/' + cookies);
+        itemRef.on('value', (snapshot) => {
+            let allCookies = snapshot.val();
+            for (var c in allCookies) {
+                if (c == this.state.idFieldValue) {
+                    check = true;
+                }
+            }
+        });
+        return check;
     }
 
     render() {
