@@ -92,35 +92,48 @@ export default class ViewEvent extends React.Component {
     }
 
     render() {
-        // TODO: put these in their own components
-        let mainContent = this.state.view === "main" ? (
-            <div>
-                <ExportOrgData ref={this.exportChild} event={this.state.event}/>
-                <EditEntries ref={this.entryChild}/>
-                <EditEvent ref={this.eventChild}/>
-                <EditVoting ref={this.votingChild}/>
-                <div className="box">
-                    <Button className="listButtons" onClick={this.handleExport}>Export Event & Entry QR Codes</Button>
-                    <Button className="listButtons" onClick={this.handleEntryEdit}>View/Add/Edit Entries</Button>
-                    <Button className="listButtons" onClick={this.handleEventEdit}>View/Edit Event Details</Button>
-                    <Button className="listButtons" onClick={this.handleOpenCloseVoting}>Open/Close Voting</Button>
-                </div>
-            </div>
-        ) : (
-            <div className="viewResults">
-                View Results
-            </div>
-        );
         return (
             <div className="main">
                 <Typography variant="h3" align='center' gutterBottom>{this.state.event.name}</Typography>
-                <div className="options">
-                    {/* TODO: Change css of these button according to the current state */}
-                    <Button className="button1" variant="contained" color="primary" onClick={this.manageEvent}>Manage Event</Button>
-                    <Button className="button1" variant="contained" onClick={this.viewResults}>View Results</Button>
-                </div>
                 <div>
-                    { mainContent }
+                    {
+                        this.state.view === "main" &&
+                        <div>
+                            <div className="options">
+                                <Button className="button1" variant="contained" color="primary" onClick={this.manageEvent}>Manage Event</Button>
+                                <Button className="button1" variant="contained" onClick={this.viewResults}>View Results</Button>
+                            </div>
+                            <ExportOrgData ref={this.exportChild} event={this.state.event}/>
+                            <EditEntries ref={this.entryChild}/>
+                            <EditEvent ref={this.eventChild}/>
+                            <EditVoting ref={this.votingChild}/>
+                            <div className="box">
+                                <Button className="listButtons" onClick={this.handleExport}>Export Event & Entry QR Codes</Button>
+                                <Button className="listButtons" onClick={this.handleEntryEdit}>View/Add/Edit Entries</Button>
+                                <Button className="listButtons" onClick={this.handleEventEdit}>View/Edit Event Details</Button>
+                                <Button className="listButtons" onClick={this.handleOpenCloseVoting}>Open/Close Voting</Button>
+                            </div>
+                        </div>
+                    }
+                    {
+                        this.state.view === "results" &&
+                        <div className="viewResults">
+                            <div className="options">
+                                <Button className="button1" variant="contained" onClick={this.manageEvent}>Manage Event</Button>
+                                <Button className="button1" variant="contained" color="primary" onClick={this.viewResults}>View Results</Button>
+                            </div>
+                            <Typography variant="h5">Set up google sheets for results:</Typography>
+                            <br />
+                            <div className="instructions">
+                                <div>1. Create a Google Sheet in your desired location</div>
+                                <div>
+                                    2. Grab the spreadsheet ID from the URL and paste it here: <input className="sheetId"></input>
+                                    <div className="note">- https://docs.google.com/spreadsheets/d/<b>SPREADSHEET ID</b>/edit#gid=0</div>
+                                </div>
+                                <div>3. Share the spreadsheet with editing rights with <b>talli-455@talli-229017.iam.gserviceaccount.com</b></div>
+                            </div>
+                        </div>
+                    }
                 </div>
                 <br />
                 <Button
