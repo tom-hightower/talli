@@ -19,12 +19,20 @@ export default class EditEvent extends React.Component {
     };
 
     render() {
-        return (
+        return !this.state.open ? null : (
             <div>
                 <Dialog open={this.state.open} TransitionComponent={Transition} onClose={this.handleClose}>
-                    <DialogTitle> Open/Close Event </DialogTitle>
+                    <DialogTitle> Edit Event </DialogTitle>
                     <DialogContent>
-                        Voting options here
+                        Event Name: {this.props.event.name}
+                        <br/>
+                        Event ID: {this.props.event.id}
+                        <br/> 
+                        Location: {this.props.event.location}
+                        <br/>
+                        Start Date: {this.props.event.startDate}
+                        <br/>
+                        End Date: {this.props.event.endDate}
                     </DialogContent>
                     <DialogActions>    
                         <Button onClick={this.handleClose} color="primary">Go Back</Button>
