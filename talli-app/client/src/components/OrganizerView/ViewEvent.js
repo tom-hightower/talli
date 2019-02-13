@@ -127,6 +127,7 @@ export default class ViewEvent extends React.Component {
                             <div className="instructions">
                                 <div>1. Create a Google Sheet in your desired location</div>
                                 <div>
+                                    {/* TODO: This should automatically save, probably to firebase */}
                                     2. Grab the spreadsheet ID from the URL and paste it here: <input className="sheetId"></input>
                                     <div className="note">- https://docs.google.com/spreadsheets/d/<b>SPREADSHEET ID</b>/edit#gid=0</div>
                                 </div>

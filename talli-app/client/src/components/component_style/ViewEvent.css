@@ -48,7 +48,7 @@
     margin-right: 12%;
     text-align: left;
     font-size: 110%;
-    border: 1px solid #99c;
+    border: 2px solid #99c;
 }
 
 .note {
@@ -57,7 +57,6 @@
 
 .instructions > * {
     padding: 1%;
-    border: .5px solid #99c;
 }
 
 .instructions > *:nth-child(odd) {
