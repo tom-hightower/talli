@@ -60,7 +60,6 @@ export default class Organizer extends React.Component {
     render() {
         return (
             <div className="content">
-                {/* onClick Changeview to homepage as well as delete session storage */}
                 {/* <GoogleLogout 
                     buttonText="Logout"
                     render={renderProps => (

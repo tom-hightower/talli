@@ -47,12 +47,14 @@
     margin-left: 12%;
     margin-right: 12%;
     text-align: left;
-    font-size: 110%;
+    font-size: 105%;
     border: 2px solid #99c;
 }
 
 .note {
     margin-left: 5%;
+    padding-top: 1%;
+    opacity: .6;
 }
 
 .instructions > * {
