@@ -19,13 +19,19 @@ export default class EditVoting extends React.Component {
     };
 
     render() {
-        return (
+        return !this.state.open ? null : (
             <div>
                 <Dialog open={this.state.open} TransitionComponent={Transition} onClose={this.handleClose}>
                     <DialogTitle> Open/Close Voting </DialogTitle>
-                    <DialogContent>
-                        Voting options here
-                    </DialogContent>
+                    {
+                        this.props.event.automate &&
+                        <DialogContent>Voting is automated.</DialogContent>
+
+                    }
+                    {
+                        !this.props.event.automate &&
+                        <DialogContent>Voting is not automated.</DialogContent>
+                    }
                     <DialogActions>    
                         <Button onClick={this.handleClose} color="primary">Go Back</Button>
                     </DialogActions>
