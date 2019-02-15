@@ -4,7 +4,7 @@ import { TextField, Typography, Button } from '@material-ui/core';
 import EntryConfirmation from './EntryConfirmation';
 import '../component_style/Voter.css';
 import firebase from '../../firebase';
-import {getCookie} from '../../cookies.js'
+import { getCookie } from '../../cookies.js'
 import HasVoteInfo from './HasVoteInfo.js';
 var config = require('../../config.json');
 
@@ -42,7 +42,7 @@ export default class JoinEvent extends React.Component {
                             console.log('error');
                             return;
                         }
-                        this.setState({ eventName: event['eventData']['name']});
+                        this.setState({ eventName: event['eventData']['name'] });
                     });
                 } else {
                     //TODO: event not found
@@ -57,7 +57,7 @@ export default class JoinEvent extends React.Component {
         firebase.database().ref('cookies/' + cookies).once('value').then(snapshot => {
             let allCookies = snapshot.val();
             for (var c in allCookies) {
-                if (c == this.state.idFieldValue) {
+                if (c === this.state.idFieldValue) {
                     check = true;
                     this.blockChild.current.handleOpen();
 
@@ -79,7 +79,9 @@ export default class JoinEvent extends React.Component {
 
     handleText() {
         this.setState({ eventID: this.state.idFieldValue });
-        this.requestConfirm();
+        if (this.state.idFieldValue.length > 2) {
+            this.requestConfirm();
+        }
     }
 
     handleJoinEvent() {
@@ -99,7 +101,7 @@ export default class JoinEvent extends React.Component {
         return (
             <div>
                 <EntryConfirmation entryName={this.state.eventName} ref={this.confirmChild} handler={this.handleJoinEvent} />
-                <HasVoteInfo entryName={this.state.eventName} ref={this.blockChild}/>
+                <HasVoteInfo entryName={this.state.eventName} ref={this.blockChild} />
                 <QrReader delay={300} onScan={this.handleScan} onError={this.handleError} style={{ width: '80%', margin: '20px auto 0px' }} />
                 <Typography variant='h5' align='center' className="QRText">Scan QR Code or enter Event ID:</Typography>
                 <div className="textField">

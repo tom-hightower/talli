@@ -10,7 +10,7 @@ export function getCookie(c_name) {
     var cookiesArray = document.cookie.split("; ");
     for (var i = 0; i < cookiesArray.length; i++) {
         var nameValueArray = cookiesArray[i].split("=");
-        if (nameValueArray[0] == "UserID") {
+        if (nameValueArray[0] === "UserID") {
             return nameValueArray[1];
         }
     }
