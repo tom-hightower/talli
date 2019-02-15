@@ -28,7 +28,7 @@
     "eject": "react-scripts eject"
   },
   "eslintConfig": {
-    "extends": "react-app"
+    "extends": "eslint-config-airbnb"
   },
   "browserslist": [
     ">0.2%",
