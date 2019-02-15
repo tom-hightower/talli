@@ -26,6 +26,7 @@ io.on('connection', function(socket){
     socket.on('add_data', (data) => {
         console.log('message: ' + data);
         doc.useServiceAccountAuth(creds, (err) => {
+            console.log(err);
             doc.addRow(1, data, (err) => {
                 if (err) {
                     console.log(err);
