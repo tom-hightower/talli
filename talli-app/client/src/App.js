@@ -71,5 +71,8 @@ export default class App extends Component {
             loggedIn: false,
             user: null
         });
+        sessionStorage.removeItem('id');
+        sessionStorage.removeItem('email');
+        sessionStorage.removeItem('name');
     }
 }

@@ -1,7 +1,7 @@
 import React from 'react';
 import { Dialog, DialogTitle, DialogContent, Slide } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
-import '../../component_style/EntryImportInfo.css';
+import '../component_style/EntryImportInfo.css';
 
 /**
  * OrganizerView > AddEntryOrg > EntryImportInfo
@@ -37,8 +37,7 @@ export default class EntryImportInfo extends React.Component {
                         Accepted file type: .csv <br/><br/>
                         Accepted file format: 4 columns in the order of Entry Titles, IDs, Presenters, Date(s) Attending
                         <br/><br/>
-                        <i>Note: Entry Titles and Presenters are required, but if you do not have IDs or Dates, 
-                        still include the columns.</i>
+                        *Entry Titles and Presenters are required, but if you do not have IDs or Dates, still include the columns.
                         <br/><br/>
                         Example file:
                         <table id='table'>
