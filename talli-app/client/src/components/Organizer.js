@@ -3,7 +3,6 @@ import NewEvent from './OrganizerView/NewEventForm';
 import EventList from './OrganizerView/EventList';
 import AddEntry from './OrganizerView/AddEntryOrg';
 import ViewEvent from './OrganizerView/ViewEvent';
-import { GoogleLogout } from 'react-google-login';
 import { navigate } from 'react-mini-router';
 import { Button } from '@material-ui/core';
 import './component_style/Organizer.css';
@@ -60,14 +59,14 @@ export default class Organizer extends React.Component {
     render() {
         return (
             <div className="content">
-                <GoogleLogout 
+                {/* <GoogleLogout 
                     buttonText="Logout"
                     render={renderProps => (
                         <Button variant="contained" color="secondary" className="buttons" onClick={renderProps.onClick}>Logout</Button>
                     )}
-                    onLogoutSuccess={this.logout.bind(this)} />
+                    onLogoutSuccess={this.logout.bind(this)} /> */}
                 {/* temp solution to logout issue */}
-                {/* <Button variant="contained" color="secondary" className="buttons" onClick={this.logout.bind(this)}>Logout</Button> */}
+                <Button variant="contained" color="secondary" className="buttons" onClick={this.logout.bind(this)}>Logout</Button>
                 <div>{this.getCurrView()}</div>
             </div>
         )
