@@ -31,6 +31,7 @@ export default class NavBar extends React.Component {
     ChangeView(page) { navigate(page); }
 
 
+    // TODO: update state in App.js
     onSuccess = (response) => {
         console.log(response);
         this.props.onSuccess(response);
@@ -50,66 +51,104 @@ export default class NavBar extends React.Component {
 
     render() {
         // List of buttons for the navigation drawer
-
-        let loginStatus = !this.props.loggedIn ? (
-            <GoogleLogin 
-                clientId="1061225539650-cp3lrdn3p1u49tsq320l648hcuvg8plb.apps.googleusercontent.com"
-                render={renderProps => (
-                    <ListItem button key='Organizer Login' onClick={renderProps.onClick}>
-                        <ListItemIcon><OrganizerIcon /></ListItemIcon>
-                        <ListItemText primary='Organizer Login' />
-                    </ListItem>
-                )}
-                onSuccess={this.onSuccess.bind(this)}
-                onFailure={this.onFailure.bind(this)} />
-        ) : (
-            // Google logout not working after page refresh, gonna keep it here for now
-            // <GoogleLogout 
-            //     buttonText="Logout"
-            //     render={renderProps => (
-            //         <ListItem button key='Organizer Logout' onClick={renderProps.onClick}>
-            //             <ListItemIcon><OrganizerIcon /></ListItemIcon>
-            //             <ListItemText primary='Organizer Logout' />
-            //         </ListItem>
-            //     )}
-            //     onLogoutSuccess={this.logout.bind(this)} />
-            <ListItem button key='Organizer Logout' onClick={() => this.logout()}>
-                <ListItemIcon><OrganizerIcon /></ListItemIcon>
-                <ListItemText primary='Organizer Logout' />
-            </ListItem>
-        );
-        
-        return (
-            <div className="root">
-                <AppBar position="static" >
-                    <Toolbar>
-                        <IconButton className="menuButton" color="inherit" aria-label="Menu" onClick={this.toggleDrawer}>
-                            <MenuIcon />
-                        </IconButton>
-                        <img src={logoSvg} className="navTitle" alt="talli" />
-                    </Toolbar>
-                </AppBar>
-                <Drawer open={this.state.open} onClose={this.closeDrawer}>
-                    <div tabIndex={0} role="button" onClick={this.closeDrawer}>
-                        <div width="250">
-                            <ListItem button key='Home' onClick={() => this.ChangeView('/')}>
-                                <ListItemIcon><HomeIcon /></ListItemIcon>
-                                <ListItemText primary='Home' />
-                            </ListItem>
-                            <ListItem button key='Vote' onClick={() => this.ChangeView('/vote')}>
-                                <ListItemIcon><VoteIcon /></ListItemIcon>
-                                <ListItemText primary='Vote' />
-                            </ListItem>
-                            { loginStatus }
-                            <Divider />
-                            <ListItem button key='Help' onClick={() => this.ChangeView('/help')}>
-                                <ListItemIcon><HelpOutlineIcon /></ListItemIcon>
-                                <ListItemText primary='Help' />
-                            </ListItem>
-                        </div>
-                    </div>
-                </Drawer>
+        const drawerList = (
+            <div width="250">
+                <ListItem button key='Home' onClick={() => this.ChangeView('/')}>
+                    <ListItemIcon><HomeIcon /></ListItemIcon>
+                    <ListItemText primary='Home' />
+                </ListItem>
+                <ListItem button key='Vote' onClick={() => this.ChangeView('/vote')}>
+                    <ListItemIcon><VoteIcon /></ListItemIcon>
+                    <ListItemText primary='Vote' />
+                </ListItem>
+                {/* TODO: Make it so if they are already logged in, nothing happens when they click */}
+                <GoogleLogin 
+                    clientId="1061225539650-cp3lrdn3p1u49tsq320l648hcuvg8plb.apps.googleusercontent.com"
+                    render={renderProps => (
+                        <ListItem button key='Organizer Login' onClick={renderProps.onClick}>
+                            <ListItemIcon><OrganizerIcon /></ListItemIcon>
+                            <ListItemText primary='Organizer Login' />
+                        </ListItem>
+                    )}
+                    onSuccess={this.onSuccess.bind(this)}
+                    onFailure={this.onFailure.bind(this)} />
+                <Divider />
+                <ListItem button key='Help' onClick={() => this.ChangeView('/help')}>
+                    <ListItemIcon><HelpOutlineIcon /></ListItemIcon>
+                    <ListItemText primary='Help' />
+                </ListItem>
             </div>
         );
+
+        // i apologize
+        // this is horrible but it works i'll fix it later
+
+        const drawerListLoggedIn = (
+            <div width="250">
+                <ListItem button key='Home' onClick={() => this.ChangeView('/')}>
+                    <ListItemIcon><HomeIcon /></ListItemIcon>
+                    <ListItemText primary='Home' />
+                </ListItem>
+                <ListItem button key='Vote' onClick={() => this.ChangeView('/vote')}>
+                    <ListItemIcon><VoteIcon /></ListItemIcon>
+                    <ListItemText primary='Vote' />
+                </ListItem>
+                {/* TODO: Make it so if they are already logged in, nothing happens when they click */}
+                <GoogleLogout 
+                    buttonText="Logout"
+                    render={renderProps => (
+                        <ListItem button key='Organizer Logout' onClick={renderProps.onClick}>
+                            <ListItemIcon><OrganizerIcon /></ListItemIcon>
+                            <ListItemText primary='Organizer Logout' />
+                        </ListItem>
+                    )}
+                    onLogoutSuccess={this.logout.bind(this)} />
+                <Divider />
+                <ListItem button key='Help' onClick={() => this.ChangeView('/help')}>
+                    <ListItemIcon><HelpOutlineIcon /></ListItemIcon>
+                    <ListItemText primary='Help' />
+                </ListItem>
+            </div>
+        );
+
+        // :( don't look at it
+        
+        if (this.props.loggedIn) {
+            return (
+                <div className="root">
+                    <AppBar position="static" >
+                        <Toolbar>
+                            <IconButton className="menuButton" color="inherit" aria-label="Menu" onClick={this.toggleDrawer}>
+                                <MenuIcon />
+                            </IconButton>
+                            <img src={logoSvg} className="navTitle" alt="talli" />
+                        </Toolbar>
+                    </AppBar>
+                    <Drawer open={this.state.open} onClose={this.closeDrawer}>
+                        <div tabIndex={0} role="button" onClick={this.closeDrawer}>
+                            {drawerListLoggedIn}
+                        </div>
+                    </Drawer>
+                </div>
+            );
+        } else {
+            return (
+                <div className="root">
+                    <AppBar position="static" >
+                        <Toolbar>
+                            <IconButton className="menuButton" color="inherit" aria-label="Menu" onClick={this.toggleDrawer}>
+                                <MenuIcon />
+                            </IconButton>
+                            <img src={logoSvg} className="navTitle" alt="talli" />
+                        </Toolbar>
+                    </AppBar>
+                    <Drawer open={this.state.open} onClose={this.closeDrawer}>
+                        <div tabIndex={0} role="button" onClick={this.closeDrawer}>
+                            {drawerList}
+                        </div>
+                    </Drawer>
+                </div>
+            );
+        }
     }
 }
