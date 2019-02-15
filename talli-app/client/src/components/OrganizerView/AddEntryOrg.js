@@ -2,7 +2,7 @@ import React from 'react';
 import { Typography, Button, Divider } from '@material-ui/core';
 import AddCircleIcon from '@material-ui/icons/AddCircle';
 import NewEntryForm from './NewEntryForm';
-import EntryImportInfo from './EntryImportInfo';
+import EntryImportInfo from './Dialogs/EntryImportInfo';
 import '../component_style/Organizer.css';
 import firebase from '../../firebase.js'
 
