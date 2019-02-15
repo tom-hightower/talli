@@ -65,7 +65,7 @@ export default class SortContainer extends Component {
                 let eventBase = events[this.props.eventID]['eventData'];
                 let eventEntries = events[this.props.eventID]['entries'];
                 var itemList = this.state.items;
-                if (this.props.entryToAdd && !this.state.items.some(e => e.id === this.props.entryToAdd)) {
+                if (eventEntries && this.props.entryToAdd && !this.state.items.some(e => e.id === this.props.entryToAdd)) {
                     itemList.push({ name: eventEntries[this.props.entryToAdd].title, id: this.props.entryToAdd });
                 }
                 this.setState({
