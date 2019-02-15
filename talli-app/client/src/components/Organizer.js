@@ -3,7 +3,6 @@ import NewEvent from './OrganizerView/NewEventForm';
 import EventList from './OrganizerView/EventList';
 import AddEntry from './OrganizerView/AddEntryOrg';
 import ViewEvent from './OrganizerView/ViewEvent';
-import { GoogleLogout } from 'react-google-login';
 import { navigate } from 'react-mini-router';
 import { Button } from '@material-ui/core';
 import './component_style/Organizer.css';
