@@ -63,7 +63,7 @@ export default class Voter extends React.Component {
                         handler={this.changeView}
                     />);
             case voteViews.CONFIRM:
-                return (<SubmitConfirm voteViews={voteViews} handler={this.changeView} />);
+                return (<SubmitConfirm voteViews={voteViews} handler={this.changeView} eventID={this.state.eventID} />);
             case voteViews.SUBMITTED:
                 return (<Submitted voteViews={voteViews} handler={this.changeView} />);
             default:
