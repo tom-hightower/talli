@@ -1,7 +1,7 @@
 import React from 'react';
 import { Dialog, DialogTitle, DialogContent, Slide } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
-import '../component_style/EntryImportInfo.css';
+import '../../component_style/EntryImportInfo.css';
 
 /**
  * OrganizerView > AddEntryOrg > EntryImportInfo
