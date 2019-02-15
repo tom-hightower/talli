@@ -1,20 +1,20 @@
 const express = require('express');
 const bodyParser = require('body-parser');
+const GoogleSpreadsheet = require('google-spreadsheet');
+const urlGoogle = require('./google-util');
+
 const app = express();
 const port = 5000;
 // const authRoutes = require('./routes/auth-routes');
-let GoogleSpreadsheet = require('google-spreadsheet');
-let creds = require('./client_secret.json');
-
-let urlGoogle = require('./google-util');
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
 const http = require('http').Server(app);
 const io = require('socket.io')(http);
+const creds = require('./client_secret.json');
 
-let doc = new GoogleSpreadsheet('1k1r8EvCTuRBcamM71lYSw3OK7cBwehHXFLGe2kFRy50');
+const doc = new GoogleSpreadsheet('1k1r8EvCTuRBcamM71lYSw3OK7cBwehHXFLGe2kFRy50');
 
 
 io.on('connection', function (socket) {
@@ -24,19 +24,18 @@ io.on('connection', function (socket) {
     // });
 
     socket.on('add_data', (data) => {
-        let logString = 'message: ' + data;
-        console.log(logString);
+        console.log(`Message: ${data}`);
         doc.useServiceAccountAuth(creds, (err) => {
             console.log(err);
-            doc.addRow(1, data, (err) => {
-                if (err) {
-                    console.log(err);
+            doc.addRow(1, data, (err2) => {
+                if (err2) {
+                    console.log(err2);
                 }
             });
         });
     });
 
-    let url = urlGoogle();
+    const url = urlGoogle();
     io.emit('send_url', url);
 });
 io.listen(port);
