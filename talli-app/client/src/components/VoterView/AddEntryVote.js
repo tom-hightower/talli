@@ -27,8 +27,7 @@ export default class AddEntryVote extends React.Component {
     }
 
     requestConfirm = () => {
-        var query = firebase.database().ref('organizer/');
-        query.on('value', (snapshot) => {
+        firebase.database().ref('organizer/').once('value').then( (snapshot) => {
             let organizer = snapshot.val();
             let event = organizer[this.props.organizer]['event'][this.props.eventID];
             let entry = event['entries'][this.state.entryID];

@@ -30,7 +30,7 @@ export default class JoinEvent extends React.Component {
     }
 
     requestConfirm = () => {
-        firebase.database().ref('event/').once('value').then(snap => {
+        firebase.database().ref('event/').once('value').then( (snap) => {
             let orgID = snap.val()[this.state.eventID];
             this.setState({ organizerID: (orgID ? (orgID['organizer']['id'] ? orgID['organizer']['id'] : orgID['organizer']) : '') }, () => {
                 if (this.state.organizerID && this.state.organizerID !== '') {
