@@ -29,31 +29,26 @@ export default class NewEventForm extends React.Component {
             item.id = Math.floor((Math.random() * 10000) + 1);
         }
         let googleId = this.props.user.googleId;
-        console.log('id:' + item.id);
 
         const ref = firebase.database().ref('event')
         ref.once('value', (snapshot) => {
             var idExists = false;
             snapshot.forEach((childSnapshot) => {
                 if(childSnapshot.key === item.id) {
-                    console.log("found one");
                     idExists = true;
                 }
             });
             while(idExists === true) {
                 idExists = false;
                 item.id = Math.floor((Math.random() * 10000) + 1);
-                console.log('id:' + item.id);
                 snapshot.forEach((childSnapshot) => {
                     if(childSnapshot.key === item.id) {
-                        console.log("found one");
                         idExists = true;
                     }
                 });
             }
             
             ref.child(item.id).set({'organizer': googleId});
-            console.log('id:' + item.id);
 
             const itemsRef = firebase.database().ref('organizer/' + googleId + '/event/' + item.id);
             item.startDate = item.startDate.toLocaleString();
