@@ -31,14 +31,7 @@
     "extends": [
       "react-app",
       "eslint-config-airbnb"
-    ],
-    "rules": {
-      "react/destructuring-assignment": ["warning", "never"],
-      "jsx-quotes": ["warning", "prefer-double"],
-      "react/jsx-filename-extension": [1, { "extensions": [".js", ".jsx"] }],
-      "react/jsx-indent": ["error", 4],
-      "max-len": [1, 120, 2, {"ignoreComments": true}]
-    }
+    ]
   },
   "browserslist": [
     ">0.2%",
