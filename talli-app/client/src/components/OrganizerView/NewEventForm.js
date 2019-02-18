@@ -31,19 +31,40 @@ export default class NewEventForm extends React.Component {
         }
         let googleId = this.props.user.googleId;
 
-        const itemsRef = firebase.database().ref(`organizer/${googleId}/event/${item.id}`);
-        item.startDate = item.startDate.toLocaleString();
-        item.endDate = item.endDate.toLocaleString();
-        if (item.automate) {
-            item.startVote = item.startVote.toLocaleString();
-            item.endVote = item.endVote.toLocaleString();
-        } else {
-            item.startVote = 'none';
-            item.endVote = 'none';
-        }
-        itemsRef.child('eventData').set(item);
-        this.props.setEvent(item.id);
-        this.props.handler(this.props.orgViews.ADD);
+        const ref = firebase.database().ref('event')
+        ref.once('value', (snapshot) => {
+            var idExists = false;
+            snapshot.forEach((childSnapshot) => {
+                if(childSnapshot.key === item.id) {
+                    idExists = true;
+                }
+            });
+            while(idExists === true) {
+                idExists = false;
+                item.id = Math.floor((Math.random() * 10000) + 1);
+                snapshot.forEach((childSnapshot) => {
+                    if(childSnapshot.key === item.id) {
+                        idExists = true;
+                    }
+                });
+            }
+            
+            ref.child(item.id).set({'organizer': googleId});
+
+            const itemsRef = firebase.database().ref('organizer/' + googleId + '/event/' + item.id);
+            item.startDate = item.startDate.toLocaleString();
+            item.endDate = item.endDate.toLocaleString();
+            if (item.automate) {
+                item.startVote = item.startVote.toLocaleString();
+                item.endVote = item.endVote.toLocaleString();
+            } else {
+                item.startVote = 'none';
+                item.endVote = 'none';
+            }
+            itemsRef.child('eventData').set(item);
+            this.props.setEvent(item.id);
+            this.props.handler(this.props.orgViews.ADD);
+        });
     }
 
     toggleAutomation = () => {
