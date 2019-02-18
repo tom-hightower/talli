@@ -28,10 +28,7 @@
     "eject": "react-scripts eject"
   },
   "eslintConfig": {
-    "extends": [
-      "react-app",
-      "eslint-config-airbnb"
-    ],
+    "extends": "eslint-config-airbnb",
     "rules": {
       "react/destructuring-assignment": ["warning", "never"],
       "jsx-quotes": ["warning", "prefer-double"],
