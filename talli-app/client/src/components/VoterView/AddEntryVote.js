@@ -27,17 +27,16 @@ export default class AddEntryVote extends React.Component {
     }
 
     requestConfirm = () => {
-        var query = firebase.database().ref('organizer/');
-        query.on('value', (snapshot) => {
+        firebase.database().ref('organizer/').once('value').then( (snapshot) => {
             let organizer = snapshot.val();
             let event = organizer[this.props.organizer]['event'][this.props.eventID];
-            let entry = event['entries'][this.state.idFieldValue];
+            let entry = event['entries'][this.state.entryID];
             if (!entry) {
                 // TODO: Entry not found
                 this.setState({ entryID: 'ERROR', entryTitle: 'ERROR' });
                 return;
             }
-            this.setState({ entryTitle: entry['title'] })
+            this.setState({ entryTitle: entry['title'] });
         });
         this.confirmChild.current.handleOpen();
     }
@@ -52,8 +51,9 @@ export default class AddEntryVote extends React.Component {
 
     handleText() {
         if (this.state.idFieldValue.length > 2) {
-            this.setState({ entryID: this.state.idFieldValue });
-            this.requestConfirm();
+            this.setState({ entryID: this.state.idFieldValue }, () => {
+                this.requestConfirm();
+            });
         }
     }
 
