@@ -19,18 +19,19 @@ export default class NewEventForm extends React.Component {
             automate: false,
             startVote: undefined,
             endVote: undefined,
-        }
+        },
     }
 
     // Sends form data to Firebase and navigates to the next page
     AddEntries = (event) => {
+        event.preventDefault();
         let item = this.state.eventData;
         if (!item.id) {
             item.id = Math.floor((Math.random() * 10000) + 1);
         }
         let googleId = this.props.user.googleId;
 
-        const itemsRef = firebase.database().ref('organizer/' + googleId + '/event/' + item.id);
+        const itemsRef = firebase.database().ref(`organizer/${googleId}/event/${item.id}`);
         item.startDate = item.startDate.toLocaleString();
         item.endDate = item.endDate.toLocaleString();
         if (item.automate) {
@@ -46,23 +47,23 @@ export default class NewEventForm extends React.Component {
     }
 
     toggleAutomation = () => {
-        var oldData = this.state.eventData;
+        let oldData = this.state.eventData;
         oldData.automate = !this.state.eventData.automate;
         this.setState({
             eventData: oldData,
         });
     }
 
-    handleEventChange = field => event => {
-        var oldData = this.state.eventData;
+    handleEventChange = (field) => (event) => {
+        let oldData = this.state.eventData;
         oldData[field] = event.target.value;
         this.setState({
             eventData: oldData,
         });
     }
 
-    handleDateChange = field => date => {
-        var oldData = this.state.eventData;
+    handleDateChange = (field) => (date) => {
+        let oldData = this.state.eventData;
         oldData[field] = date;
         this.setState({
             eventData: oldData,
@@ -74,9 +75,6 @@ export default class NewEventForm extends React.Component {
     }
 
     render() {
-        /**
-         * TODO: Cleanup this div and replace <input/>'s
-         */
         return (
             <div className='newEventForm'>
                 <Typography variant='h4' align='center' gutterBottom>Create a new event</Typography>
