@@ -57,7 +57,7 @@ export default class JoinEvent extends React.Component {
         firebase.database().ref('cookies/' + cookies).once('value').then(snapshot => {
             let allCookies = snapshot.val();
             for (var c in allCookies) {
-                if (c === this.state.idFieldValue) {
+                if (c === this.state.eventID) {
                     check = true;
                     this.blockChild.current.handleOpen();
 
