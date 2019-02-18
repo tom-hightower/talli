@@ -24,11 +24,12 @@ export default class NewEventForm extends React.Component {
 
     // Sends form data to Firebase and navigates to the next page
     AddEntries = (event) => {
+        event.preventDefault();
         let item = this.state.eventData;
         if (!item.id) {
             item.id = Math.floor((Math.random() * 10000) + 1);
         }
-        let googleId = this.props.user.googleId;
+        const googleId = this.props.user.googleId;
 
         const itemsRef = firebase.database().ref('organizer/' + googleId + '/event/' + item.id);
         item.startDate = item.startDate.toLocaleString();
@@ -74,9 +75,6 @@ export default class NewEventForm extends React.Component {
     }
 
     render() {
-        /**
-         * TODO: Cleanup this div and replace <input/>'s
-         */
         return (
             <div className='newEventForm'>
                 <Typography variant='h4' align='center' gutterBottom>Create a new event</Typography>
@@ -162,7 +160,8 @@ export default class NewEventForm extends React.Component {
                                 <DateTimePicker
                                     margin="dense"
                                     className="entryFormText"
-                                    value={this.state.eventData.startVote ? this.state.eventData.startVote : new Date()}
+                                    value={this.state.eventData.startVote ?
+                                        this.state.eventData.startVote : new Date()}
                                     onChange={this.handleDateChange('startVote')}
                                     InputProps={{
                                         startAdornment: (
