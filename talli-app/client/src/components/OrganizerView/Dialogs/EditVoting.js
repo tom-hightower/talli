@@ -45,13 +45,24 @@ export default class EditVoting extends React.Component {
     }
 
     getVotingState() {
-        if (this.props.event.startVote === 'none' || (this.props.event.startVote > new Date().toLocaleString())) { // not open yet
+        if (this.props.event.startVote === 'none' || (this.props.event.startVote > new Date().toISOString())) { // not open yet
             return 'before';
-        } else if (this.props.event.endVote === 'none' || (this.props.event.endVote > new Date().toLocaleString())) { // open
+        } else if (this.props.event.endVote === 'none' || (this.props.event.endVote > new Date().toISOString())) { // open
             return 'open';
         } else {
             return 'closed';
         }
+    }
+
+    parseDate(isoDate) {
+        let dateString = `${isoDate.substring(5,7)}/${isoDate.substring(8,10)}/${isoDate.substring(0,4)}`;
+        return dateString;
+    }
+
+    parseTime(isoDate) {
+        let date = new Date(isoDate);
+        let timeString = `${date.getHours()}:${date.getMinutes()}`;
+        return timeString;
     }
 
     renderOptions() {
@@ -60,6 +71,8 @@ export default class EditVoting extends React.Component {
                 return (
                     <DialogContent>
                         The voting period has not been opened.<br/><br/>
+                        Automated voting period { this.props.event.automate ? 'is' : 'is not'} enabled. <br/>
+                        { this.props.event.automate ? (<div>Voting will open on {this.parseDate(this.props.event.startVote)} at {this.parseTime(this.props.event.startVote)} <br/><br/></div>) : ('') }
                         <i>Note: Manually opening voting will override automated start time.</i><br/><br/>
                         <Button variant="contained" onClick={this.openVoting}>Open Voting</Button> 
                     </DialogContent>
@@ -68,6 +81,8 @@ export default class EditVoting extends React.Component {
                 return (
                     <DialogContent>
                         The voting period is currently open.<br/><br/>
+                        Automated voting period { this.props.event.automate ? 'is' : 'is not'} enabled. <br/>
+                        { this.props.event.automate ? (<div>Voting will close on {this.parseDate(this.props.event.endVote)} at {this.parseTime(this.props.event.endVote)} <br/><br/></div>) : ('') }
                         <i>Note: Manually closing voting will override automated end time.</i><br/><br/>
                         <Button variant="contained" onClick={this.closeVoting}>Close Voting</Button> 
                     </DialogContent>

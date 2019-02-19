@@ -32,11 +32,11 @@ export default class NewEventForm extends React.Component {
         let googleId = this.props.user.googleId;
 
         const itemsRef = firebase.database().ref(`organizer/${googleId}/event/${item.id}`);
-        item.startDate = item.startDate.toLocaleString();
-        item.endDate = item.endDate.toLocaleString();
+        item.startDate = item.startDate.toISOString();
+        item.endDate = item.endDate.toISOString();
         if (item.automate) {
-            item.startVote = item.startVote.toLocaleString();
-            item.endVote = item.endVote.toLocaleString();
+            item.startVote = item.startVote.toISOString();
+            item.endVote = item.endVote.toISOString();
         } else {
             item.startVote = 'none';
             item.endVote = 'none';
@@ -54,7 +54,7 @@ export default class NewEventForm extends React.Component {
         });
     }
 
-    handleEventChange = (field) => (event) => {
+    handleEventChange = (field) => event => {
         let oldData = this.state.eventData;
         oldData[field] = event.target.value;
         this.setState({
@@ -62,7 +62,7 @@ export default class NewEventForm extends React.Component {
         });
     }
 
-    handleDateChange = (field) => (date) => {
+    handleDateChange = (field) => date => {
         let oldData = this.state.eventData;
         oldData[field] = date;
         this.setState({

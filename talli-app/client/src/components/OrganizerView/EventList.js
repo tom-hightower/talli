@@ -49,9 +49,9 @@ export default class EventList extends React.Component {
         })
     }
 
-    parseDate(localeDate) {
-        let ind = localeDate.indexOf(',');
-        return localeDate.substring(0, ind);
+    parseDate(isoDate) {
+        let dateString = `${isoDate.substring(5,7)}/${isoDate.substring(8,10)}/${isoDate.substring(0,4)}`;
+        return dateString;
     }
 
     AddEvent() {
