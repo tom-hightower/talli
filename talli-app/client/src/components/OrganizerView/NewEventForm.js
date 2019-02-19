@@ -42,6 +42,7 @@ export default class NewEventForm extends React.Component {
             while(idExists === true) {
                 idExists = false;
                 item.id = Math.floor((Math.random() * 10000) + 1);
+                // eslint-disable-next-line
                 snapshot.forEach((childSnapshot) => {
                     if(childSnapshot.key === item.id) {
                         idExists = true;
