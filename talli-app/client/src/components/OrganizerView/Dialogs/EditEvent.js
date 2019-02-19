@@ -2,8 +2,8 @@ import React from 'react';
 import { Slide, Dialog, DialogTitle, DialogContent, DialogActions, Button, TextField, InputAdornment, FormControlLabel, Switch } from '@material-ui/core';
 import CalendarIcon from '@material-ui/icons/DateRange';
 import { MuiPickersUtilsProvider, DatePicker, DateTimePicker } from 'material-ui-pickers';
-import firebase from '../../../firebase.js';
 import DateFnsUtils from '@date-io/date-fns';
+import firebase from '../../../firebase';
 
 function Transition(props) {
     return <Slide direction="up" {...props} />;
@@ -18,7 +18,7 @@ export default class EditEvent extends React.Component {
         endDate: '',
         automate: false,
         startVote: '',
-        endVote: ''
+        endVote: '',
     };
 
     handleOpen = () => {
@@ -30,7 +30,7 @@ export default class EditEvent extends React.Component {
             endDate: this.props.event.endDate,
             automate: this.props.event.automate,
             startVote: this.props.event.startVote,
-            endVote: this.props.event.endVote
+            endVote: this.props.event.endVote,
         });
     };
 
@@ -40,9 +40,9 @@ export default class EditEvent extends React.Component {
 
     handleSaveClose = () => {
         this.setState({ open: false });
-        const itemsRef = firebase.database().ref('organizer/' + this.props.googleId +
-            '/event/' + this.props.event.id +
-            '/eventData/');
+        const itemsRef = firebase.database().ref(
+            `organizer/${this.props.googleId}/event/${this.props.event.id}/eventData/`
+        );
         const item = this.state;
         itemsRef.child('name').set(item.name);
         itemsRef.child('location').set(item.location);
@@ -79,9 +79,9 @@ export default class EditEvent extends React.Component {
     }
 
     toggleAutomation = () => {
-        this.setState({
-            automate: !this.state.automate,
-        });
+        this.setState(prevState => ({
+            automate: !prevState.automate,
+        }));
     }
 
     render() {
@@ -160,7 +160,7 @@ export default class EditEvent extends React.Component {
                             label="Automate Voting Time Period?"
                             labelPlacement="start"
                         />
-                        {this.state.automate &&
+                        {this.state.automate && (
                             <div>
                                 <MuiPickersUtilsProvider utils={DateFnsUtils}>
                                     <DateTimePicker
@@ -193,7 +193,7 @@ export default class EditEvent extends React.Component {
                                     />
                                 </MuiPickersUtilsProvider>
                             </div>
-                        }
+                        )}
                     </DialogContent>
                     <DialogActions>
                         <Button onClick={this.handleClose} color="primary">Go Back</Button>

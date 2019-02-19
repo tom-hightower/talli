@@ -31,26 +31,26 @@ export default class NewEventForm extends React.Component {
         }
         let googleId = this.props.user.googleId;
 
-        const ref = firebase.database().ref('event')
+        const ref = firebase.database().ref('event');
         ref.once('value', (snapshot) => {
-            var idExists = false;
+            let idExists = false;
             snapshot.forEach((childSnapshot) => {
-                if(childSnapshot.key === item.id) {
+                if (childSnapshot.key === item.id) {
                     idExists = true;
                 }
             });
-            while(idExists === true) {
+            while (idExists === true) {
                 idExists = false;
                 item.id = Math.floor((Math.random() * 10000) + 1);
                 // eslint-disable-next-line
                 snapshot.forEach((childSnapshot) => {
-                    if(childSnapshot.key === item.id) {
+                    if (childSnapshot.key === item.id) {
                         idExists = true;
                     }
                 });
             }
-            
-            ref.child(item.id).set({'organizer': googleId});
+
+            ref.child(item.id).set({ 'organizer': googleId });
 
             const itemsRef = firebase.database().ref(`organizer/${googleId}/event/${item.id}`);
             item.startDate = item.startDate.toISOString();
@@ -76,7 +76,7 @@ export default class NewEventForm extends React.Component {
         });
     }
 
-    handleEventChange = (field) => event => {
+    handleEventChange = field => event => {
         let oldData = this.state.eventData;
         oldData[field] = event.target.value;
         this.setState({
@@ -84,7 +84,7 @@ export default class NewEventForm extends React.Component {
         });
     }
 
-    handleDateChange = (field) => date => {
+    handleDateChange = field => date => {
         let oldData = this.state.eventData;
         oldData[field] = date;
         this.setState({

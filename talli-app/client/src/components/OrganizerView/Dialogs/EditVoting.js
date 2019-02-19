@@ -21,24 +21,24 @@ export default class EditVoting extends React.Component {
 
     openVoting = () => {
         const itemsRef = firebase.database().ref('organizer/' + this.props.googleId +
-                                                 '/event/' + this.props.event.id + 
-                                                 '/eventData/');
+            '/event/' + this.props.event.id +
+            '/eventData/');
         itemsRef.child('startVote').set(new Date().toLocaleString());
         this.handleClose();
     }
 
     closeVoting = () => {
         const itemsRef = firebase.database().ref('organizer/' + this.props.googleId +
-                                                 '/event/' + this.props.event.id + 
-                                                 '/eventData/');
+            '/event/' + this.props.event.id +
+            '/eventData/');
         itemsRef.child('endVote').set(new Date().toLocaleString());
         this.handleClose();
     }
 
     reopenVoting = () => {
         const itemsRef = firebase.database().ref('organizer/' + this.props.googleId +
-                                                 '/event/' + this.props.event.id + 
-                                                 '/eventData/');
+            '/event/' + this.props.event.id +
+            '/eventData/');
         itemsRef.child('startVote').set(new Date().toLocaleString());
         itemsRef.child('endVote').set('none');
         this.handleClose();
@@ -49,50 +49,72 @@ export default class EditVoting extends React.Component {
             return 'before';
         } else if (this.props.event.endVote === 'none' || (this.props.event.endVote > new Date().toISOString())) { // open
             return 'open';
-        } else {
-            return 'closed';
         }
+        return 'closed';
     }
 
     parseDate(isoDate) {
-        let dateString = `${isoDate.substring(5,7)}/${isoDate.substring(8,10)}/${isoDate.substring(0,4)}`;
+        const dateString = `${isoDate.substring(5, 7)}/${isoDate.substring(8, 10)}/${isoDate.substring(0, 4)}`;
         return dateString;
     }
 
     parseTime(isoDate) {
-        let date = new Date(isoDate);
-        let timeString = `${date.getHours()}:${date.getMinutes()}`;
+        const date = new Date(isoDate);
+        const timeString = `${date.getHours()}:${date.getMinutes()}`;
         return timeString;
     }
 
     renderOptions() {
-        switch(this.getVotingState()) {
+        switch (this.getVotingState()) {
             case 'before':
                 return (
                     <DialogContent>
-                        The voting period has not been opened.<br/><br/>
-                        Automated voting period { this.props.event.automate ? 'is' : 'is not'} enabled. <br/>
-                        { this.props.event.automate ? (<div>Voting will open on {this.parseDate(this.props.event.startVote)} at {this.parseTime(this.props.event.startVote)} <br/><br/></div>) : ('') }
-                        <i>Note: Manually opening voting will override automated start time.</i><br/><br/>
-                        <Button variant="contained" onClick={this.openVoting}>Open Voting</Button> 
+                        The voting period has not been opened.<br /><br />
+                        Automated voting period {this.props.event.automate ? 'is' : 'is not'} enabled. <br />
+                        {this.props.event.automate ? (
+                            <div>
+                                Voting will open on {
+                                    this.parseDate(this.props.event.startVote)
+                                } at {
+                                    this.parseTime(this.props.event.startVote)
+                                }
+                                <br /><br />
+                            </div>
+                        ) : ('')}
+                        <i>Note: Manually opening voting will override automated start time.</i>
+                        <br /><br />
+                        <Button variant="contained" onClick={this.openVoting}>Open Voting</Button>
                     </DialogContent>
                 );
             case 'open':
                 return (
                     <DialogContent>
-                        The voting period is currently open.<br/><br/>
-                        Automated voting period { this.props.event.automate ? 'is' : 'is not'} enabled. <br/>
-                        { this.props.event.automate ? (<div>Voting will close on {this.parseDate(this.props.event.endVote)} at {this.parseTime(this.props.event.endVote)} <br/><br/></div>) : ('') }
-                        <i>Note: Manually closing voting will override automated end time.</i><br/><br/>
-                        <Button variant="contained" onClick={this.closeVoting}>Close Voting</Button> 
+                        The voting period is currently open.
+                        <br /><br />
+                        Automated voting period {this.props.event.automate ? 'is' : 'is not'} enabled.
+                        <br />
+                        {this.props.event.automate ? (
+                            <div>
+                                Voting will close on {
+                                    this.parseDate(this.props.event.endVote)
+                                } at {
+                                    this.parseTime(this.props.event.endVote)
+                                }
+                                <br /><br />
+                            </div>
+                        ) : ('')}
+                        <i>Note: Manually closing voting will override automated end time.</i>
+                        <br /><br />
+                        <Button variant="contained" onClick={this.closeVoting}>Close Voting</Button>
                     </DialogContent>
                 );
             default: // closed
                 return (
                     <DialogContent>
-                        The voting period has closed.<br/><br/>
+                        The voting period has closed.
+                        <br /><br />
                         <Button variant="contained" onClick={this.reopenVoting}>Re-Open Voting</Button>
-                    </DialogContent> 
+                    </DialogContent>
                 );
         }
     }
@@ -103,7 +125,7 @@ export default class EditVoting extends React.Component {
                 <Dialog open={this.state.open} TransitionComponent={Transition} onClose={this.handleClose}>
                     <DialogTitle> Open/Close Voting </DialogTitle>
                     {this.renderOptions()}
-                    <DialogActions>    
+                    <DialogActions>
                         <Button onClick={this.handleClose} color="primary">Go Back</Button>
                     </DialogActions>
                 </Dialog>

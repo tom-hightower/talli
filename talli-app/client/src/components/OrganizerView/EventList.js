@@ -50,7 +50,7 @@ export default class EventList extends React.Component {
     }
 
     parseDate(isoDate) {
-        let dateString = `${isoDate.substring(5,7)}/${isoDate.substring(8,10)}/${isoDate.substring(0,4)}`;
+        const dateString = `${isoDate.substring(5, 7)}/${isoDate.substring(8, 10)}/${isoDate.substring(0, 4)}`;
         return dateString;
     }
 
