@@ -39,7 +39,7 @@
     width: 100%;
 }
 
-.sheetId {
+.sheetURL {
     width: 40%;
 }
 
@@ -48,7 +48,8 @@
     margin-right: 12%;
     text-align: left;
     font-size: 105%;
-    border: 2px solid #99c;
+    /* border: 2px solid #99c; */
+    background-color: #EEE;
 }
 
 .note {
@@ -61,6 +62,6 @@
     padding: 1%;
 }
 
-.instructions > *:nth-child(odd) {
+/* .instructions > *:nth-child(odd) {
     background-color: #EEE;
-}
+} */
