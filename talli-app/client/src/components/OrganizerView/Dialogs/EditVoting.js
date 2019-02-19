@@ -78,7 +78,8 @@ export default class EditVoting extends React.Component {
                                 } at {
                                     this.parseTime(this.props.event.startVote)
                                 }
-                                <br /><br />
+                                <br />
+                                <br />
                             </div>
                         ) : ('')}
                         <i>Note: Manually opening voting will override automated start time.</i>
@@ -90,7 +91,8 @@ export default class EditVoting extends React.Component {
                 return (
                     <DialogContent>
                         The voting period is currently open.
-                        <br /><br />
+                        <br />
+                        <br />
                         Automated voting period {this.props.event.automate ? 'is' : 'is not'} enabled.
                         <br />
                         {this.props.event.automate ? (
@@ -100,11 +102,13 @@ export default class EditVoting extends React.Component {
                                 } at {
                                     this.parseTime(this.props.event.endVote)
                                 }
-                                <br /><br />
+                                <br />
+                                <br />
                             </div>
                         ) : ('')}
                         <i>Note: Manually closing voting will override automated end time.</i>
-                        <br /><br />
+                        <br />
+                        <br />
                         <Button variant="contained" onClick={this.closeVoting}>Close Voting</Button>
                     </DialogContent>
                 );
@@ -112,7 +116,8 @@ export default class EditVoting extends React.Component {
                 return (
                     <DialogContent>
                         The voting period has closed.
-                        <br /><br />
+                        <br />
+                        <br />
                         <Button variant="contained" onClick={this.reopenVoting}>Re-Open Voting</Button>
                     </DialogContent>
                 );

@@ -149,14 +149,14 @@ export default class EditEvent extends React.Component {
                         </MuiPickersUtilsProvider>
                         <br />
                         <FormControlLabel
-                            control={
+                            control={(
                                 <Switch
                                     checked={this.state.automate}
                                     onChange={() => this.toggleAutomation()}
                                     value={this.state.automate}
                                     color="primary"
                                 />
-                            }
+                            )}
                             label="Automate Voting Time Period?"
                             labelPlacement="start"
                         />
