@@ -10,8 +10,8 @@ import '../component_style/SubmitContainer.css';
 
 const DragHandle = SortableHandle(() => <span> <SliderIcon className="Sliders" /></span>);
 
-const SortableItem = SortableElement(({ value }) =>
-    <li className="rankings">{value}<DragHandle /></li>
+const SortableItem = SortableElement(({ value, item }) =>
+    <li className="rankings">{item + 1} |  {value}<DragHandle /></li>
 );
 
 const SortableList = SortableContainer(({ items }) => {
@@ -19,7 +19,7 @@ const SortableList = SortableContainer(({ items }) => {
         <ol>
             {items.length !== 0 ? <div></div> : <div>Tap the Plus to add an entry</div>}
             {items.map((value, index) => (
-                <SortableItem key={`item-${index}`} index={index} value={value.name} />
+                <SortableItem key={`item-${index}`} item={index} index={index} value={value.name} />
             ))}
         </ol>
     );

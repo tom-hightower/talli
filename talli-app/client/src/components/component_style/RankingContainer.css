@@ -36,7 +36,6 @@ ol {
 }
 
 ol li:before {
-    content: counter(item, decimal) "\00a0 | \00a0 \00a0";
     counter-increment: item;
 }
 
