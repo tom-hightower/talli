@@ -1,14 +1,15 @@
 import React, { Component } from 'react';
 import { SortableContainer, SortableElement, SortableHandle, arrayMove } from 'react-sortable-hoc';
 import SliderIcon from '@material-ui/icons/Sort';
-import PlusIcon from '@material-ui/icons/ControlPoint';
+import AddCircleIcon from '@material-ui/icons/AddCircle';
+//import PlusIcon from '@material-ui/icons/ControlPoint';
 import { Typography, Button } from '@material-ui/core';
 import BellIcon from '@material-ui/icons/NotificationImportant';
 import firebase from '../../firebase';
 import '../component_style/RankingContainer.css';
 import '../component_style/SubmitContainer.css';
 
-const DragHandle = SortableHandle(() => <span> <SliderIcon className="Sliders" /></span>);
+const DragHandle = SortableHandle(() => <span><SliderIcon className="Sliders" /></span>);
 
 const SortableItem = SortableElement(({ value }) =>
     <li className="rankings">{value}<DragHandle /></li>
@@ -102,7 +103,7 @@ export default class SortContainer extends Component {
             <div>
                 <Typography variant='h4' align='center' className="eventName" gutterBottom>{this.state.event.name}</Typography>
                 <div style={{ textAlign: 'center' }}>
-                    <PlusIcon className="AddEvent" onClick={this.handleAddEvent} />
+                    <AddCircleIcon className="AddEvent" id='addEntry' color='secondary' onClick={this.handleAddEvent} />
                 </div>
                 <div>
                     <div className="SortContainer">

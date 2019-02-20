@@ -21,7 +21,9 @@
   margin-top: 1rem;
   width: 300px;
   padding: .5rem .5rem;
-  border: 2px solid #BBB;
+  border: 5px solid #DDD;
+  background: #DDD;
+  border-radius: 5px;
   overflow: hidden;
   box-shadow: 0 0 #AAA;
 }
