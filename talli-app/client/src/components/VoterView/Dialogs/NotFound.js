@@ -5,7 +5,7 @@ function Transition(props) {
     return <Slide direction="up" {...props} />;
   }
 
-export default class EntryConfirmation extends React.Component {
+export default class NotFound extends React.Component {
     state = {
         open: false,
     };
@@ -18,24 +18,18 @@ export default class EntryConfirmation extends React.Component {
         this.setState({ open: false });
     };
 
-    handleConfirm = () => {
-        this.setState({ open: false });
-        this.props.handler();
-    };
-
     render() {
         return (
             <div>
                 <Dialog open={this.state.open} TransitionComponent={Transition} onClose={this.handleClose}>
                     <DialogTitle>
-                        Confirmation
+                        {this.props.idType} not found.
                     </DialogTitle>
                     <DialogContent>
-                        This code is for: {this.props.entryName}
+                        There is no {this.props.idType} that matches the ID: {this.props.id}.
                     </DialogContent>
                     <DialogActions>
                         <Button onClick={this.handleClose} color="primary">Go Back</Button>
-                        <Button onClick={this.handleConfirm} color="primary">Confirm</Button>
                     </DialogActions>
                 </Dialog>
             </div>

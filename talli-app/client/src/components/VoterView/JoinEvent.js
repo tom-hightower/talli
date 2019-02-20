@@ -1,15 +1,16 @@
 import React from 'react';
 import QrReader from 'react-qr-reader';
 import { TextField, Typography, Button } from '@material-ui/core';
-import EntryConfirmation from './EntryConfirmation';
+import EntryConfirmation from './Dialogs/EntryConfirmation';
 import '../component_style/Voter.css';
 import firebase from '../../firebase';
 import { getCookie } from '../../cookies.js'
 import HasVoteInfo from './HasVoteInfo.js';
+import NotFound from './Dialogs/NotFound';
 var config = require('../../config.json');
 
 /**
- * Join Event via QR Code or UID, unimplemented
+ * Join Event via QR Code or UID
  */
 export default class JoinEvent extends React.Component {
     constructor(props) {
@@ -27,10 +28,11 @@ export default class JoinEvent extends React.Component {
 
         this.confirmChild = React.createRef();
         this.blockChild = React.createRef();
+        this.notFoundChild = React.createRef();
     }
 
     requestConfirm = () => {
-        firebase.database().ref('event/').once('value').then( (snap) => {
+        firebase.database().ref('event/').once('value').then((snap) => {
             let orgID = snap.val()[this.state.eventID];
             this.setState({ organizerID: (orgID ? (orgID['organizer']['id'] ? orgID['organizer']['id'] : orgID['organizer']) : '') }, () => {
                 if (this.state.organizerID && this.state.organizerID !== '') {
@@ -38,34 +40,36 @@ export default class JoinEvent extends React.Component {
                         let event = snapshot.val();
                         if (!event) {
                             //TODO: event not found
-                            this.setState({ eventName: 'ERROR' });
+                            this.notFoundChild.current.handleOpen();
                             console.log('error');
                             return;
                         }
-                        this.setState({ eventName: event['eventData']['name'] });
+                        this.setState({ eventName: event['eventData']['name'] }, () => {
+                            // Checks whether the user has submitted for this event previously
+                            var cookies = getCookie('UserID');
+                            var check = false;
+                            firebase.database().ref('cookies/' + cookies).once('value').then(snapshot => {
+                                let allCookies = snapshot.val();
+                                for (var c in allCookies) {
+                                    if (c === this.state.eventID) {
+                                        check = true;
+                                        this.blockChild.current.handleOpen();
+                                        return;
+                                    }
+                                }
+                                if (!check) {
+                                    this.confirmChild.current.handleOpen();
+                                }
+                            });
+                        });
                     });
                 } else {
                     //TODO: event not found
+                    this.notFoundChild.current.handleOpen();
                     console.log('error');
+                    return;
                 }
             });
-        });
-
-        //to check whether the event that user have voted before
-        var cookies = getCookie('UserID');
-        var check = false;
-        firebase.database().ref('cookies/' + cookies).once('value').then(snapshot => {
-            let allCookies = snapshot.val();
-            for (var c in allCookies) {
-                if (c === this.state.eventID) {
-                    check = true;
-                    this.blockChild.current.handleOpen();
-
-                }
-            }
-            if (!check) {
-                this.confirmChild.current.handleOpen();
-            }
         });
     }
 
@@ -100,6 +104,7 @@ export default class JoinEvent extends React.Component {
     render() {
         return (
             <div>
+                <NotFound ref={this.notFoundChild} idType={"Event"} id={this.state.eventID} />
                 <EntryConfirmation entryName={this.state.eventName} ref={this.confirmChild} handler={this.handleJoinEvent} />
                 <HasVoteInfo entryName={this.state.eventName} ref={this.blockChild} />
                 <QrReader delay={300} onScan={this.handleScan} onError={this.handleError} style={{ width: '80%', margin: '20px auto 0px' }} />

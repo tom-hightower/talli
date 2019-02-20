@@ -1,9 +1,10 @@
 import React from 'react';
 import { Typography, TextField, Button } from '@material-ui/core';
 import QrReader from 'react-qr-reader';
-import EntryConfirmation from './EntryConfirmation';
+import EntryConfirmation from './Dialogs/EntryConfirmation';
 import firebase from '../../firebase';
 import '../component_style/Voter.css';
+import NotFound from './Dialogs/NotFound';
 var config = require('../../config.json');
 
 /**
@@ -24,6 +25,7 @@ export default class AddEntryVote extends React.Component {
         this.keyPress = this.keyPress.bind(this);
 
         this.confirmChild = React.createRef();
+        this.notFoundChild = React.createRef();
     }
 
     requestConfirm = () => {
@@ -32,13 +34,13 @@ export default class AddEntryVote extends React.Component {
             let event = organizer[this.props.organizer]['event'][this.props.eventID];
             let entry = event['entries'][this.state.entryID];
             if (!entry) {
-                // TODO: Entry not found
-                this.setState({ entryID: 'ERROR', entryTitle: 'ERROR' });
+                this.notFoundChild.current.handleOpen();
                 return;
             }
-            this.setState({ entryTitle: entry['title'] });
+            this.setState({ entryTitle: entry['title'] }, () => {
+                this.confirmChild.current.handleOpen();
+            });
         });
-        this.confirmChild.current.handleOpen();
     }
 
     handleScan(data) {
@@ -72,6 +74,7 @@ export default class AddEntryVote extends React.Component {
     render() {
         return(
             <div>
+                <NotFound ref={this.notFoundChild} idType={"Entry"} id={this.state.entryID} />
                 <EntryConfirmation entryName={this.state.entryTitle} ref={this.confirmChild} handler={this.handleAddEntry}/>
                 <QrReader delay={300} onScan={this.handleScan} onError={this.handleError} style={{ width: '80%', margin: '20px auto 0px'}} />
                 <Typography variant='h5' align='center' className="QRText">Scan QR Code or enter Entry ID:</Typography>
