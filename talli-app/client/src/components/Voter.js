@@ -31,7 +31,7 @@ export default class Voter extends React.Component {
     }
 
     updateItems(itemList) {
-        this.setState({ rankingItems: itemList }, () => { console.log(this.state.rankingItems) });
+        this.setState({ rankingItems: itemList });
     }
 
     changeView(newView, event = 'na', organizer = 'na', addedEntry = '') {

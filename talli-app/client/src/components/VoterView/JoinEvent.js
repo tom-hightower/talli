@@ -39,9 +39,8 @@ export default class JoinEvent extends React.Component {
                     firebase.database().ref('/organizer/' + this.state.organizerID + '/event/' + this.state.eventID).once('value').then(snapshot => {
                         let event = snapshot.val();
                         if (!event) {
-                            //TODO: event not found
+                            // Event not found
                             this.notFoundChild.current.handleOpen();
-                            console.log('error');
                             return;
                         }
                         this.setState({ eventName: event['eventData']['name'] }, () => {
@@ -64,9 +63,8 @@ export default class JoinEvent extends React.Component {
                         });
                     });
                 } else {
-                    //TODO: event not found
+                    // Event not found
                     this.notFoundChild.current.handleOpen();
-                    console.log('error');
                     return;
                 }
             });
