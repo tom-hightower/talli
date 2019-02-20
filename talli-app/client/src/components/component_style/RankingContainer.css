@@ -25,18 +25,12 @@
     color: #666;
 }
 
-ol {
+ul {
     text-align: center;
     width: 200px;
     margin: 0;
     padding: 5px 0 0 20px;
     background-color: #fafafa;
-    counter-reset: item;
-    list-style-type: decimal;
-}
-
-ol li:before {
-    counter-increment: item;
 }
 
 li.rankings {

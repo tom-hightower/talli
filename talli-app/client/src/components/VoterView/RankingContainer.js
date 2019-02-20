@@ -11,17 +11,20 @@ import '../component_style/SubmitContainer.css';
 const DragHandle = SortableHandle(() => <span> <SliderIcon className="Sliders" /></span>);
 
 const SortableItem = SortableElement(({ value, item }) =>
-    <li className="rankings">{item + 1} |  {value}<DragHandle /></li>
+    <li className="rankings">
+        {item + 1} |  {value}
+        <DragHandle />
+    </li>
 );
 
 const SortableList = SortableContainer(({ items }) => {
     return (
-        <ol>
+        <ul>
             {items.length !== 0 ? <div></div> : <div>Tap the Plus to add an entry</div>}
             {items.map((value, index) => (
                 <SortableItem key={`item-${index}`} item={index} index={index} value={value.name} />
             ))}
-        </ol>
+        </ul>
     );
 });
 
@@ -81,7 +84,7 @@ export default class SortContainer extends Component {
                         entries: eventEntries
                     },
                     items: itemList
-                }, () => { this.props.updateItemsHandler(this.state.items)});
+                }, () => { this.props.updateItemsHandler(this.state.items) });
             });
         });
     }
