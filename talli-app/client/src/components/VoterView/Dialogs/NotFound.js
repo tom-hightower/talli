@@ -26,7 +26,7 @@ export default class NotFound extends React.Component {
                         {this.props.idType} not found.
                     </DialogTitle>
                     <DialogContent>
-                        There is no {this.props.idType} that matches the ID: {this.props.id}.
+                        There is no {this.props.idType} that matches the ID: {this.props.id}
                     </DialogContent>
                     <DialogActions>
                         <Button onClick={this.handleClose} color="primary">Go Back</Button>

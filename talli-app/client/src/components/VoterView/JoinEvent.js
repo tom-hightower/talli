@@ -5,7 +5,7 @@ import EntryConfirmation from './Dialogs/EntryConfirmation';
 import '../component_style/Voter.css';
 import firebase from '../../firebase';
 import { getCookie } from '../../cookies.js'
-import HasVoteInfo from './HasVoteInfo.js';
+import BlockJoin from './Dialogs/BlockJoin';
 import NotFound from './Dialogs/NotFound';
 var config = require('../../config.json');
 
@@ -104,9 +104,9 @@ export default class JoinEvent extends React.Component {
     render() {
         return (
             <div>
-                <NotFound ref={this.notFoundChild} idType={"Event"} id={this.state.eventID} />
+                <NotFound ref={this.notFoundChild} idType={'Event'} id={this.state.eventID} />
                 <EntryConfirmation entryName={this.state.eventName} ref={this.confirmChild} handler={this.handleJoinEvent} />
-                <HasVoteInfo entryName={this.state.eventName} ref={this.blockChild} />
+                <BlockJoin entryName={this.state.eventName} idType={'Event'} ref={this.blockChild} />
                 <QrReader delay={300} onScan={this.handleScan} onError={this.handleError} style={{ width: '80%', margin: '20px auto 0px' }} />
                 <Typography variant='h5' align='center' className="QRText">Scan QR Code or enter Event ID:</Typography>
                 <div className="textField">
