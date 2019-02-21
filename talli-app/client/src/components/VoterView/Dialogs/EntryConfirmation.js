@@ -31,8 +31,8 @@ export default class EntryConfirmation extends React.Component {
                         Confirmation
                     </DialogTitle>
                     <DialogContent>
-                        This code is for: <br />
-                        <b>{this.props.entryName}</b>
+                        This ID is for: <br/>
+                        <b>{this.props.entryName}.</b>
                     </DialogContent>
                     <DialogActions>
                         <Button onClick={this.handleClose}>Go Back</Button>
