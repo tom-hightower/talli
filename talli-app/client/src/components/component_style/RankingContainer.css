@@ -1,12 +1,18 @@
-.Sliders {
-    float: right;
+/*Ranking Container*/
+
+#addEntry {
+    font-size: 45px;
+    text-align: center;
+    padding-bottom: 10px;
 }
 
 .SortContainer {
     background-color: #fafafa;
-    border: 5px solid #00e676;
+    border-width: 5px;
+    border-style: solid none solid none;
+    border-color: #00e676;
     text-align: center;
-    width: 90%;
+    width: 95%;
     margin: 0 auto;
     /*padding-bottom: 10px;*/
     padding: .5rem .5rem;
@@ -17,41 +23,107 @@
     margin-top: 20px !important;
 }
 
-#addEntry {
-    font-size: 45px;
-    text-align: center;
-    padding-bottom: 10px;
-}
-
-ol {
+ul {
     width: 100%;
     margin: 0;
     padding: 0;
     background-color: #fafafa;
-    counter-reset: item;
-    list-style-type: decimal;
     display: flex;
     flex-direction: column;
-}
-
-ol li:before {
-    content: counter(item, decimal) "\00a0 | \00a0 \00a0";
-    counter-increment: item;
 }
 
 li.rankings {
     text-align: center;
     align-self: center;
     width: 95%;
-    padding: 5px 5px 5px 0;
+    padding: 5px 5px 5px 5px;
     background-color: #fafafa;
     margin: 5px;
     color: #000;
     list-style-type: none;
     border: 2px solid #AAA;
+    display: flex;
+    flex-flow: row;
+    align-items: center;
+}
+
+#rankTitle {
+    padding: 0 10px 0 10px;
+    width: 80%;
+}
+
+#rankNumber {
+    width: 10%;
+    font-size: 18px;
+    border-right: 2px solid #AAA;
+    align-self: stretch;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#rankHandle {
+    width: 10%;
+}
+
+.Sliders {
+    float: right;
+    color: #AAA;
 }
 
 .sortHelp {
         padding-bottom: 1.25rem;
         padding-left: 2.4rem;
+}
+
+/* Submit Container */
+
+.buttonOut {
+  text-align: center;
+  background: transparent;
+  padding: .2rem .5rem 1.4rem .5rem;
+  margin: auto;
+  transition: all .5s ease;
+  color: #41403E;
+  font-size: 1.25rem;
+  letter-spacing: 1px;
+  outline: none;
+  box-shadow: 20px 38px 34px -26px hsla(0,0%,0%,.2);
+  border-radius: 255px 25px 225px 25px/25px 225px 25px 255px;
+  border: solid 3px #41403E;
+  height: 20px;
+}
+
+.SubmitDiv {
+  margin: auto;
+  margin-top: 1rem;
+  width: 300px;
+  padding: .5rem .5rem;
+  border: 5px solid #DDD;
+  background: #DDD;
+  border-radius: 5px;
+  overflow: hidden;
+  box-shadow: 0 0 #AAA;
+}
+
+.SubmitText {
+  float: left;
+  text-align: center;
+  width: 130px;
+  word-wrap: normal;
+  padding-left: .5rem;
+}
+
+.BellIcon {
+  float: left;
+  width: 30px;
+  padding-top: .5rem;
+  margin-left: .5rem;
+}
+
+.buttonDiv {
+    width: 100px;
+    float: right;
+    padding-bottom: .5rem;
+    padding-top: .3rem;
 }
