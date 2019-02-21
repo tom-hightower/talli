@@ -1,9 +1,11 @@
 import React from 'react';
 import { Typography, TextField, Button } from '@material-ui/core';
 import QrReader from 'react-qr-reader';
-import EntryConfirmation from './EntryConfirmation';
+import EntryConfirmation from './Dialogs/EntryConfirmation';
 import firebase from '../../firebase';
 import '../component_style/Voter.css';
+import NotFound from './Dialogs/NotFound';
+import BlockJoin from './Dialogs/BlockJoin';
 var config = require('../../config.json');
 
 /**
@@ -24,26 +26,35 @@ export default class AddEntryVote extends React.Component {
         this.keyPress = this.keyPress.bind(this);
 
         this.confirmChild = React.createRef();
+        this.notFoundChild = React.createRef();
+        this.blockChild = React.createRef();
     }
 
     requestConfirm = () => {
-        firebase.database().ref('organizer/').once('value').then( (snapshot) => {
+        let itemMatch = this.props.rankItems.filter(item => item.id === this.state.entryID);
+        if (itemMatch.length > 0) {
+            this.setState({ entryTitle: itemMatch[0].name }, () => {
+                this.blockChild.current.handleOpen();
+            });
+            return;
+        }
+        firebase.database().ref('organizer/').once('value').then((snapshot) => {
             let organizer = snapshot.val();
             let event = organizer[this.props.organizer]['event'][this.props.eventID];
             let entry = event['entries'][this.state.entryID];
             if (!entry) {
-                // TODO: Entry not found
-                this.setState({ entryID: 'ERROR', entryTitle: 'ERROR' });
+                this.notFoundChild.current.handleOpen();
                 return;
             }
-            this.setState({ entryTitle: entry['title'] });
+            this.setState({ entryTitle: entry['title'] }, () => {
+                this.confirmChild.current.handleOpen();
+            });
         });
-        this.confirmChild.current.handleOpen();
     }
 
     handleScan(data) {
         if (data && data.toLowerCase().includes(config.Global.entryQRPrefix)) {
-            var id = data.substring(data.indexOf(config.Global.entryQRPrefix) + 7).replace(/\W/g,'');
+            var id = data.substring(data.indexOf(config.Global.entryQRPrefix) + 7).replace(/\W/g, '');
             this.setState({ entryID: id });
             this.requestConfirm();
         }
@@ -61,33 +72,42 @@ export default class AddEntryVote extends React.Component {
         this.props.handler(this.props.voteViews.RANK, 'na', 'na', this.state.entryID);
     }
 
-    handleError(err) {}
+    handleGoBack = () => {
+        this.props.handler(this.props.voteViews.RANK);
+    }
+
+    handleError(err) { }
 
     keyPress(e) {
-        if(e.key === 'Enter') {
+        if (e.key === 'Enter') {
             this.handleText();
         }
     }
 
     render() {
-        return(
+        return (
             <div>
-                <EntryConfirmation entryName={this.state.entryTitle} ref={this.confirmChild} handler={this.handleAddEntry}/>
-                <QrReader delay={300} onScan={this.handleScan} onError={this.handleError} style={{ width: '80%', margin: '20px auto 0px'}} />
+                <NotFound ref={this.notFoundChild} idType={'Entry'} id={this.state.entryID} />
+                <EntryConfirmation entryName={this.state.entryTitle} ref={this.confirmChild} handler={this.handleAddEntry} />
+                <BlockJoin entryName={this.state.entryTitle} idType={'Entry'} ref={this.blockChild} />
+                <QrReader delay={300} onScan={this.handleScan} onError={this.handleError} style={{ width: '80%', margin: '20px auto 0px' }} />
                 <Typography variant='h5' align='center' className="QRText">Scan QR Code or enter Entry ID:</Typography>
                 <div className="textField">
-                    <TextField 
-                        id="outlined-dense" 
-                        label="Entry ID" 
-                        margin="dense" 
-                        variant="outlined" 
-                        value={this.state.idFieldValue} 
+                    <TextField
+                        id="outlined-dense"
+                        label="Entry ID"
+                        margin="dense"
+                        variant="outlined"
+                        value={this.state.idFieldValue}
                         onKeyPress={this.keyPress}
                         onChange={e => this.setState({ idFieldValue: e.target.value })}
                     />
                 </div>
                 <div className="submitButtonContainer">
-                    <Button variant="contained" color="default" className="homeButton" onClick={this.handleText}>
+                    <Button variant="contained" color="default" className="goBackButton" onClick={this.handleGoBack}>
+                        Back
+                    </Button>
+                    <Button variant="contained" color="default" className="confirmButton" onClick={this.handleText}>
                         Add
                     </Button>
                 </div>

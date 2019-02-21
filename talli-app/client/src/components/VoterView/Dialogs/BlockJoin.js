@@ -3,9 +3,9 @@ import { Dialog, DialogTitle, DialogContent, DialogActions, Button, Slide } from
 
 function Transition(props) {
     return <Slide direction="up" {...props} />;
-  }
+}
 
-export default class HasVoteInfo extends React.Component {
+export default class BlockJoin extends React.Component {
     state = {
         open: false,
     };
@@ -26,7 +26,10 @@ export default class HasVoteInfo extends React.Component {
                         Alerts
                     </DialogTitle>
                     <DialogContent>
-                        You have already voted in the event {this.props.entryName}
+                        You have already {
+                            (this.props.idType === 'Event') ? 'voted in ' : 'added '
+                        }
+                        the {this.props.idType}: {this.props.entryName}
                     </DialogContent>
                     <DialogActions>
                         <Button onClick={this.handleClose} color="primary">Go Back</Button>
