@@ -107,7 +107,7 @@ export default class AddEntryVote extends React.Component {
                     <Button variant="contained" color="default" className="goBackButton" onClick={this.handleGoBack}>
                         Back
                     </Button>
-                    <Button variant="contained" color="default" className="confirmButton" onClick={this.handleText}>
+                    <Button variant="contained" color="primary" className="confirmButton" onClick={this.handleText}>
                         Add
                     </Button>
                 </div>

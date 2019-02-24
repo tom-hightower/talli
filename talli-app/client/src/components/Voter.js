@@ -2,14 +2,12 @@ import React from 'react';
 import Ranking from './VoterView/RankingContainer';
 import AddEntry from './VoterView/AddEntryVote';
 import JoinEvent from './VoterView/JoinEvent';
-import SubmitConfirm from './VoterView/SubmitConfirm';
 import Submitted from './VoterView/Submitted';
 
 const voteViews = {
     JOIN: 'JoinEvent',
     ADD: 'AddEntry',
     RANK: 'Ranking',
-    CONFIRM: 'SubmitConfirm',
     SUBMITTED: 'Submitted',
 }
 
@@ -68,13 +66,6 @@ export default class Voter extends React.Component {
                         rankItems={this.state.rankingItems}
                         updateItemsHandler={this.updateItems}
                         handler={this.changeView}
-                    />);
-            case voteViews.CONFIRM:
-                return (
-                    <SubmitConfirm
-                        voteViews={voteViews}
-                        handler={this.changeView}
-                        eventID={this.state.eventID}
                     />);
             case voteViews.SUBMITTED:
                 return (
