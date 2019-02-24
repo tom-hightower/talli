@@ -1,43 +1,53 @@
 import React from 'react';
-import { Typography, Button } from '@material-ui/core';
-import CheckIcon from '@material-ui/icons/Check';
-import CloseIcon from '@material-ui/icons/Close';
+import { Button, Slide, Dialog, DialogTitle, DialogContent, DialogActions } from '@material-ui/core';
 import '../component_style/Voter.css';
-import {getCookie} from '../../cookies.js'
+import { getCookie } from '../../cookies.js'
 import firebase from '../../firebase.js';
+
+function Transition(props) {
+    return <Slide direction="up" {...props} />;
+}
 
 /**
  * Confirm that the attendee wants to submit, unimplemented
  */
 export default class SubmitConfirm extends React.Component {
+    state = {
+        open: false,
+    };
+
+    handleOpen = () => {
+        this.setState({ open: true });
+    };
+
+    handleClose = () => {
+        this.setState({ open: false });
+    };
+
     SubmitRankings() {
         // TODO: Handle Ranking submission and flagging UID as submitted here
-
+        // Ranked entries are contained in this.props.items
         var cookies_value = getCookie('UserID');
         const itemsRef = firebase.database().ref('cookies/' + cookies_value);
         itemsRef.child(this.props.eventID).set(this.props.eventID);
-        this.props.handler(this.props.voteViews.SUBMITTED);
+        this.props.handler();
     }
 
     render() {
         return (
             <div>
-                <div className="SubmissionPage">
-                    <Typography variant='h4' align='center' className='submissionText' gutterBottom>
-                        You may only submit your rankings once.
-                    </Typography>
-                    <Typography variant='h5' align='center' className='questionText' gutterBottom>
-                        Would you like to continue?
-                    </Typography>
-                    <div className="buttonContainer">
-                        <Button variant="contained" color="default" className="goBackButton" onClick={() => this.props.handler(this.props.voteViews.RANK)}>
-                            <CloseIcon />
-                        </Button>
-                        <Button variant="contained" color="default" className="confirmButton" onClick={() => this.SubmitRankings()}>
-                            <CheckIcon />
-                        </Button>
-                    </div>
-                </div>
+                <Dialog open={this.state.open} TransitionComponent={Transition} onClose={this.handleClose}>
+                    <DialogTitle>
+                        Confirm Submission
+                    </DialogTitle>
+                    <DialogContent>
+                        You may only submit your rankings once.  Would you like to continue?
+                    </DialogContent>
+                    <DialogActions>
+                        <Button onClick={this.handleClose}>Go Back</Button>
+                        <Button onClick={() => this.SubmitRankings()} color="primary">Confirm</Button>
+                    </DialogActions>
+                </Dialog>
             </div>
         );
     }
