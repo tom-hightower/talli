@@ -41,7 +41,8 @@ export default class SubmitConfirm extends React.Component {
                         Confirm Submission
                     </DialogTitle>
                     <DialogContent>
-                        You may only submit your rankings for this event <b>once.</b><br /><br />
+                        You may only submit your rankings for this event <b>once.</b>
+                        <br /><br />
                         Would you like to continue?
                     </DialogContent>
                     <DialogActions>
