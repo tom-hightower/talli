@@ -1,6 +1,6 @@
 import React from 'react';
 import { Button, Slide, Dialog, DialogTitle, DialogContent, DialogActions } from '@material-ui/core';
-import '../component_style/Voter.css';
+import '../../component_style/Voter.css';
 import { getCookie } from '../../../cookies.js'
 import firebase from '../../../firebase.js';
 
@@ -41,7 +41,8 @@ export default class SubmitConfirm extends React.Component {
                         Confirm Submission
                     </DialogTitle>
                     <DialogContent>
-                        You may only submit your rankings once.  Would you like to continue?
+                        You may only submit your rankings for this event <b>once.</b><br /><br />
+                        Would you like to continue?
                     </DialogContent>
                     <DialogActions>
                         <Button onClick={this.handleClose}>Go Back</Button>

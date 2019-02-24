@@ -49,7 +49,7 @@ export default class MainPage extends React.Component {
         return (
             <div className="content">
                 <br />
-                <Typography variant="h4" align="center" gutterBottom>Main Page</Typography>
+                <Typography variant="h4" align="center" gutterBottom>Welcome to Talli!</Typography>
                 <Grid container justify="center">
                     <div className="buttons">
                         <ListItem>
