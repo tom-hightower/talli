@@ -1,8 +1,8 @@
 import React from 'react';
 import { Button, Slide, Dialog, DialogTitle, DialogContent, DialogActions } from '@material-ui/core';
 import '../component_style/Voter.css';
-import { getCookie } from '../../cookies.js'
-import firebase from '../../firebase.js';
+import { getCookie } from '../../../cookies.js'
+import firebase from '../../../firebase.js';
 
 function Transition(props) {
     return <Slide direction="up" {...props} />;

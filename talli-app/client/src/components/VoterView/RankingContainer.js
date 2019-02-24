@@ -6,7 +6,7 @@ import { Typography, Button } from '@material-ui/core';
 import BellIcon from '@material-ui/icons/NotificationImportant';
 import firebase from '../../firebase';
 import '../component_style/RankingContainer.css';
-import SubmitConfirm from './SubmitConfirm';
+import SubmitConfirm from './Dialogs/SubmitConfirm';
 
 const DragHandle = SortableHandle(() => <span><SliderIcon className="Sliders" /></span>);
 
