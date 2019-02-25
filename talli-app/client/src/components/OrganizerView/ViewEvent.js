@@ -182,7 +182,7 @@ export default class ViewEvent extends React.Component {
                             <Button className="button1" variant="contained" onClick={this.manageEvent}>Manage Event</Button>
                             <Button className="button1" variant="contained" color="primary" onClick={this.viewResults}>View Results</Button>
                         </div>
-                        <Typography variant="h5">Set up google sheets for results:</Typography>
+                        <Typography variant="h5">Set up Google Sheets to export results:</Typography>
                         <br />
                         <div className="instructions">
                             <div>1. Create a Google Sheet in your desired location</div>

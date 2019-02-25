@@ -2,14 +2,12 @@ import React from 'react';
 import Ranking from './VoterView/RankingContainer';
 import AddEntry from './VoterView/AddEntryVote';
 import JoinEvent from './VoterView/JoinEvent';
-import SubmitConfirm from './VoterView/SubmitConfirm';
 import Submitted from './VoterView/Submitted';
 
 const voteViews = {
     JOIN: 'JoinEvent',
     ADD: 'AddEntry',
     RANK: 'Ranking',
-    CONFIRM: 'SubmitConfirm',
     SUBMITTED: 'Submitted',
 }
 
@@ -31,7 +29,7 @@ export default class Voter extends React.Component {
     }
 
     updateItems(itemList) {
-        this.setState({ rankingItems: itemList }, () => { console.log(this.state.rankingItems) });
+        this.setState({ rankingItems: itemList });
     }
 
     changeView(newView, event = 'na', organizer = 'na', addedEntry = '') {
@@ -50,7 +48,14 @@ export default class Voter extends React.Component {
     render() {
         switch (this.state.curView) {
             case voteViews.ADD:
-                return (<AddEntry voteViews={voteViews} eventID={this.state.eventID} organizer={this.state.organizerID} handler={this.changeView} />);
+                return (
+                    <AddEntry
+                        voteViews={voteViews}
+                        eventID={this.state.eventID}
+                        organizer={this.state.organizerID}
+                        handler={this.changeView}
+                        rankItems={this.state.rankingItems}
+                    />);
             case voteViews.RANK:
                 return (
                     <Ranking
@@ -62,12 +67,18 @@ export default class Voter extends React.Component {
                         updateItemsHandler={this.updateItems}
                         handler={this.changeView}
                     />);
-            case voteViews.CONFIRM:
-                return (<SubmitConfirm voteViews={voteViews} handler={this.changeView} eventID={this.state.eventID} />);
             case voteViews.SUBMITTED:
-                return (<Submitted voteViews={voteViews} handler={this.changeView} />);
+                return (
+                    <Submitted
+                        voteViews={voteViews}
+                        handler={this.changeView}
+                    />);
             default:
-                return (<JoinEvent voteViews={voteViews} handler={this.changeView} />);
+                return (
+                    <JoinEvent
+                        voteViews={voteViews}
+                        handler={this.changeView}
+                    />);
         }
     }
 }
