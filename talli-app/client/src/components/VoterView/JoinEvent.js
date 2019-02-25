@@ -32,7 +32,7 @@ export default class JoinEvent extends React.Component {
     requestConfirm = () => {
         firebase.database().ref('event/').once('value').then( (snap) => {
             let orgID = snap.val()[this.state.eventID];
-            this.setState({ organizerID: (orgID ? (orgID['organizer']['id'] ? orgID['organizer']['id'] : orgID['organizer']) : '') }, () => {
+            this.setState({ organizerID: (orgID ? orgID['organizer'] : '') }, () => {
                 if (this.state.organizerID && this.state.organizerID !== '') {
                     firebase.database().ref('/organizer/' + this.state.organizerID + '/event/' + this.state.eventID).once('value').then(snapshot => {
                         let event = snapshot.val();
@@ -52,9 +52,10 @@ export default class JoinEvent extends React.Component {
         });
 
         //to check whether the event that user have voted before
-        var cookies = getCookie('UserID');
+        var cookie = getCookie('UserID');
         var check = false;
-        firebase.database().ref('cookies/' + cookies).once('value').then(snapshot => {
+        const cookieRef = firebase.database().ref('attendees/' + cookie);
+        cookieRef.once('value').then(snapshot => {
             let allCookies = snapshot.val();
             for (var c in allCookies) {
                 if (c === this.state.eventID) {
@@ -64,6 +65,8 @@ export default class JoinEvent extends React.Component {
                 }
             }
             if (!check) {
+                cookieRef.child("currentEvent").set(this.state.eventID);
+                firebase.database().ref('event/' + this.state.eventID + "/attendees/" + cookie).set(cookie);
                 this.confirmChild.current.handleOpen();
             }
         });

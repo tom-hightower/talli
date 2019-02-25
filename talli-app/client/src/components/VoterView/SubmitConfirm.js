@@ -13,8 +13,8 @@ export default class SubmitConfirm extends React.Component {
     SubmitRankings() {
         // TODO: Handle Ranking submission and flagging UID as submitted here
 
-        var cookies_value = getCookie('UserID');
-        const itemsRef = firebase.database().ref('cookies/' + cookies_value);
+        var cookie = getCookie('UserID');
+        const itemsRef = firebase.database().ref('attendees/' + cookie);
         itemsRef.child(this.props.eventID).set(this.props.eventID);
         this.props.handler(this.props.voteViews.SUBMITTED);
     }

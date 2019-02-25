@@ -2,6 +2,7 @@ import React from 'react';
 import { Typography, TextField, Button } from '@material-ui/core';
 import QrReader from 'react-qr-reader';
 import EntryConfirmation from './EntryConfirmation';
+import {getCookie} from '../../cookies.js';
 import firebase from '../../firebase';
 import '../component_style/Voter.css';
 var config = require('../../config.json');
@@ -38,6 +39,9 @@ export default class AddEntryVote extends React.Component {
             }
             this.setState({ entryTitle: entry['title'] });
         });
+        var cookie = getCookie('UserID');
+        var ref = firebase.database().ref("event/" + this.props.eventID + "/attendees/" + cookie + "/rankings/");
+        ref.child(this.state.entryID).set(this.state.entryID); // need some way to save rankings
         this.confirmChild.current.handleOpen();
     }
 
