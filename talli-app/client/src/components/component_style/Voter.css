@@ -28,24 +28,18 @@
     width: 60px;
     float: right;
     text-align: center;
-    border: 2px solid #BBB !important;
-    border-left: 7px solid #22b573 !important;
 }
 
 .goBackButton {
     width: 60px;
     float: left;
     text-align: center;
-    border: 2px solid #BBB !important;
-    border-left: 7px solid #B53622 !important;
 }
 
 /* Submitted.js Style */
 .homeButton {
     width: 60px;
     text-align: center;
-    border: 2px solid #BBB !important;
-    border-left: 7px solid #22b573 !important;
 }
 
 /* JoinEvent.js Style */

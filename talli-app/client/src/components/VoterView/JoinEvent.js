@@ -119,7 +119,7 @@ export default class JoinEvent extends React.Component {
                     />
                 </div>
                 <div className="submitButtonContainer">
-                    <Button variant="contained" color="default" className="homeButton" onClick={this.handleText}>
+                    <Button variant="contained" color="primary" className="homeButton" onClick={this.handleText}>
                         Join
                     </Button>
                 </div>

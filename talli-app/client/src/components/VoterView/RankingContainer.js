@@ -1,19 +1,20 @@
 import React, { Component } from 'react';
 import { SortableContainer, SortableElement, SortableHandle, arrayMove } from 'react-sortable-hoc';
 import SliderIcon from '@material-ui/icons/Sort';
-import PlusIcon from '@material-ui/icons/ControlPoint';
+import AddCircleIcon from '@material-ui/icons/AddCircle';
 import { Typography, Button } from '@material-ui/core';
 import BellIcon from '@material-ui/icons/NotificationImportant';
 import firebase from '../../firebase';
 import '../component_style/RankingContainer.css';
-import '../component_style/SubmitContainer.css';
+import SubmitConfirm from './Dialogs/SubmitConfirm';
 
-const DragHandle = SortableHandle(() => <span> <SliderIcon className="Sliders" /></span>);
+const DragHandle = SortableHandle(() => <span><SliderIcon className="Sliders" /></span>);
 
 const SortableItem = SortableElement(({ value, item }) =>
     <li className="rankings">
-        {item + 1} |  {value}
-        <DragHandle />
+        <div id='rankNumber'>{item + 1}</div>
+        <div id='rankTitle'>{value}</div>
+        <DragHandle id='rankHandle' />
     </li>
 );
 
@@ -47,6 +48,9 @@ export default class SortContainer extends Component {
         };
         this.handleAddEvent = this.handleAddEvent.bind(this);
         this.submitConfirm = this.submitConfirm.bind(this);
+        this.submitted = this.submitted.bind(this);
+
+        this.confirmChild = React.createRef();
     }
 
     handleAddEvent(e) {
@@ -97,15 +101,20 @@ export default class SortContainer extends Component {
 
     submitConfirm() {
         this.props.updateItemsHandler(this.state.items);
-        this.props.handler(this.props.voteViews.CONFIRM);
+        this.confirmChild.current.handleOpen();
+    }
+
+    submitted() {
+        this.props.handler(this.props.voteViews.SUBMITTED);
     }
 
     render() {
         return (
             <div>
+                <SubmitConfirm handler={this.submitted} ref={this.confirmChild} items={this.state.items} eventID={this.state.event.id}/>
                 <Typography variant='h4' align='center' className="eventName" gutterBottom>{this.state.event.name}</Typography>
                 <div style={{ textAlign: 'center' }}>
-                    <PlusIcon className="AddEvent" onClick={this.handleAddEvent} />
+                    <AddCircleIcon className="AddEvent" id='addEntry' color='secondary' onClick={this.handleAddEvent} />
                 </div>
                 <div>
                     <div className="SortContainer">

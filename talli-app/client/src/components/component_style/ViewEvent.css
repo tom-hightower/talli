@@ -16,13 +16,11 @@
     margin-left: 12%;
     margin-right: 12%;
     font-size: 150%;
-    /* Should this be center aligned??? */
     text-align: left;
+    padding: 0 1px 0 1px;
 }
 
 .box > * {
-    padding: 2%;
-    border: 1px solid #99C;
     cursor: pointer;
 }
 
@@ -44,12 +42,17 @@
 }
 
 .instructions {
+    border: 2px solid #03a9f4;
     margin-left: 12%;
     margin-right: 12%;
     text-align: left;
     font-size: 105%;
+<<<<<<< HEAD
     /* border: 2px solid #99c; */
     background-color: #EEE;
+=======
+    padding: 1px;
+>>>>>>> 782ad11c3787e0f43a6a01c9a86d0f27eb628ab4
 }
 
 .note {
