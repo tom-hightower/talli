@@ -3,6 +3,7 @@ import { Typography, TextField, Button } from '@material-ui/core';
 import QrReader from 'react-qr-reader';
 import EntryConfirmation from './Dialogs/EntryConfirmation';
 import firebase from '../../firebase';
+import { getCookie } from '../../cookies.js'
 import '../component_style/Voter.css';
 import NotFound from './Dialogs/NotFound';
 import BlockJoin from './Dialogs/BlockJoin';
