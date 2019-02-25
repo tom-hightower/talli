@@ -101,7 +101,7 @@ export default class ExportOrgData extends React.Component {
                             }
                             label="Export Entry QR"
                             labelPlacement="start"
-                        /><br/>
+                        /><br/><br/>
                         <Button variant="contained" onClick={this.generatePDF}>Export QR to PDF</Button>
                     </DialogContent>
                     <DialogActions>

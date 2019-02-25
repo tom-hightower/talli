@@ -2,13 +2,15 @@
   "name": "talli-app",
   "version": "1.0.0",
   "description": "Portable voting system",
+  "repository": "github:tom-hightower/talli",
   "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "client-install": "npm install --prefix client",
     "client": "npm start --prefix client",
     "server": "nodemon server.js",
-    "dev": "concurrently \"npm run server\" \"npm run client\""
+    "dev": "concurrently \"npm run server\" \"npm run client\"",
+    "update": "npm i; npm run client-install"
   },
   "author": "Tom, Jermiah, Adrianna, Jiayuan, Nick",
   "license": "ISC",
@@ -19,8 +21,12 @@
     "google-spreadsheet": "^2.0.7",
     "googleapis": "^37.2.0",
     "nodemon": "^1.18.9",
+    "npm": "^6.8.0",
     "passport": "^0.4.0",
     "socket.io": "^2.2.0",
     "socket.io-client": "^2.2.0"
+  },
+  "eslintConfig": {
+    "extends": "eslint-config-airbnb"
   }
 }

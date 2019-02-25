@@ -10,18 +10,21 @@ import '../component_style/SubmitContainer.css';
 
 const DragHandle = SortableHandle(() => <span> <SliderIcon className="Sliders" /></span>);
 
-const SortableItem = SortableElement(({ value }) =>
-    <li className="rankings">{value}<DragHandle /></li>
+const SortableItem = SortableElement(({ value, item }) =>
+    <li className="rankings">
+        {item + 1} |  {value}
+        <DragHandle />
+    </li>
 );
 
 const SortableList = SortableContainer(({ items }) => {
     return (
-        <ol>
+        <ul>
             {items.length !== 0 ? <div></div> : <div>Tap the Plus to add an entry</div>}
             {items.map((value, index) => (
-                <SortableItem key={`item-${index}`} index={index} value={value.name} />
+                <SortableItem key={`item-${index}`} item={index} index={index} value={value.name} />
             ))}
-        </ol>
+        </ul>
     );
 });
 
@@ -65,7 +68,7 @@ export default class SortContainer extends Component {
                 let eventBase = events[this.props.eventID]['eventData'];
                 let eventEntries = events[this.props.eventID]['entries'];
                 var itemList = this.state.items;
-                if (this.props.entryToAdd && !this.state.items.some(e => e.id === this.props.entryToAdd)) {
+                if (eventEntries && this.props.entryToAdd && !this.state.items.some(e => e.id === this.props.entryToAdd)) {
                     itemList.push({ name: eventEntries[this.props.entryToAdd].title, id: this.props.entryToAdd });
                 }
                 this.setState({
@@ -81,7 +84,7 @@ export default class SortContainer extends Component {
                         entries: eventEntries
                     },
                     items: itemList
-                }, () => { this.props.updateItemsHandler(this.state.items)});
+                }, () => { this.props.updateItemsHandler(this.state.items) });
             });
         });
     }

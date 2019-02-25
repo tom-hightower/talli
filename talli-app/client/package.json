@@ -7,7 +7,7 @@
     "@material-ui/core": "^3.8.1",
     "@material-ui/icons": "^3.0.1",
     "create-react-class": "^15.6.3",
-    "date-fns": "2.0.0-alpha.21",
+    "date-fns": "2.0.0-alpha.27",
     "firebase": "^5.8.2",
     "jspdf": "^1.5.3",
     "material-ui-pickers": "^2.1.1",
@@ -28,7 +28,10 @@
     "eject": "react-scripts eject"
   },
   "eslintConfig": {
-    "extends": "react-app"
+    "extends": [
+      "react-app",
+      "eslint-config-airbnb"
+    ]
   },
   "browserslist": [
     ">0.2%",

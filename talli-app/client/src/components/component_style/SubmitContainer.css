@@ -1,4 +1,4 @@
-@import url(https://fonts.googleapis.com/css?family=Patrick+Hand+SC);
+/* Submit Container */
 
 .buttonOut {
   text-align: center;
@@ -23,7 +23,7 @@
   padding: .5rem .5rem;
   border: 2px solid #BBB;
   overflow: hidden;
-  box-shadow: 0px 0px #AAA;
+  box-shadow: 0 0 #AAA;
 }
 
 .SubmitText {

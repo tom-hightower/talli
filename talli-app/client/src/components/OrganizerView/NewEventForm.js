@@ -17,31 +17,59 @@ export default class NewEventForm extends React.Component {
             startDate: new Date(),
             endDate: new Date(),
             automate: false,
-            startVote: new Date(),
-            endVote: new Date(),
-        }
+            startVote: undefined,
+            endVote: undefined,
+        },
     }
 
     // Sends form data to Firebase and navigates to the next page
     AddEntries = (event) => {
+        event.preventDefault();
         let item = this.state.eventData;
         if (!item.id) {
             item.id = Math.floor((Math.random() * 10000) + 1);
         }
         let googleId = this.props.user.googleId;
 
-        const itemsRef = firebase.database().ref('organizer/' + googleId + '/event/' + item.id);
-        item.startDate = item.startDate.toLocaleString();
-        item.endDate = item.endDate.toLocaleString();
-        item.startVote = item.startVote.toLocaleString();
-        item.endVote = item.endVote.toLocaleString();
-        itemsRef.child('eventData').set(item);
-        this.props.setEvent(item.id);
-        this.props.handler(this.props.orgViews.ADD);
+        const ref = firebase.database().ref('event');
+        ref.once('value', (snapshot) => {
+            let idExists = false;
+            snapshot.forEach((childSnapshot) => {
+                if (childSnapshot.key === item.id) {
+                    idExists = true;
+                }
+            });
+            while (idExists === true) {
+                idExists = false;
+                item.id = Math.floor((Math.random() * 10000) + 1);
+                // eslint-disable-next-line
+                snapshot.forEach((childSnapshot) => {
+                    if (childSnapshot.key === item.id) {
+                        idExists = true;
+                    }
+                });
+            }
+
+            ref.child(item.id).set({ 'organizer': googleId });
+
+            const itemsRef = firebase.database().ref(`organizer/${googleId}/event/${item.id}`);
+            item.startDate = item.startDate.toISOString();
+            item.endDate = item.endDate.toISOString();
+            if (item.automate) {
+                item.startVote = item.startVote.toISOString();
+                item.endVote = item.endVote.toISOString();
+            } else {
+                item.startVote = 'none';
+                item.endVote = 'none';
+            }
+            itemsRef.child('eventData').set(item);
+            this.props.setEvent(item.id);
+            this.props.handler(this.props.orgViews.ADD);
+        });
     }
 
     toggleAutomation = () => {
-        var oldData = this.state.eventData;
+        let oldData = this.state.eventData;
         oldData.automate = !this.state.eventData.automate;
         this.setState({
             eventData: oldData,
@@ -49,7 +77,7 @@ export default class NewEventForm extends React.Component {
     }
 
     handleEventChange = field => event => {
-        var oldData = this.state.eventData;
+        let oldData = this.state.eventData;
         oldData[field] = event.target.value;
         this.setState({
             eventData: oldData,
@@ -57,7 +85,7 @@ export default class NewEventForm extends React.Component {
     }
 
     handleDateChange = field => date => {
-        var oldData = this.state.eventData;
+        let oldData = this.state.eventData;
         oldData[field] = date;
         this.setState({
             eventData: oldData,
@@ -69,9 +97,6 @@ export default class NewEventForm extends React.Component {
     }
 
     render() {
-        /**
-         * TODO: Cleanup this div and replace <input/>'s
-         */
         return (
             <div className='newEventForm'>
                 <Typography variant='h4' align='center' gutterBottom>Create a new event</Typography>
@@ -152,13 +177,12 @@ export default class NewEventForm extends React.Component {
                     />
                     {this.state.eventData.automate &&
                         <div>
-
                             <MuiPickersUtilsProvider utils={DateFnsUtils}>
                                 <Typography className="votePeriodText">Start Voting:</Typography>
                                 <DateTimePicker
                                     margin="dense"
                                     className="entryFormText"
-                                    value={this.state.eventData.startVote}
+                                    value={this.state.eventData.startVote ? this.state.eventData.startVote : new Date()}
                                     onChange={this.handleDateChange('startVote')}
                                     InputProps={{
                                         startAdornment: (
@@ -172,7 +196,7 @@ export default class NewEventForm extends React.Component {
                                 <DateTimePicker
                                     margin="dense"
                                     className="entryFormText"
-                                    value={this.state.eventData.endVote}
+                                    value={this.state.eventData.endVote ? this.state.eventData.endVote : new Date()}
                                     onChange={this.handleDateChange('endVote')}
                                     InputProps={{
                                         startAdornment: (
