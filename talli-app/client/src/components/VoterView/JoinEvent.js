@@ -69,26 +69,6 @@ export default class JoinEvent extends React.Component {
                 }
             });
         });
-
-        //to check whether the event that user have voted before
-        var cookie = getCookie('UserID');
-        var check = false;
-        const cookieRef = firebase.database().ref('attendees/' + cookie);
-        cookieRef.once('value').then(snapshot => {
-            let allCookies = snapshot.val();
-            for (var c in allCookies) {
-                if (c === this.state.eventID) {
-                    check = true;
-                    this.blockChild.current.handleOpen();
-
-                }
-            }
-            if (!check) {
-                cookieRef.child("currentEvent").set(this.state.eventID);
-                firebase.database().ref('event/' + this.state.eventID + "/attendees/" + cookie).set(cookie);
-                this.confirmChild.current.handleOpen();
-            }
-        });
     }
 
     handleScan(data) {
