@@ -105,6 +105,7 @@ export default class SortContainer extends Component {
     }
 
     submitted() {
+        this.props.sendToSheets();
         this.props.handler(this.props.voteViews.SUBMITTED);
     }
 

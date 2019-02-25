@@ -35,8 +35,9 @@ export default class Voter extends React.Component {
     }
 
     updateItems(itemList) {
-        this.setState({ rankingItems: itemList });
-        socket.emit('update_rankings', {votes: this.state.rankingItems});
+        this.setState({ rankingItems: itemList }, () => {
+            socket.emit('update_rankings', {votes: this.state.rankingItems});
+        });
     }
 
     changeView(newView, event = 'na', organizer = 'na', addedEntry = '') {
@@ -73,6 +74,7 @@ export default class Voter extends React.Component {
                         rankItems={this.state.rankingItems}
                         updateItemsHandler={this.updateItems}
                         handler={this.changeView}
+                        sendToSheets={this.sendToSheets}
                     />);
             case voteViews.SUBMITTED:
                 return (

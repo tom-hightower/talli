@@ -22,20 +22,22 @@ io.on('connection', function (socket) {
     let rankings;
 
     socket.on('send_votes', () => {
-        // console.log(`Message: ${data}`);
-        // for (vote in data.votes) {
-        //     console.log(vote);
-        // }
+        // can probably retreive their column names and use them as the keys in this object
+        let final_votes = {
+            First: rankings.length >= 0 ? rankings[0].name : "",
+            Second: rankings.length >= 1 ? rankings[1].name : "",
+            Third: rankings.length >= 2 ? rankings[2].name : ""
+        };
         console.log("votes sent!");
-        console.log(rankings);
-        // doc.useServiceAccountAuth(creds, (err) => {
-        //     console.log(err);
-        //     doc.addRow(1, data, (err2) => {
-        //         if (err2) {
-        //             console.log(err2);
-        //         }
-        //     });
-        // });
+        console.log(final_votes);
+        doc.useServiceAccountAuth(creds, (err) => {
+            console.log(err);
+            doc.addRow(1, final_votes, (err2) => {
+                if (err2) {
+                    console.log(err2);
+                }
+            });
+        });
     });
 
     socket.on('update_rankings', (data) => {
