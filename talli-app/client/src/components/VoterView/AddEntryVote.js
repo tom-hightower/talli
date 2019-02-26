@@ -3,6 +3,7 @@ import { Typography, TextField, Button } from '@material-ui/core';
 import QrReader from 'react-qr-reader';
 import EntryConfirmation from './Dialogs/EntryConfirmation';
 import firebase from '../../firebase';
+import { getCookie } from '../../cookies.js'
 import '../component_style/Voter.css';
 import NotFound from './Dialogs/NotFound';
 import BlockJoin from './Dialogs/BlockJoin';
@@ -50,6 +51,10 @@ export default class AddEntryVote extends React.Component {
                 this.confirmChild.current.handleOpen();
             });
         });
+        var cookie = getCookie('UserID');
+        var ref = firebase.database().ref("event/" + this.props.eventID + "/attendees/" + cookie + "/rankings/");
+        ref.child(this.state.entryID).set(this.state.entryID); // need some way to save rankings
+        this.confirmChild.current.handleOpen();
     }
 
     handleScan(data) {

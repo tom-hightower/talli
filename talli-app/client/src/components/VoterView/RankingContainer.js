@@ -5,6 +5,7 @@ import AddCircleIcon from '@material-ui/icons/AddCircle';
 import { Typography, Button } from '@material-ui/core';
 import BellIcon from '@material-ui/icons/NotificationImportant';
 import firebase from '../../firebase';
+import { getCookie } from '../../cookies.js'
 import '../component_style/RankingContainer.css';
 import SubmitConfirm from './Dialogs/SubmitConfirm';
 
@@ -97,6 +98,12 @@ export default class SortContainer extends Component {
         this.setState({
             items: arrayMove(this.state.items, oldIndex, newIndex),
         });
+        var items = this.state.items;
+        var cookie = getCookie('UserID');
+        const ref = firebase.database().ref("event/" + this.props.eventID + "/attendees/" + cookie + "/rankings/");
+        for (var i = 0; i < items.length; i++) {
+            ref.child(items[i].id).set(i + 1);
+        }
     };
 
     submitConfirm() {
