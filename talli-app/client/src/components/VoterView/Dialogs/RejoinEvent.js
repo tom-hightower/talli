@@ -2,7 +2,7 @@ import React from 'react';
 import { Dialog, DialogTitle, DialogContent, DialogActions, Button, Slide } from '@material-ui/core';
 
 function Transition(props) {
-    return <Slide direction="up" {...props} />;
+    return (<Slide direction="up" {...props} />);
   }
 
 export default class RejoinEvent extends React.Component {

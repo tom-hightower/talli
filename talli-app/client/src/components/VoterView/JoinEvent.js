@@ -36,16 +36,16 @@ export default class JoinEvent extends React.Component {
     }
 
     componentDidMount() {
-        let cookie = getCookie('UserID');
+        const cookie = getCookie('UserID');
         firebase.database().ref(`attendees/${cookie}`).once('value').then(cookieSnap => {
-            let allCookies = cookieSnap.val();
+            const allCookies = cookieSnap.val();
             if (allCookies && allCookies.currentEvent) {
                 firebase.database().ref('event/').once('value').then(orgSnap => {
                     const orgID = orgSnap.val()[allCookies.currentEvent];
                     this.setState({ organizerID: (orgID ? orgID['organizer'] : '') }, () => {
                         if (this.state.organizerID && this.state.organizerID !== '') {
                             firebase.database().ref(`/organizer/${this.state.organizerID}/event/${allCookies.currentEvent}`).once('value').then(eventSnap => {
-                                let event = eventSnap.val();
+                                const event = eventSnap.val();
                                 if (!event) return;
                                 this.setState({
                                     eventName: event.eventData.name,
@@ -125,13 +125,15 @@ export default class JoinEvent extends React.Component {
     }
 
     handleRejoinEvent() {
-        let cookie = getCookie("UserID");
+        const cookie = getCookie("UserID");
         firebase.database().ref(`event/${this.state.eventID}/attendees/${cookie}/rankings/`).once("value").then(rankSnap => {
             const rankings = rankSnap.val();
-            let items = [];
+            const items = [];
             if (rankings) {
-                for (let item in rankings) {
-                    items[rankings[item] - 1] = item;
+                for (const item in rankings) {
+                    if (item) {
+                        items[rankings[item] - 1] = item;
+                    }
                 }
             }
             firebase.database().ref('organizer/').once('value').then(snapshot => {
@@ -146,14 +148,14 @@ export default class JoinEvent extends React.Component {
                 }
                 this.props.updateItemsHandler(itemList);
             })
-            .then(() => {
-                this.handleJoinEvent();
-            });
+                .then(() => {
+                    this.handleJoinEvent();
+                });
         });
     }
 
     handleJoinEvent() {
-        let cookie = getCookie('UserID');
+        const cookie = getCookie('UserID');
         const itemsRef = firebase.database().ref(`attendees/${cookie}`);
         itemsRef.child("currentEvent").set(this.state.eventID);
         this.props.handler(this.props.voteViews.RANK, this.state.eventID, this.state.organizerID);
