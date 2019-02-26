@@ -89,7 +89,9 @@ export default class SortContainer extends Component {
                         entries: eventEntries
                     },
                     items: itemList
-                }, () => { this.props.updateItemsHandler(this.state.items) });
+                }, () => {
+                    this.props.updateItemsHandler(this.state.items);
+                });
             });
         });
     }

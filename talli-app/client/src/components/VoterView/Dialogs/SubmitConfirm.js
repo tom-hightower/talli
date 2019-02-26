@@ -30,6 +30,7 @@ export default class SubmitConfirm extends React.Component {
         var cookie = getCookie('UserID');
         const itemsRef = firebase.database().ref('attendees/' + cookie);
         itemsRef.child(this.props.eventID).set(this.props.eventID);
+        itemsRef.child("currentEvent").set('')
         this.props.handler();
     }
 
