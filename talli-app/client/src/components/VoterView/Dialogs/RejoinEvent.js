@@ -32,9 +32,9 @@ export default class RejoinEvent extends React.Component {
                     </DialogTitle>
                     <DialogContent>
                         You are currently signed in to:
-                        <br/>
-                        <b>{this.props.entryName}.</b>
-                        <br/>
+                        <br />
+                        <b>{this.props.entryName}</b>
+                        <br />
                         Would you like to rejoin?
                     </DialogContent>
                     <DialogActions>
