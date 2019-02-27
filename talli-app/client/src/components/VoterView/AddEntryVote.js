@@ -52,8 +52,8 @@ export default class AddEntryVote extends React.Component {
             });
         });
         var cookie = getCookie('UserID');
-        var ref = firebase.database().ref("event/" + this.props.eventID + "/attendees/" + cookie + "/rankings/");
-        ref.child(this.state.entryID).set(this.state.entryID); // need some way to save rankings
+        const ref = firebase.database().ref("event/" + this.props.eventID + "/attendees/" + cookie + "/rankings/");
+        ref.child(this.state.entryID).set(-1); // need some way to save rankings
         this.confirmChild.current.handleOpen();
     }
 
