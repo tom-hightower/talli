@@ -7,14 +7,16 @@ import firebase from '../firebase.js';
 import { setCookie, getCookie } from '../cookies.js'
 
 import openSocket from 'socket.io-client';
+import HelpView from './Help';
+
 const socket = openSocket('http://localhost:5000');
+var config = require('../config.json');
 
 // tried not to hardcode this but oh well
-let signInUrl = "https://accounts.google.com/o/oauth2/v2/auth?access_type=offline&prompt=consent&scope=https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fplus.me%20https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.email&response_type=code&client_id=1061225539650-cp3lrdn3p1u49tsq320l648hcuvg8plb.apps.googleusercontent.com&redirect_uri=http%3A%2F%2Flocalhost%3A3000%2Fgoogle-auth";
+let signInUrl = config.Global.signInUrl;
 
 socket.on('send_url', url => {
     signInUrl = url;
-    // console.log('google sign in: ', url);
 })
 
 /**
@@ -43,12 +45,14 @@ export default class MainPage extends React.Component {
             url: signInUrl
         };
         // this.sendLoginRequest = this.sendLoginRequest.bind(this);
+        this.helpChild = React.createRef();
     }
 
     render() {
         return (
             <div className="content">
                 <br />
+                <HelpView ref={this.helpChild} />
                 <Typography variant="h4" align="center" gutterBottom>Welcome to Talli!</Typography>
                 <Grid container justify="center">
                     <div className="buttons">
@@ -71,7 +75,7 @@ export default class MainPage extends React.Component {
                 </Grid>
                 {/* <a href={signInUrl}>Sign in w google new way</a> */}
                 <br />
-                <p align="center">About Talli</p>
+                <p align="center" onClick={() => this.helpChild.current.handleOpen()}>About Talli</p>
             </div>
         );
     }
