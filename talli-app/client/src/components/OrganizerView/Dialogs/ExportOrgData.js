@@ -2,6 +2,7 @@ import React from 'react';
 import { Slide, Dialog, DialogTitle, DialogContent, DialogActions, Button, FormControlLabel, Switch } from '@material-ui/core';
 import qr from 'qr-image';
 import jsPDF from 'jspdf';
+
 var config = require('../../../config.json');
 
 function Transition(props) {

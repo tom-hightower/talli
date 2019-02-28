@@ -75,6 +75,7 @@ export default class SortContainer extends Component {
                 var itemList = this.state.items;
                 if (eventEntries && this.props.entryToAdd && !this.state.items.some(e => e.id === this.props.entryToAdd)) {
                     itemList.push({ name: eventEntries[this.props.entryToAdd].title, id: this.props.entryToAdd });
+                    this.updateDatabaseRankings(itemList);
                 }
                 this.setState({
                     event: {
@@ -89,7 +90,9 @@ export default class SortContainer extends Component {
                         entries: eventEntries
                     },
                     items: itemList
-                }, () => { this.props.updateItemsHandler(this.state.items) });
+                }, () => {
+                    this.props.updateItemsHandler(this.state.items);
+                });
             });
         });
     }
@@ -98,13 +101,16 @@ export default class SortContainer extends Component {
         this.setState({
             items: arrayMove(this.state.items, oldIndex, newIndex),
         });
-        var items = this.state.items;
-        var cookie = getCookie('UserID');
-        const ref = firebase.database().ref("event/" + this.props.eventID + "/attendees/" + cookie + "/rankings/");
+        this.updateDatabaseRankings(this.state.items);
+    };
+
+    updateDatabaseRankings(items) {
+        const cookie = getCookie('UserID');
+        const ref = firebase.database().ref(`event/${this.props.eventID}/attendees/${cookie}/rankings/`);
         for (var i = 0; i < items.length; i++) {
             ref.child(items[i].id).set(i + 1);
         }
-    };
+    }
 
     submitConfirm() {
         this.props.updateItemsHandler(this.state.items);

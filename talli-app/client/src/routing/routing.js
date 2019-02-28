@@ -3,15 +3,8 @@ import createReactClass from 'create-react-class';
 import MainPage from '../components/MainPage';
 import Voter from '../components/Voter';
 import Organizer from '../components/Organizer';
-import HelpView from '../components/Help';
+
 var RouterMixin = require('react-mini-router').RouterMixin;
-
-// class RoutedApp extends React.Component {
-
-//     render() {
-
-//     }
-// }
 
 /**
  * RoutedApp handles routing between each of the main views as well
@@ -32,7 +25,6 @@ var RoutedApp = createReactClass({
         '/vote': 'vote',
         '/vote/:text': 'voteWithID',
         '/organizer': 'organizer',
-        '/help': 'help',
     },
 
     render: function () {
@@ -61,10 +53,6 @@ var RoutedApp = createReactClass({
                 logout={this.logout}
                 user={this.props.user} />
         );
-    },
-
-    help: function () {
-        return <HelpView />;
     },
 
     notFound: function (path) {
