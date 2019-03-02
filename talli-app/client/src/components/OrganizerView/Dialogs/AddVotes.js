@@ -71,6 +71,8 @@ export default class AddVotes extends React.Component {
                 <Dialog open={this.state.open} TransitionComponent={Transition} onClose={this.handleClose}>
                     <DialogTitle> Add Vote </DialogTitle>
                     <DialogContent>
+                        Click the circle-add button to fill in each entry and its rank.
+                        <br />
                         <form className="entryForm">
                             {
                                 this.state.entries.map((val, idx) => {
@@ -81,7 +83,7 @@ export default class AddVotes extends React.Component {
                                     )
                                 })
                             }
-                            <AddCircleIcon color='primary' id='entryIcon' onClick={this.addEntry} />
+                            <AddCircleIcon color='primary' id='entryIcon' onClick={this.addEntry}/>
                         </form>
                     </DialogContent>
                     <DialogActions>

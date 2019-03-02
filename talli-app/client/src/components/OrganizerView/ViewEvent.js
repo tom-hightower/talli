@@ -189,8 +189,11 @@ export default class ViewEvent extends React.Component {
                             <Button className="button1" variant="contained" onClick={this.manageEvent}>Manage Event</Button>
                             <Button className="button1" variant="contained" color="primary" onClick={this.viewResults}>View Results</Button>
                         </div>
+                        <br />
+                        <Typography variant="h5">Add paper ballot(s) manually into system:</Typography>
+                        <br />
                         <div className="box">
-                            <Button className="listButtons" onClick={this.handleAddVote}>Manually Add Vote From Paper Ballot</Button>
+                            <Button className="listButtons" onClick={this.handleAddVote}>Add Vote</Button>
                         </div>
                         <br />
                         <Typography variant="h5">Set up Google Sheets to export results:</Typography>
