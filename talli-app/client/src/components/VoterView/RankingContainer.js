@@ -8,6 +8,7 @@ import firebase from '../../firebase';
 import { getCookie } from '../../cookies.js'
 import '../component_style/RankingContainer.css';
 import SubmitConfirm from './Dialogs/SubmitConfirm';
+import Countdown from './Countdown';
 
 const DragHandle = SortableHandle(() => <span><SliderIcon className="Sliders" /></span>);
 
@@ -89,7 +90,7 @@ export default class SortContainer extends Component {
                         endVote: eventBase['endVote'],
                         entries: eventEntries
                     },
-                    items: itemList
+                    items: itemList,
                 }, () => {
                     this.props.updateItemsHandler(this.state.items);
                 });
@@ -124,7 +125,7 @@ export default class SortContainer extends Component {
     render() {
         return (
             <div>
-                <SubmitConfirm handler={this.submitted} ref={this.confirmChild} items={this.state.items} eventID={this.state.event.id}/>
+                <SubmitConfirm handler={this.submitted} ref={this.confirmChild} items={this.state.items} eventID={this.state.event.id} />
                 <Typography variant='h4' align='center' className="eventName" gutterBottom>{this.state.event.name}</Typography>
                 <div style={{ textAlign: 'center' }}>
                     <AddCircleIcon className="AddEvent" id='addEntry' color='secondary' onClick={this.handleAddEvent} />
@@ -138,10 +139,13 @@ export default class SortContainer extends Component {
                 <div className='SubmitDiv'>
                     <BellIcon className='BellIcon' />
                     <div className='SubmitText'>
-                        {/* TODO: have this generated off of the end time of the event
-                */}
-                        Voting closes in xx:xx
-                </div>
+                        {this.state.event.automate ? (
+                            <>
+                                Voting will close in:
+                                <Countdown date={this.state.event.endVote} />
+                            </>
+                        ) : "Voting will close at the event organizer's discretion"}
+                    </div>
                     <div className='buttonDiv'>
                         <Button variant="contained" color="primary" onClick={this.submitConfirm}> Submit </Button>
                     </div>
