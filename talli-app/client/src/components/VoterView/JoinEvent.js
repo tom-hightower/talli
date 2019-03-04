@@ -7,6 +7,8 @@ import firebase from '../../firebase';
 import { getCookie } from '../../cookies.js'
 import BlockJoin from './Dialogs/BlockJoin';
 import NotFound from './Dialogs/NotFound';
+import RejoinEvent from './Dialogs/RejoinEvent';
+
 var config = require('../../config.json');
 
 /**
@@ -25,19 +27,47 @@ export default class JoinEvent extends React.Component {
         this.handleText = this.handleText.bind(this);
         this.handleJoinEvent = this.handleJoinEvent.bind(this);
         this.keyPress = this.keyPress.bind(this);
+        this.handleRejoinEvent = this.handleRejoinEvent.bind(this);
 
         this.confirmChild = React.createRef();
         this.blockChild = React.createRef();
         this.notFoundChild = React.createRef();
+        this.rejoinChild = React.createRef();
+    }
+
+    componentDidMount() {
+        const cookie = getCookie('UserID');
+        firebase.database().ref(`attendees/${cookie}`).once('value').then(cookieSnap => {
+            const allCookies = cookieSnap.val();
+            if (allCookies && allCookies.currentEvent) {
+                firebase.database().ref('event/').once('value').then(orgSnap => {
+                    const orgID = orgSnap.val()[allCookies.currentEvent];
+                    this.setState({ organizerID: (orgID ? orgID['organizer'] : '') }, () => {
+                        if (this.state.organizerID && this.state.organizerID !== '') {
+                            firebase.database().ref(`/organizer/${this.state.organizerID}/event/${allCookies.currentEvent}`).once('value').then(eventSnap => {
+                                const event = eventSnap.val();
+                                if (!event) return;
+                                this.setState({
+                                    eventName: event.eventData.name,
+                                    eventID: allCookies.currentEvent,
+                                }, () => {
+                                    this.rejoinChild.current.handleOpen();
+                                });
+                            });
+                        }
+                    });
+                });
+            }
+        });
     }
 
     requestConfirm = () => {
         firebase.database().ref('event/').once('value').then((snap) => {
             let orgID = snap.val()[this.state.eventID];
-            this.setState({ organizerID: (orgID ? orgID['organizer'] : '') }, () => {
+            this.setState({ organizerID: (orgID ? orgID.organizer : '') }, () => {
                 if (this.state.organizerID && this.state.organizerID !== '') {
                     firebase.database().ref('/organizer/' + this.state.organizerID + '/event/' + this.state.eventID).once('value').then(snapshot => {
-                        let event = snapshot.val();
+                        const event = snapshot.val();
                         if (!event) {
                             // Event not found
                             this.notFoundChild.current.handleOpen();
@@ -69,45 +99,65 @@ export default class JoinEvent extends React.Component {
                 }
             });
         });
-
-        //to check whether the event that user have voted before
-        var cookie = getCookie('UserID');
-        var check = false;
-        const cookieRef = firebase.database().ref('attendees/' + cookie);
-        cookieRef.once('value').then(snapshot => {
-            let allCookies = snapshot.val();
-            for (var c in allCookies) {
-                if (c === this.state.eventID) {
-                    check = true;
-                    this.blockChild.current.handleOpen();
-
-                }
-            }
-            if (!check) {
-                cookieRef.child("currentEvent").set(this.state.eventID);
-                firebase.database().ref('event/' + this.state.eventID + "/attendees/" + cookie).set(cookie);
-                this.confirmChild.current.handleOpen();
-            }
-        });
     }
 
     handleScan(data) {
         if (data && data.toLowerCase().includes((config.Global.hostURL + "/vote/").toLowerCase())) {
             var id = data.substring(data.indexOf("/vote/") + 6).replace(/\W/g, '');
+            if (this.state.eventID === id) {
+                this.handleRejoinEvent();
+                return;
+            }
             this.setState({ eventID: id });
             this.requestConfirm();
         }
     }
 
     handleText() {
+        if (this.state.idFieldValue === this.state.eventID && this.state.idFieldValue.length > 2) {
+            this.handleRejoinEvent();
+            return;
+        }
         this.setState({ eventID: this.state.idFieldValue });
         if (this.state.idFieldValue.length > 2) {
             this.requestConfirm();
         }
     }
 
+    handleRejoinEvent() {
+        const cookie = getCookie("UserID");
+        firebase.database().ref(`event/${this.state.eventID}/attendees/${cookie}/rankings/`).once("value").then(rankSnap => {
+            const rankings = rankSnap.val();
+            const items = [];
+            if (rankings) {
+                for (const item in rankings) {
+                    if (item) {
+                        items[rankings[item] - 1] = item;
+                    }
+                }
+            }
+            firebase.database().ref('organizer/').once('value').then(snapshot => {
+                const organizer = snapshot.val();
+                const event = organizer[this.state.organizerID].event[this.state.eventID];
+                const itemList = [];
+                for (let i = 0; i < items.length; i++) {
+                    const entry = event.entries[items[i]];
+                    if (entry) {
+                        itemList.push({ name: entry.title, id: entry.id.toString() });
+                    }
+                }
+                this.props.updateItemsHandler(itemList);
+            })
+                .then(() => {
+                    this.handleJoinEvent();
+                });
+        });
+    }
+
     handleJoinEvent() {
-        //TODO: Join the event
+        const cookie = getCookie('UserID');
+        const itemsRef = firebase.database().ref(`attendees/${cookie}`);
+        itemsRef.child("currentEvent").set(this.state.eventID);
         this.props.handler(this.props.voteViews.RANK, this.state.eventID, this.state.organizerID);
     }
 
@@ -122,6 +172,7 @@ export default class JoinEvent extends React.Component {
     render() {
         return (
             <div>
+                <RejoinEvent entryName={this.state.eventName} ref={this.rejoinChild} handler={this.handleRejoinEvent} />
                 <NotFound ref={this.notFoundChild} idType={'Event'} id={this.state.eventID} />
                 <EntryConfirmation entryName={this.state.eventName} ref={this.confirmChild} handler={this.handleJoinEvent} />
                 <BlockJoin entryName={this.state.eventName} idType={'Event'} ref={this.blockChild} />

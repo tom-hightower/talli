@@ -13,6 +13,7 @@ import { Drawer, ListItemIcon, ListItemText, ListItem, Divider } from '@material
 import './component_style/NavBar.css';
 import logoSvg from '../logo.svg';
 import { navigate } from 'react-mini-router';
+import HelpView from './Help';
 
 /**
  * The NavBar contains the top AppBar as well as the navigation Drawer on
@@ -24,6 +25,8 @@ export default class NavBar extends React.Component {
         this.state = {
             open: false,
         };
+
+        this.helpChild = React.createRef();
     }
 
     toggleDrawer = () => this.setState({ open: !this.state.open });
@@ -32,7 +35,6 @@ export default class NavBar extends React.Component {
 
 
     onSuccess = (response) => {
-        console.log(response);
         this.props.onSuccess(response);
         this.ChangeView('/organizer');
     }
@@ -102,13 +104,14 @@ export default class NavBar extends React.Component {
                             </ListItem>
                             { loginStatus }
                             <Divider />
-                            <ListItem button key='Help' onClick={() => this.ChangeView('/help')}>
+                            <ListItem button key='Help' onClick={() => this.helpChild.current.handleOpen()}>
                                 <ListItemIcon><HelpOutlineIcon /></ListItemIcon>
                                 <ListItemText primary='Help' />
                             </ListItem>
                         </div>
                     </div>
                 </Drawer>
+                <HelpView ref={this.helpChild} />
             </div>
         );
     }
