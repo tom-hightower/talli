@@ -17,8 +17,8 @@ export default class NewEventForm extends React.Component {
             startDate: new Date(),
             endDate: new Date(),
             automate: false,
-            startVote: undefined,
-            endVote: undefined,
+            startVote: new Date(),
+            endVote: new Date(),
         },
     }
 
@@ -182,7 +182,7 @@ export default class NewEventForm extends React.Component {
                                 <DateTimePicker
                                     margin="dense"
                                     className="entryFormText"
-                                    value={this.state.eventData.startVote ? this.state.eventData.startVote : new Date()}
+                                    value={this.state.eventData.startVote}
                                     onChange={this.handleDateChange('startVote')}
                                     InputProps={{
                                         startAdornment: (
@@ -196,7 +196,7 @@ export default class NewEventForm extends React.Component {
                                 <DateTimePicker
                                     margin="dense"
                                     className="entryFormText"
-                                    value={this.state.eventData.endVote ? this.state.eventData.endVote : new Date()}
+                                    value={this.state.eventData.endVote}
                                     onChange={this.handleDateChange('endVote')}
                                     InputProps={{
                                         startAdornment: (
