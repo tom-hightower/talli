@@ -144,7 +144,7 @@ export default class SortContainer extends Component {
                                 Voting will close in:
                                 <Countdown date={this.state.event.endVote} />
                             </>
-                        ) : "Voting will close at the event organizer's discretion"}
+                        ) : "Voting will close at the organizer's discretion"}
                     </div>
                     <div className='buttonDiv'>
                         <Button variant="contained" color="primary" onClick={this.submitConfirm}> Submit </Button>
