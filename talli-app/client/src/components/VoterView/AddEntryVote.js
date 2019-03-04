@@ -50,7 +50,6 @@ export default class AddEntryVote extends React.Component {
                 this.confirmChild.current.handleOpen();
             });
         });
-        this.confirmChild.current.handleOpen();
     }
 
     handleScan(data) {
