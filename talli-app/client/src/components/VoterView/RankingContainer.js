@@ -126,8 +126,8 @@ export default class SortContainer extends Component {
     }
 
     countdownFinished() {
-        var cookie = getCookie('UserID');
-        const itemsRef = firebase.database().ref('attendees/' + cookie);
+        const cookie = getCookie('UserID');
+        const itemsRef = firebase.database().ref(`attendees/${cookie}`);
         itemsRef.child("currentEvent").set('');
         itemsRef.child(`pastEvents/${this.props.eventID}/`).set(this.props.eventID);
         this.closedChild.current.handleOpen();
