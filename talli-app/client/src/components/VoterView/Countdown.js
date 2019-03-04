@@ -16,7 +16,7 @@ export default class Countdown extends Component {
         // update every second
         this.interval = setInterval(() => {
             const date = this.calculateCountdown(this.props.date);
-            date ? this.setState(date) : this.stop();
+            date ? this.setState(date) : this.finish();
         }, 1000);
     }
 
@@ -63,6 +63,11 @@ export default class Countdown extends Component {
 
     stop() {
         clearInterval(this.interval);
+    }
+
+    finish() {
+        clearInterval(this.interval);
+        this.props.onFinished();
     }
 
     addLeadingZeros(value) {
