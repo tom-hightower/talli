@@ -66,16 +66,16 @@ export default class Countdown extends Component {
     }
 
     addLeadingZeros(value) {
-        let value_str = String(value);
-        while (value_str.length < 2) {
-            value_str = `0${value_str}`;
+        let valueStr = String(value);
+        while (valueStr.length < 2) {
+            valueStr = `0${valueStr}`;
         }
-        return value_str;
+        return valueStr;
     }
 
     render() {
         const countDown = this.state;
-        let renderCount
+        let renderCount;
 
 
         if (countDown.days > 7) {
