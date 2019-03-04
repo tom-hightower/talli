@@ -29,8 +29,8 @@ export default class SubmitConfirm extends React.Component {
         // Ranked entries are contained in this.props.items
         var cookie = getCookie('UserID');
         const itemsRef = firebase.database().ref('attendees/' + cookie);
-        itemsRef.child(this.props.eventID).set(this.props.eventID);
         itemsRef.child("currentEvent").set('');
+        itemsRef.child(`pastEvents/${this.props.eventID}/`).set(this.props.eventID);
         this.props.handler();
     }
 
