@@ -9,7 +9,7 @@ export default class Countdown extends Component {
             hours: 0,
             min: 0,
             sec: 0,
-        }
+        };
     }
 
     componentDidMount() {
@@ -66,47 +66,59 @@ export default class Countdown extends Component {
     }
 
     addLeadingZeros(value) {
-        value = String(value);
-        while (value.length < 2) {
-            value = '0' + value;
+        let value_str = String(value);
+        while (value_str.length < 2) {
+            value_str = `0${value_str}`;
         }
-        return value;
+        return value_str;
     }
 
     render() {
         const countDown = this.state;
+        let renderCount
+
+
+        if (countDown.days > 7) {
+            renderCount = (
+                <>
+                    <strong>{this.addLeadingZeros(countDown.days)}</strong>
+                    <span> Days</span>
+                </>
+            );
+        } else if (countDown.days > 0) {
+            renderCount = (
+                <>
+                    <strong>{this.addLeadingZeros(countDown.days)}</strong>
+                    <span>{countDown.days === 1 ? ' Day, ' : ' Days, '}</span>
+                    <strong>{this.addLeadingZeros(countDown.hours)}</strong>
+                    <span>Hours</span>
+                </>
+            );
+        } else if (countDown.hours > 1) {
+            renderCount = (
+                <>
+                    <strong>{this.addLeadingZeros(countDown.hours)}</strong>
+                    <span> Hours, </span>
+                    <strong>{this.addLeadingZeros(countDown.min)}</strong>
+                    <span> Min</span>
+                </>
+            );
+        } else {
+            renderCount = (
+                <>
+                    <strong>{this.addLeadingZeros(countDown.min)}</strong>
+                    <span> Min, </span>
+                    <strong>{this.addLeadingZeros(countDown.sec)}</strong>
+                    <span> Sec</span>
+
+                </>
+            );
+        }
+
 
         return (
             <div className="Countdown">
-                {countDown.days > 7 ? (
-                    <>
-                        <strong>{this.addLeadingZeros(countDown.days)}</strong>
-                        <span> Days</span>
-                    </>
-                ) : (countDown.days > 0 ? (
-                    <>
-                        <strong>{this.addLeadingZeros(countDown.days)}</strong>
-                        <span>{countDown.days === 1 ? ' Day, ' : ' Days, '}</span>
-                        <strong>{this.addLeadingZeros(countDown.hours)}</strong>
-                        <span>Hours</span>
-                    </>
-                ) : (countDown.hours > 1 ? (
-                    <>
-                        <strong>{this.addLeadingZeros(countDown.hours)}</strong>
-                        <span> Hours, </span>
-                        <strong>{this.addLeadingZeros(countDown.min)}</strong>
-                        <span> Min</span>
-                    </>
-                ) : (
-                        <>
-                            <strong>{this.addLeadingZeros(countDown.min)}</strong>
-                            <span> Min, </span>
-                            <strong>{this.addLeadingZeros(countDown.sec)}</strong>
-                            <span> Sec</span>
-
-                        </>
-                    )))
-                }
+                {renderCount}
             </div>
         );
     }
