@@ -136,20 +136,26 @@ export default class SortContainer extends Component {
                             useDragHandle={true} helperClass='sortHelp' />
                     </div>
                 </div>
-                <div className='SubmitDiv'>
-                    <BellIcon className='BellIcon' />
-                    <div className='SubmitText'>
-                        {this.state.event.automate ? (
-                            <>
-                                Voting will close in:
+
+                {this.state.event.automate ? (
+                    <div className='SubmitDiv'>
+                        <BellIcon className='BellIcon' />
+                        <div className='SubmitText'>
+                            Voting will close in:
                                 <Countdown date={this.state.event.endVote} />
-                            </>
-                        ) : "Voting will close at the organizer's discretion"}
+                        </div>
+                        <div className='buttonDiv'>
+                            <Button variant="contained" color="primary" onClick={this.submitConfirm}> Submit </Button>
+                        </div>
                     </div>
-                    <div className='buttonDiv'>
-                        <Button variant="contained" color="primary" onClick={this.submitConfirm}> Submit </Button>
+                ) : (
+                    <div className='CenterSubmitDiv'>
+                        <div className='CenterButtonDiv'>
+                            <Button variant="contained" color="primary" onClick={this.submitConfirm}> Submit </Button>
+                        </div>
                     </div>
-                </div>
+                )}
+
             </div>
         );
     }
