@@ -1,5 +1,5 @@
 import React from 'react';
-import { Slide, Dialog, DialogTitle, DialogContent, DialogActions, Button } from '@material-ui/core';
+import { Slide, Dialog, DialogTitle, DialogContent, Button } from '@material-ui/core';
 import AddCircleIcon from '@material-ui/icons/AddCircle';
 import firebase from '../../../firebase';
 import AddVoteEntryForm from './AddVoteEntryForm';
@@ -61,11 +61,11 @@ export default class AddVotes extends React.Component {
     };
 
     handleClose = () => {
+        this.setState({ entries: [] })
         this.setState({ open: false });
     };
 
     render() {
-        let { entries } = this.state.entries;
         return (
             <div>
                 <Dialog open={this.state.open} TransitionComponent={Transition} onClose={this.handleClose}>
@@ -73,23 +73,30 @@ export default class AddVotes extends React.Component {
                     <DialogContent>
                         Click the circle-add button to fill in each entry and its rank.
                         <br />
-                        <form className="entryForm">
+                        <form className="entryForm" onSubmit={this.submitVote}>
                             {
                                 this.state.entries.map((val, idx) => {
                                     return (
                                         <div key={idx}>
-                                            <AddVoteEntryForm updateEntry={(status, index) => this.updateEntry(status, index)} index={idx} />
+                                            <AddVoteEntryForm event={this.props.event} googleId={this.props.googleId} updateEntry={(status, index) => this.updateEntry(status, index)} index={idx} />
                                         </div>
                                     )
                                 })
                             }
                             <AddCircleIcon color='primary' id='entryIcon' onClick={this.addEntry}/>
+                            <br />
+                            <Button
+                                variant="contained"
+                                className="buttons"
+                                type="button"
+                                onClick={this.handleClose}
+                            >
+                                Cancel
+                            </Button>
+                            {"  "}
+                            <Button type="submit" variant="contained" color="primary" className='buttons'>Done</Button>
                         </form>
                     </DialogContent>
-                    <DialogActions>
-                        <Button onClick={this.handleClose}>Cancel</Button>
-                        <Button onClick={this.submitVote} color="primary">submit</Button>
-                    </DialogActions>
                 </Dialog>
             </div>
         );
