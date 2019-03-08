@@ -19,6 +19,7 @@ export default class NewEventForm extends React.Component {
             automate: false,
             startVote: undefined,
             endVote: undefined,
+            sheetURL: ""
         },
     }
 

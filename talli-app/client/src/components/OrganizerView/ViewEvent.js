@@ -7,6 +7,10 @@ import EditEntries from './Dialogs/EditEntries';
 import EditEvent from './Dialogs/EditEvent';
 import EditVoting from './Dialogs/EditVoting';
 import AddEntries from './Dialogs/AddEntries';
+import openSocket from 'socket.io-client';
+
+const socket = openSocket('http://localhost:5000');
+
 
 /**
  * OrganizerView > ViewEvent
@@ -28,6 +32,7 @@ export default class ViewEvent extends React.Component {
                 automate: false, 
                 startVote: '', 
                 endVote: '',
+                sheetURL: 'Google Sheet URL',
                 entries: []
             },
         };
@@ -56,6 +61,7 @@ export default class ViewEvent extends React.Component {
                     automate: eventBase['automate'],
                     startVote: eventBase['startVote'],
                     endVote: eventBase['endVote'],
+                    sheetURL: eventBase['sheetURL'],
                     entries: eventEntries
                 }
             });
@@ -110,6 +116,20 @@ export default class ViewEvent extends React.Component {
         this.setState({
             view: "main"
         })
+    }
+
+    handleURLChange = (e) => {
+        this.setState({
+            event: {
+                sheetURL: e.target.value
+            }
+        });
+        socket.emit('send_url', {url: e.target.value});
+        // also send to DB here
+        var googleId = this.props.user.googleId;
+        var eventId = this.state.event.id;
+        const eventData = firebase.database().ref(`organizer/${googleId}/event/${eventId}/eventData`);
+        eventData.child('sheetURL').set(e.target.value);
     }
 
 
@@ -188,7 +208,7 @@ export default class ViewEvent extends React.Component {
                             <div>1. Create a Google Sheet in your desired location</div>
                             <div>
                                 {/* TODO: This should automatically save, probably to firebase */}
-                                2. Grab the spreadsheet's URL and paste it here: <input className="sheetURL" placeholder="Google sheet URL"></input>
+                                <form><label>2. Grab the spreadsheet's URL and paste it here: <input type="text" value={this.state.event.sheetURL} onChange={this.handleURLChange} className="sheetURL"></input></label></form>
                             </div>
                             <div>3. Share the spreadsheet with editing rights with <b>talli-455@talli-229017.iam.gserviceaccount.com</b></div>
                         </div>
