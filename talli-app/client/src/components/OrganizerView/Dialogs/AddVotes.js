@@ -48,15 +48,17 @@ export default class AddVotes extends React.Component {
 
     submitVote = () => {
         let hasError = false;
+        let numOfEntries = 0;
         for (var i = 0; i < this.state.entries.length; i++) {
             let checkItem = this.state.entries[i];
             if (checkItem.show) {
                 if (checkItem.duplicate || !checkItem.valid) {
                     hasError = true;
                 }
+                numOfEntries++;
             }
         }
-        if (!hasError) {
+        if (!hasError && numOfEntries > 0) {
             const itemRef = firebase.database().ref('event/'+ this.props.event.id + '/nonDigitVote');
             itemRef.once('value', (snapshot) => {
                 let nonDigitVoteSize = snapshot.child("count").val();
