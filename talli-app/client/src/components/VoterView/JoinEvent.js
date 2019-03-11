@@ -77,7 +77,8 @@ export default class JoinEvent extends React.Component {
         const date = new Date().toISOString();
         if ((event.endDate > date) && (event.startVote === 'none' || (event.startVote > date))) { // not open yet
             return 'before';
-        } else if ((event.startDate < date) && (event.endDate > date) && (event.endVote === 'none' || (event.endVote > date))) { // open
+        }
+        if ((event.startDate < date) && (event.endDate > date) && (event.endVote === 'none' || (event.endVote > date))) { // open
             return 'open';
         }
         return 'closed';
