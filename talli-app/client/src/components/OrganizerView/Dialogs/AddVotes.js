@@ -121,7 +121,7 @@ export default class AddVotes extends React.Component {
                                 Cancel
                             </Button>
                             {"  "}
-                            <Button type="submit" variant="contained" color="primary" className='buttons'>Done</Button>
+                            <Button type="submit" variant="contained" color="primary" className='buttons'>Submit</Button>
                         </form>
                     </DialogContent>
                 </Dialog>
