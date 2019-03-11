@@ -32,18 +32,15 @@ export default class AddEntries extends React.Component {
     }
 
     handleSaveClose = () => {
-        var tempId = this.state.id;
-        // autogenerate ID if necessary
-        if (!tempId) {
-             tempId = Math.floor((Math.random() * 10000) + 1);
-        }
-        // change ID to ensure uniqueness
+        var tempId;
+        // generate ID
         if (this.props.event.entries) {
-            var existingEntry = this.props.event.entries[tempId];
-            while (existingEntry !== undefined) {
-                tempId++;
-                existingEntry = this.props.event.entries[tempId];
-            }
+            let ent = this.props.event.entries;
+            let entArray = Object.keys(ent);
+            tempId = 1 + parseInt(ent[entArray[entArray.length - 1]].id);
+        } else {
+            let base = 1000 + Math.floor((Math.random() * 8000) + 1);
+            tempId = base;
         }
         // save new entry to database
         let itemsRef = firebase.database().ref('organizer/' + this.props.googleId +
@@ -76,13 +73,6 @@ export default class AddEntries extends React.Component {
                             className="entryFormText"
                             defaultValue={this.state.title}
                             onChange={this.handleChange('title')}
-                        />
-                        <TextField
-                            label="ID (auto if blank)"
-                            margin="dense"
-                            className="entryFormText"
-                            defaultValue={this.state.id}
-                            onChange={this.handleChange('id')}
                         />
                         <br />
                         <TextField

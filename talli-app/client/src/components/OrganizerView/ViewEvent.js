@@ -154,7 +154,7 @@ export default class ViewEvent extends React.Component {
                             {
                                 
                                 Object.values(this.state.event.entries).map((entry, index) => 
-                                    <Button className="listButtons" onClick={() => this.handleEntryEdit(entry.id)}>
+                                    <Button key={index} className="listButtons" onClick={() => this.handleEntryEdit(entry.id)}>
                                         {entry.title} by {entry.presenters}
                                     </Button>
                                 )

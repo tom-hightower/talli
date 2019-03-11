@@ -6,10 +6,10 @@ import { TextField } from '@material-ui/core';
 export default class NewEntryForm extends React.Component {
     state = {
         show: true,
-        title: '',
-        id: '',
-        presenters: '',
-        entry_dates: '',
+        title: this.props.currValue.title,
+        id: this.props.currValue.id,
+        presenters: this.props.currValue.presenters,
+        entry_dates: this.props.currValue.entry_dates,
     }
 
     delEntry = () => {
@@ -41,13 +41,6 @@ export default class NewEntryForm extends React.Component {
                             className="entryFormText"
                             value={this.state.title}
                             onChange={this.handleChange('title')}
-                        />
-                        <TextField
-                            label="ID (auto if blank)"
-                            margin="dense"
-                            className="entryFormText"
-                            value={this.state.id}
-                            onChange={this.handleChange('id')}
                         />
                         <TextField
                             required
