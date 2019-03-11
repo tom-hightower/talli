@@ -10,7 +10,6 @@ export default class AddEntries extends React.Component {
     state = {
         open: false,
         title: '',
-        id: undefined,
         presenters: '',
         entry_dates: ''
     };
@@ -25,21 +24,20 @@ export default class AddEntries extends React.Component {
         this.setState({ 
             open: false,
             title: '',
-            id: undefined,
             presenters: '',
             entry_dates: ''
         });
     }
 
     handleSaveClose = () => {
-        var tempId;
+        let tempId;
         // generate ID
         if (this.props.event.entries) {
-            let ent = this.props.event.entries;
-            let entArray = Object.keys(ent);
+            const ent = this.props.event.entries;
+            const entArray = Object.keys(ent);
             tempId = 1 + parseInt(ent[entArray[entArray.length - 1]].id);
         } else {
-            let base = 1000 + Math.floor((Math.random() * 8000) + 1);
+            const base = 1000 + Math.floor((Math.random() * 8000) + 1);
             tempId = base;
         }
         // save new entry to database
