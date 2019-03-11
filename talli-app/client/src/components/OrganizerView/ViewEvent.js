@@ -39,13 +39,13 @@ export default class ViewEvent extends React.Component {
     }
 
     componentDidMount() {
-        var googleId = this.props.user.googleId;
-        var query = firebase.database().ref('organizer/' + googleId + '/event');
+        const googleId = this.props.user.googleId;
+        var query = firebase.database().ref(`organizer/${googleId}/event`);
         query.on('value', (snapshot) => {
-            let events = snapshot.val();
+            const events = snapshot.val();
             if (events[this.props.curEvent]) {
-                let eventBase = events[this.props.curEvent]['eventData'];
-                let eventEntries = events[this.props.curEvent]['entries'];
+                const eventBase = events[this.props.curEvent].eventData;
+                const eventEntries = events[this.props.curEvent].entries;
                 this.setState({
                     view: this.state.view,
                     event: {
@@ -105,16 +105,14 @@ export default class ViewEvent extends React.Component {
     viewResults = () => {
         this.setState({
             view: "results"
-        })
+        });
     }
 
     manageEvent = () => {
         this.setState({
             view: "main"
-        })
+        });
     }
-
-
 
     render() {
         return (
@@ -190,7 +188,7 @@ export default class ViewEvent extends React.Component {
                             <div>1. Create a Google Sheet in your desired location</div>
                             <div>
                                 {/* TODO: This should automatically save, probably to firebase */}
-                                2. Grab the spreadsheet ID from the URL and paste it here: <input className="sheetId" placeholder="Google sheet ID"></input>
+                                2. Grab the spreadsheet ID from the URL and paste it here: <input className="sheetId" placeholder="Google sheet ID"/>
                                 <div className="note">https://docs.google.com/spreadsheets/d/<b>SPREADSHEET ID</b>/edit#gid=0</div>
                             </div>
                             <div>3. Share the spreadsheet with editing rights with <b>talli-455@talli-229017.iam.gserviceaccount.com</b></div>
@@ -202,10 +200,11 @@ export default class ViewEvent extends React.Component {
                     variant="contained"
                     className="buttons"
                     type="button"
-                    onClick={this.goBack} >
+                    onClick={this.goBack}
+                >
                     Back
                 </Button>
             </div>
-        )
+        );
     }
 }

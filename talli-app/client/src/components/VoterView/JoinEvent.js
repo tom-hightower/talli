@@ -4,12 +4,12 @@ import { TextField, Typography, Button } from '@material-ui/core';
 import EntryConfirmation from './Dialogs/EntryConfirmation';
 import '../component_style/Voter.css';
 import firebase from '../../firebase';
-import { getCookie } from '../../cookies.js'
+import { getCookie } from '../../cookies.js';
 import BlockJoin from './Dialogs/BlockJoin';
 import NotFound from './Dialogs/NotFound';
 import RejoinEvent from './Dialogs/RejoinEvent';
 
-var config = require('../../config.json');
+const config = require('../../config.json');
 
 /**
  * Join Event via QR Code or UID
@@ -75,8 +75,8 @@ export default class JoinEvent extends React.Component {
                         }
                         this.setState({ eventName: event['eventData']['name'] }, () => {
                             // Checks whether the user has submitted for this event previously
-                            var cookies = getCookie('UserID');
-                            var check = false;
+                            const cookies = getCookie('UserID');
+                            let check = false;
                             firebase.database().ref(`attendees/${cookies}/pastEvents`).once('value').then(snapshot => {
                                 const pastEvents = snapshot.val();
                                 for (let c in pastEvents) {
@@ -95,7 +95,6 @@ export default class JoinEvent extends React.Component {
                 } else {
                     // Event not found
                     this.notFoundChild.current.handleOpen();
-                    return;
                 }
             });
         });

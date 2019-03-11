@@ -207,14 +207,14 @@ export default class EditEvent extends React.Component {
                         )}
                         <br />
                         {!this.state.confirmDelete ? (
-                            <Button variant="contained" style={{ background: "#B00020", color: "#FFFFFF" }} onClick={() => { this.setState({ confirmDelete: true, }) }}>
+                            <Button variant="contained" style={{ background: "#B00020", color: "#FFFFFF" }} onClick={() => { this.setState({ confirmDelete: true, }); }}>
                                 Delete Event
                             </Button>
                         ) : (
                             <>
                                 <p>Are you sure you want to delete this event? <br /> (this cannot be undone)</p>
                                 <Button className="button1" variant="contained" color="primary" onClick={() => this.handleDeleteEvent()}> Yes </Button>
-                                <Button className="button1" variant="contained" color="default" onClick={() => { this.setState({ confirmDelete: false, }) }}> No </Button>
+                                <Button className="button1" variant="contained" color="default" onClick={() => { this.setState({ confirmDelete: false, }); }}> No </Button>
                             </>
                         )}
                     </DialogContent>
