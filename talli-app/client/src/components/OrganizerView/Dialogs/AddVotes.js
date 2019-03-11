@@ -47,25 +47,36 @@ export default class AddVotes extends React.Component {
     }
 
     submitVote = () => {
-        const itemRef = firebase.database().ref('event/'+ this.props.event.id + '/nonDigitVote');
-        itemRef.once('value', (snapshot) => {
-            let nonDigitVoteSize = snapshot.child("count").val();
-            if (nonDigitVoteSize === "" || nonDigitVoteSize === null) {
-                nonDigitVoteSize = 0;
-            }
-            nonDigitVoteSize += 1;
-            this.setState({ voteID: nonDigitVoteSize});
-            itemRef.child('count').set(this.state.voteID);
-            for (var i = 0; i < this.state.entries.length; i++) {
-                let item = this.state.entries[i];
-                if (item.show) {
-                    const itemsRef = firebase.database().ref('event/'+ this.props.event.id + '/nonDigitVote/vote' + this.state.voteID);
-                    itemsRef.child(item.id).set(item.rank);
+        let hasError = false;
+        for (var i = 0; i < this.state.entries.length; i++) {
+            let checkItem = this.state.entries[i];
+            if (checkItem.show) {
+                if (checkItem.duplicate || !checkItem.valid) {
+                    hasError = true;
                 }
             }
-            this.setState({ entries: [] })
-            this.handleClose();
-        });
+        }
+        if (!hasError) {
+            const itemRef = firebase.database().ref('event/'+ this.props.event.id + '/nonDigitVote');
+            itemRef.once('value', (snapshot) => {
+                let nonDigitVoteSize = snapshot.child("count").val();
+                if (nonDigitVoteSize === "" || nonDigitVoteSize === null) {
+                    nonDigitVoteSize = 0;
+                }
+                nonDigitVoteSize += 1;
+                this.setState({ voteID: nonDigitVoteSize});
+                itemRef.child('count').set(this.state.voteID);
+                for (var i = 0; i < this.state.entries.length; i++) {
+                    let item = this.state.entries[i];
+                    if (item.show) {
+                        const itemsRef = firebase.database().ref('event/'+ this.props.event.id + '/nonDigitVote/vote' + this.state.voteID);
+                        itemsRef.child(item.id).set(item.rank);
+                    }
+                }
+                this.setState({ entries: [] })
+                this.handleClose();
+            });
+        }
     }
 
     handleOpen = () => {

@@ -62,9 +62,6 @@ export default class AddVoteEntryForm extends React.Component {
         for (var i = 0; i < this.props.entriesInVote.length; i++) {
             let item = this.props.entriesInVote[i];
             if (item.show && i !== this.props.index) {
-                console.log(item.id);
-                console.log(event.target.value);
-                console.log(item.id === event.target.value)
                 if (item.id === event.target.value) {
                     this.setState({ duplicate: true });
                 }
