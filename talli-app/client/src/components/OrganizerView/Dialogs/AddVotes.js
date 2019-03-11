@@ -16,11 +16,19 @@ export default class AddVotes extends React.Component {
     };
 
     addEntry = () => {
+        let rank = 0;
+        for (var i = 0; i < this.state.entries.length; i++) {
+            let item = this.state.entries[i];
+            if (item.show) {
+                rank++;
+            }
+        }
+        rank++;
         const newEntries = this.state.entries.slice();
         newEntries.push({
             show: true,
             id: '',
-            rank: '',
+            rank: rank,
         });
         this.setState({ entries: newEntries });
     }
@@ -28,6 +36,13 @@ export default class AddVotes extends React.Component {
     updateEntry(status, idx) {
         let updateEntries = this.state.entries;
         updateEntries[idx] = status;
+        if (!this.state.entries[idx].show) {
+            for (var i = idx + 1; i < this.state.entries.length; i++) {
+                if (updateEntries[i].show) {
+                    updateEntries[i].rank -= 1;
+                }
+            }
+        }
         this.setState({ entries: updateEntries });
     }
 
@@ -35,7 +50,6 @@ export default class AddVotes extends React.Component {
         const itemRef = firebase.database().ref('event/'+ this.props.event.id + '/nonDigitVote');
         itemRef.once('value', (snapshot) => {
             let nonDigitVoteSize = snapshot.child("count").val();
-            console.log(nonDigitVoteSize);
             if (nonDigitVoteSize === "" || nonDigitVoteSize === null) {
                 nonDigitVoteSize = 0;
             }
@@ -71,19 +85,21 @@ export default class AddVotes extends React.Component {
                 <Dialog open={this.state.open} TransitionComponent={Transition} onClose={this.handleClose}>
                     <DialogTitle> Add Vote </DialogTitle>
                     <DialogContent>
-                        Click the circle-add button to fill in each entry and its rank.
+                        Click the circle-add button to fill in each entry.
                         <br />
                         <form className="entryForm" onSubmit={this.submitVote}>
                             {
                                 this.state.entries.map((val, idx) => {
+
                                     return (
                                         <div key={idx}>
-                                            <AddVoteEntryForm event={this.props.event} googleId={this.props.googleId} updateEntry={(status, index) => this.updateEntry(status, index)} index={idx} />
+                                            <AddVoteEntryForm event={this.props.event} googleId={this.props.googleId} entriesInVote={this.state.entries} updateEntry={(status, index) => this.updateEntry(status, index)} index={idx} />
                                         </div>
                                     )
                                 })
                             }
                             <AddCircleIcon color='primary' id='entryIcon' onClick={this.addEntry}/>
+                            <br />
                             <br />
                             <Button
                                 variant="contained"
