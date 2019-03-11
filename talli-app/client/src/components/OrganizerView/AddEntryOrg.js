@@ -56,8 +56,8 @@ export default class AddEntryOrg extends React.Component {
         let googleId = this.props.user.googleId;
 
         let eventID = this.props.curEvent;
-        var base = 1000 + Math.floor((Math.random() * 8000) + 1);
-        for (var i = 0; i < this.state.entries.length; i++) {
+        let base = 1000 + Math.floor((Math.random() * 8000) + 1);
+        for (let i = 0; i < this.state.entries.length; i++) {
             let item = this.state.entries[i];
             if (item.show) {
                 item.id = base + i;
@@ -69,17 +69,17 @@ export default class AddEntryOrg extends React.Component {
     }
 
     readCSV = event => {
-        var f = event.target.files[0]; 
+        const f = event.target.files[0]; 
         if (f) {
-            var r = new FileReader();
-            var a;
+            const r = new FileReader();
+            let a;
             r.onload = (e) => { 
-                var contents = r.result;
+                let contents = r.result;
                 a = r.result;
-                var lines = contents.split(/[\r\n]+/g);
-                var tempEnt = [];
-                var line, line_title, line_pres, line_date;
-                for (var i = 1; i < lines.length; i++) {
+                let lines = contents.split(/[\r\n]+/g);
+                let tempEnt = [];
+                let line, line_title, line_pres, line_date;
+                for (let i = 1; i < lines.length; i++) {
                     line = lines[i].split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
                     if (line.length !== 3 && line.length !== 0) {
                         a = "File format is incorrect. Please see \"Import Requirements\" for correct formatting.";
