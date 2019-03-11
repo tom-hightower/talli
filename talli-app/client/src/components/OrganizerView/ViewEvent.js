@@ -7,6 +7,7 @@ import EditEntries from './Dialogs/EditEntries';
 import EditEvent from './Dialogs/EditEvent';
 import EditVoting from './Dialogs/EditVoting';
 import AddEntries from './Dialogs/AddEntries';
+import AddBallot from './Dialogs/AddBallot';
 
 /**
  * OrganizerView > ViewEvent
@@ -36,6 +37,7 @@ export default class ViewEvent extends React.Component {
         this.entryChild = React.createRef();
         this.addChild = React.createRef();
         this.votingChild = React.createRef();
+        this.addVoteChild = React.createRef();
     }
 
     componentDidMount() {
@@ -91,6 +93,10 @@ export default class ViewEvent extends React.Component {
         this.votingChild.current.handleOpen();
     }
 
+    handleAddVote = () => {
+        this.addVoteChild.current.handleOpen();
+    }
+
     goBack = () => {
         if (this.state.view === 'main' || this.state.view === "results") {
             this.props.handler(this.props.orgViews.MAIN);
@@ -124,6 +130,7 @@ export default class ViewEvent extends React.Component {
                         <EditEntries ref={this.entryChild} event={this.state.event} googleId={this.props.user.googleId} />
                         <AddEntries ref={this.addChild} event={this.state.event} googleId={this.props.user.googleId} />
                         <EditEvent ref={this.eventChild} event={this.state.event} googleId={this.props.user.googleId} handler={this.props.handler} orgViews={this.props.orgViews} />
+                        <AddBallot ref={this.addVoteChild} event={this.state.event} googleId={this.props.user.googleId} />
                         <EditVoting ref={this.votingChild} event={this.state.event} googleId={this.props.user.googleId} />
                         <Typography variant="h3" align='center' gutterBottom>{this.state.event.name}</Typography>
                     </div>
@@ -181,6 +188,13 @@ export default class ViewEvent extends React.Component {
                             <Button className="button1" variant="contained" onClick={this.manageEvent}>Manage Event</Button>
                             <Button className="button1" variant="contained" color="primary" onClick={this.viewResults}>View Results</Button>
                         </div>
+                        <br />
+                        <Typography variant="h5">Add paper ballot(s) manually into system:</Typography>
+                        <br />
+                        <div className="box">
+                            <Button className="listButtons" onClick={this.handleAddVote}>Add Vote</Button>
+                        </div>
+                        <br />
                         <Typography variant="h5">Set up Google Sheets to export results:</Typography>
                         <br />
                         <div className="instructions">

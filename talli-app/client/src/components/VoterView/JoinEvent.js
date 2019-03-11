@@ -6,6 +6,9 @@ import '../component_style/Voter.css';
 import firebase from '../../firebase';
 import { getCookie } from '../../cookies.js';
 import BlockJoin from './Dialogs/BlockJoin';
+import EarlyJoin from './Dialogs/EarlyJoin';
+import ClosedJoin from './Dialogs/ClosedJoin';
+import RejoinClosed from './Dialogs/RejoinClosed';
 import NotFound from './Dialogs/NotFound';
 import RejoinEvent from './Dialogs/RejoinEvent';
 
@@ -30,9 +33,12 @@ export default class JoinEvent extends React.Component {
         this.handleRejoinEvent = this.handleRejoinEvent.bind(this);
 
         this.confirmChild = React.createRef();
+        this.earlyJoinChild = React.createRef();
+        this.closedJoinChild = React.createRef();
         this.blockChild = React.createRef();
         this.notFoundChild = React.createRef();
         this.rejoinChild = React.createRef();
+        this.rejoinClosedChild = React.createRef();
     }
 
     componentDidMount() {
@@ -51,6 +57,12 @@ export default class JoinEvent extends React.Component {
                                     eventName: event.eventData.name,
                                     eventID: allCookies.currentEvent,
                                 }, () => {
+                                    const votingState = this.getVotingState(event['eventData']);
+                                    if (votingState === 'closed') {
+                                        this.rejoinClosedChild.current.handleOpen();
+                                        firebase.database().ref(`attendees/${cookie}/currentEvent`).set('');
+                                        return;
+                                    }
                                     this.rejoinChild.current.handleOpen();
                                 });
                             });
@@ -59,6 +71,17 @@ export default class JoinEvent extends React.Component {
                 });
             }
         });
+    }
+
+    getVotingState(event) {
+        const date = new Date().toISOString();
+        if ((event.endDate > date) && (event.startVote === 'none' || (event.startVote > date))) { // not open yet
+            return 'before';
+        }
+        if ((event.startDate < date) && (event.endDate > date) && (event.endVote === 'none' || (event.endVote > date))) { // open
+            return 'open';
+        }
+        return 'closed';
     }
 
     requestConfirm = () => {
@@ -73,7 +96,19 @@ export default class JoinEvent extends React.Component {
                             this.notFoundChild.current.handleOpen();
                             return;
                         }
-                        this.setState({ eventName: event['eventData']['name'] }, () => {
+
+                        this.setState({ eventName: event.eventData.name }, () => {
+                            // Checks whether an even has not started or has ended
+                            const votingState = this.getVotingState(event.eventData);
+                            if (votingState === 'before') {
+                                this.earlyJoinChild.current.handleOpen();
+                                return;
+                            }
+
+                            if (votingState === 'closed') {
+                                this.closedJoinChild.current.handleOpen();
+                                return;
+                            }
                             // Checks whether the user has submitted for this event previously
                             const cookies = getCookie('UserID');
                             let check = false;
@@ -102,7 +137,7 @@ export default class JoinEvent extends React.Component {
 
     handleScan(data) {
         if (data && data.toLowerCase().includes((config.Global.hostURL + "/vote/").toLowerCase())) {
-            var id = data.substring(data.indexOf("/vote/") + 6).replace(/\W/g, '');
+            const id = data.substring(data.indexOf("/vote/") + 6).replace(/\W/g, '');
             if (this.state.eventID === id) {
                 this.handleRejoinEvent();
                 return;
@@ -175,6 +210,9 @@ export default class JoinEvent extends React.Component {
                 <NotFound ref={this.notFoundChild} idType={'Event'} id={this.state.eventID} />
                 <EntryConfirmation entryName={this.state.eventName} ref={this.confirmChild} handler={this.handleJoinEvent} />
                 <BlockJoin entryName={this.state.eventName} idType={'Event'} ref={this.blockChild} />
+                <EarlyJoin eventName={this.state.eventName} ref={this.earlyJoinChild} />
+                <ClosedJoin eventName={this.state.eventName} ref={this.closedJoinChild} />
+                <RejoinClosed eventName={this.state.eventName} ref={this.rejoinClosedChild} />
                 <QrReader delay={300} onScan={this.handleScan} onError={this.handleError} style={{ width: '80%', margin: '20px auto 0px' }} />
                 <Typography variant='h5' align='center' className="QRText">Scan QR Code or enter Event ID:</Typography>
                 <div className="textField">

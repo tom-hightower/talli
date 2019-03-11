@@ -23,7 +23,7 @@ export default class EditVoting extends React.Component {
         const itemsRef = firebase.database().ref('organizer/' + this.props.googleId +
             '/event/' + this.props.event.id +
             '/eventData/');
-        itemsRef.child('startVote').set(new Date().toLocaleString());
+        itemsRef.child('startVote').set(new Date().toISOString());
         this.handleClose();
     }
 
@@ -31,7 +31,7 @@ export default class EditVoting extends React.Component {
         const itemsRef = firebase.database().ref('organizer/' + this.props.googleId +
             '/event/' + this.props.event.id +
             '/eventData/');
-        itemsRef.child('endVote').set(new Date().toLocaleString());
+        itemsRef.child('endVote').set(new Date().toISOString());
         this.handleClose();
     }
 
@@ -39,7 +39,7 @@ export default class EditVoting extends React.Component {
         const itemsRef = firebase.database().ref('organizer/' + this.props.googleId +
             '/event/' + this.props.event.id +
             '/eventData/');
-        itemsRef.child('startVote').set(new Date().toLocaleString());
+        itemsRef.child('startVote').set(new Date().toISOString());
         itemsRef.child('endVote').set('none');
         this.handleClose();
     }
