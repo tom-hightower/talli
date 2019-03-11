@@ -53,6 +53,14 @@ export default class EditVoting extends React.Component {
         return 'closed';
     }
 
+    addLeadingZeros(value) {
+        let valueStr = String(value);
+        while (valueStr.length < 2) {
+            valueStr = `0${valueStr}`;
+        }
+        return valueStr;
+    }
+
     parseDate(isoDate) {
         const dateString = `${isoDate.substring(5, 7)}/${isoDate.substring(8, 10)}/${isoDate.substring(0, 4)}`;
         return dateString;
@@ -60,7 +68,7 @@ export default class EditVoting extends React.Component {
 
     parseTime(isoDate) {
         const date = new Date(isoDate);
-        const timeString = `${date.getHours()}:${date.getMinutes()}`;
+        const timeString = `${date.getHours()}:${this.addLeadingZeros(date.getMinutes())}`;
         return timeString;
     }
 
