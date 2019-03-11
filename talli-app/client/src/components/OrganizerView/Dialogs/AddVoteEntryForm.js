@@ -11,6 +11,8 @@ export default class AddVoteEntryForm extends React.Component {
         title: '',
         rank: this.props.entriesInVote[this.props.index].rank,
         entries: [],
+        duplicate: false,
+        valid: false,
     }
 
     delEntry = () => {
@@ -43,6 +45,7 @@ export default class AddVoteEntryForm extends React.Component {
             this.setState({
                 [name]:event.target.value,
                 title: title,
+                valid: true,
             }, () => {
                 this.props.updateEntry(this.state, this.props.index);
             });
@@ -50,14 +53,27 @@ export default class AddVoteEntryForm extends React.Component {
             this.setState({
                 [name]: event.target.value,
                 title: '',
+                valid: false,
             }, () => {
                 this.props.updateEntry(this.state, this.props.index);
             });
         }
+        this.setState({ duplicate: false });
+        for (var i = 0; i < this.props.entriesInVote.length; i++) {
+            let item = this.props.entriesInVote[i];
+            if (item.show && i !== this.props.index) {
+                console.log(item.id);
+                console.log(event.target.value);
+                console.log(item.id === event.target.value)
+                if (item.id === event.target.value) {
+                    this.setState({ duplicate: true });
+                }
+            }
+        }
     };
 
     render() {
-        if (this.state.show && this.state.title !== '') {
+        if (this.state.show && this.state.valid && !this.state.duplicate) {
             return (
                 <div className='addEntry'>
                 <br />
@@ -82,13 +98,14 @@ export default class AddVoteEntryForm extends React.Component {
                     <RemoveCircleOutlineIcon color='primary' id='entryIcon' onClick={this.delEntry}/>
                 </div>
             );
-        } else if (this.state.show) {
+        } else if (this.state.show && !this.state.duplicate) {
             return (
                 <div className='addEntry'>
                 <br />
                     <div>
                         {this.props.entriesInVote[this.props.index].rank}.
                         <TextField
+                            error
                             required = "true"
                             label="Entry ID"
                             margin="dense"
@@ -102,6 +119,32 @@ export default class AddVoteEntryForm extends React.Component {
                             margin="dense"
                             className="entryFormText"
                             value="Enter a Valid Entry ID"
+                        />
+                    </div>
+                    <RemoveCircleOutlineIcon color='primary' id='entryIcon' onClick={this.delEntry}/>
+                </div>
+            );
+        } else if (this.state.show && this.state.duplicate) {
+            return (
+                <div className='addEntry'>
+                <br />
+                    <div>
+                        {this.props.entriesInVote[this.props.index].rank}.
+                        <TextField
+                            error
+                            required = "true"
+                            label="Entry ID"
+                            margin="dense"
+                            className="entryFormText"
+                            value={this.state.idAndTitle}
+                            onChange={this.handleChange('id')}
+                        />
+                        <TextField
+                            disabled
+                            label=" "
+                            margin="dense"
+                            className="entryFormText"
+                            value="Duplicate Entry ID"
                         />
                     </div>
                     <RemoveCircleOutlineIcon color='primary' id='entryIcon' onClick={this.delEntry}/>
