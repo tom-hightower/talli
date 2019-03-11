@@ -35,22 +35,21 @@ export default class EntryImportInfo extends React.Component {
                     </DialogTitle>
                     <DialogContent>
                         Accepted file type: .csv <br/><br/>
-                        Accepted file format: 4 columns in the order of Entry Titles, IDs, Presenters, Date(s) Attending
+                        Accepted file format: 3 columns in the order of Entry Titles, Presenters, Date(s) Attending
                         <br/><br/>
-                        *Entry Titles and Presenters are required, but if you do not have IDs or Dates, still include the columns.
+                        *Data is read assuming there is a header row, so the first row will be skipped.
                         <br/><br/>
                         Example file:
                         <table id='table'>
                             <tbody>
                                 <tr>
                                     <td>Entry Title</td>
-                                    <td>ID</td>
                                     <td>Presenters</td>
                                     <td>Date(s) Attending</td>
                                 </tr>
-                                <tr><td></td><td></td><td></td><td></td></tr>
-                                <tr><td></td><td></td><td></td><td></td></tr>
-                                <tr><td></td><td></td><td></td><td></td></tr>
+                                <tr><td /><td /><td /></tr>
+                                <tr><td /><td /><td /></tr>
+                                <tr><td /><td /><td /></tr>
                             </tbody>
                         </table>
                     </DialogContent>
