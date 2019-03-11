@@ -62,7 +62,7 @@ export default class JoinEvent extends React.Component {
                                         this.rejoinClosedChild.current.handleOpen();
                                         firebase.database().ref(`attendees/${cookie}/currentEvent`).set('');
                                         return;
-                                    } 
+                                    }
                                     this.rejoinChild.current.handleOpen();
                                 });
                             });
@@ -89,7 +89,7 @@ export default class JoinEvent extends React.Component {
                         this.setState({ eventName: event['eventData']['name'] }, () => {
                             // Checks whether an even has not started or has ended
                             var votingState = this.getVotingState(event['eventData']);
-                            if(votingState === 'before') {
+                            if (votingState === 'before') {
                                 this.earlyJoinChild.current.handleOpen();
                                 return;
                             }
@@ -126,11 +126,12 @@ export default class JoinEvent extends React.Component {
     }
 
     getVotingState(event) {
-        var date = new Date().toISOString()
+        var date = new Date().toISOString();
         console.log(event.startVote);
         if ((event.endDate > date) && (event.startVote === 'none' || (event.startVote > date))) { // not open yet
             return 'before';
-        } else if ((event.startDate < date) && (event.endDate > date) && (event.endVote === 'none' || (event.endVote > date))) { // open
+        }
+        if ((event.startDate < date) && (event.endDate > date) && (event.endVote === 'none' || (event.endVote > date))) { // open
             return 'open';
         }
         return 'closed';
