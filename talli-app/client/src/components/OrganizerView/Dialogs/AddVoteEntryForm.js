@@ -92,7 +92,7 @@ export default class AddVoteEntryForm extends React.Component {
                             value={this.state.title}
                         />
                     </div>
-                    <RemoveCircleOutlineIcon color='primary' id='entryIcon' onClick={this.delEntry}/>
+                    <RemoveCircleOutlineIcon className='removeCircleOutlineIcon' color='primary' id='entryIcon' onClick={this.delEntry}/>
                 </div>
             );
         } else if (this.state.show && !this.state.duplicate) {
@@ -118,7 +118,7 @@ export default class AddVoteEntryForm extends React.Component {
                             value="Enter a Valid Entry ID"
                         />
                     </div>
-                    <RemoveCircleOutlineIcon color='primary' id='entryIcon' onClick={this.delEntry}/>
+                    <RemoveCircleOutlineIcon className='removeCircleOutlineIcon' color='primary' id='entryIcon' onClick={this.delEntry}/>
                 </div>
             );
         } else if (this.state.show && this.state.duplicate) {
@@ -144,7 +144,7 @@ export default class AddVoteEntryForm extends React.Component {
                             value="Duplicate Entry ID"
                         />
                     </div>
-                    <RemoveCircleOutlineIcon color='primary' id='entryIcon' onClick={this.delEntry}/>
+                    <RemoveCircleOutlineIcon className='removeCircleOutlineIcon' color='primary' id='entryIcon' onClick={this.delEntry}/>
                 </div>
             );
         } else {
