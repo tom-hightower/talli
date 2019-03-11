@@ -45,7 +45,7 @@ export default class ViewEvent extends React.Component {
         var query = firebase.database().ref(`organizer/${googleId}/event`);
         query.on('value', (snapshot) => {
             const events = snapshot.val();
-            if (events[this.props.curEvent]) {
+            if (events && events[this.props.curEvent]) {
                 const eventBase = events[this.props.curEvent].eventData;
                 const eventEntries = events[this.props.curEvent].entries;
                 this.setState({
