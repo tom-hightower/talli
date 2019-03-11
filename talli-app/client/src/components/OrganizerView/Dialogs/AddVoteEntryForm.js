@@ -74,8 +74,8 @@ export default class AddVoteEntryForm extends React.Component {
             return (
                 <div className='addEntry'>
                 <br />
+                    <label className='rankingLabel'>{this.props.entriesInVote[this.props.index].rank}.</label>
                     <div>
-                        {this.props.entriesInVote[this.props.index].rank}.
                         <TextField
                             required = "true"
                             label="Entry ID"
@@ -99,8 +99,8 @@ export default class AddVoteEntryForm extends React.Component {
             return (
                 <div className='addEntry'>
                 <br />
+                    <label className='rankingLabel'>{this.props.entriesInVote[this.props.index].rank}.</label>
                     <div>
-                        {this.props.entriesInVote[this.props.index].rank}.
                         <TextField
                             error
                             required = "true"
@@ -125,8 +125,8 @@ export default class AddVoteEntryForm extends React.Component {
             return (
                 <div className='addEntry'>
                 <br />
+                    <label className='rankingLabel'>{this.props.entriesInVote[this.props.index].rank}.</label>
                     <div>
-                        {this.props.entriesInVote[this.props.index].rank}.
                         <TextField
                             error
                             required = "true"

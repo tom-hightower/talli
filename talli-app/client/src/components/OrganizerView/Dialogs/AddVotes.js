@@ -98,7 +98,7 @@ export default class AddVotes extends React.Component {
                     <DialogContent>
                         Click the circle-add button to fill in each entry.
                         <br />
-                        <form className="entryForm" onSubmit={this.submitVote}>
+                        <form className="addEntryForm" onSubmit={this.submitVote}>
                             {
                                 this.state.entries.map((val, idx) => {
 
@@ -109,6 +109,7 @@ export default class AddVotes extends React.Component {
                                     )
                                 })
                             }
+                            <br />
                             <AddCircleIcon color='primary' id='entryIcon' onClick={this.addEntry}/>
                             <br />
                             <br />
