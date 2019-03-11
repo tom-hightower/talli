@@ -2,6 +2,15 @@
     padding: 10px;
 }
 
+.rankingLabel {
+    font-size: 20px;
+    padding-top: 20px;
+}
+
+.removeCircleOutlineIcon {
+    padding-top: 20px;
+}
+
 .organizerEvents {
     display: flex;
     flex-flow: row;

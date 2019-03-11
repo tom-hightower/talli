@@ -7,6 +7,7 @@ import EditEntries from './Dialogs/EditEntries';
 import EditEvent from './Dialogs/EditEvent';
 import EditVoting from './Dialogs/EditVoting';
 import AddEntries from './Dialogs/AddEntries';
+import AddBallot from './Dialogs/AddBallot';
 
 /**
  * OrganizerView > ViewEvent
@@ -20,13 +21,13 @@ export default class ViewEvent extends React.Component {
         this.state = {
             view: 'main',
             event: {
-                id: '', 
-                name: '', 
-                location:'', 
-                startDate: '', 
-                endDate: '', 
-                automate: false, 
-                startVote: '', 
+                id: '',
+                name: '',
+                location: '',
+                startDate: '',
+                endDate: '',
+                automate: false,
+                startVote: '',
                 endVote: '',
                 entries: []
             },
@@ -36,6 +37,7 @@ export default class ViewEvent extends React.Component {
         this.entryChild = React.createRef();
         this.addChild = React.createRef();
         this.votingChild = React.createRef();
+        this.addVoteChild = React.createRef();
     }
 
     componentDidMount() {
@@ -45,7 +47,7 @@ export default class ViewEvent extends React.Component {
             let events = snapshot.val();
             let eventBase = events[this.props.curEvent]['eventData'];
             let eventEntries = events[this.props.curEvent]['entries'];
-            this.setState({ 
+            this.setState({
                 view: this.state.view,
                 event: {
                     id: eventBase['id'],
@@ -72,8 +74,8 @@ export default class ViewEvent extends React.Component {
 
     handleOpenEntries = () => {
         this.setState({
-                view: 'entries',
-                event: this.state.event
+            view: 'entries',
+            event: this.state.event
         });
     }
 
@@ -87,6 +89,10 @@ export default class ViewEvent extends React.Component {
 
     handleOpenCloseVoting = () => {
         this.votingChild.current.handleOpen();
+    }
+
+    handleAddVote = () => {
+        this.addVoteChild.current.handleOpen();
     }
 
     goBack = () => {
@@ -119,17 +125,18 @@ export default class ViewEvent extends React.Component {
             <div className="main">
                 {
                     this.props.user != null &&
-                    <div> 
-                        <ExportOrgData ref={this.exportChild} event={this.state.event}/>
-                        <EditEntries ref={this.entryChild} event={this.state.event} googleId={this.props.user.googleId}/>
-                        <AddEntries ref={this.addChild} event={this.state.event} googleId={this.props.user.googleId}/>
-                        <EditEvent ref={this.eventChild} event={this.state.event} googleId={this.props.user.googleId}/>
-                        <EditVoting ref={this.votingChild} event={this.state.event} googleId={this.props.user.googleId}/>
+                    <div>
+                        <ExportOrgData ref={this.exportChild} event={this.state.event} />
+                        <EditEntries ref={this.entryChild} event={this.state.event} googleId={this.props.user.googleId} />
+                        <AddEntries ref={this.addChild} event={this.state.event} googleId={this.props.user.googleId} />
+                        <AddBallot ref={this.addVoteChild} event={this.state.event} googleId={this.props.user.googleId} />
+                        <EditEvent ref={this.eventChild} event={this.state.event} googleId={this.props.user.googleId} />
+                        <EditVoting ref={this.votingChild} event={this.state.event} googleId={this.props.user.googleId} />
                         <Typography variant="h3" align='center' gutterBottom>{this.state.event.name}</Typography>
                     </div>
                 }
-                { 
-                    this.state.view === 'main' && 
+                {
+                    this.state.view === 'main' &&
                     <div>
                         <div className="options">
                             <Button className="button1" variant="contained" color="primary" onClick={this.manageEvent}>Manage Event</Button>
@@ -140,10 +147,10 @@ export default class ViewEvent extends React.Component {
                             <Button className="listButtons" onClick={this.handleOpenEntries}>View/Add/Edit Entries</Button>
                             <Button className="listButtons" onClick={this.handleEventEdit}>View/Edit Event Details</Button>
                             <Button className="listButtons" onClick={this.handleOpenCloseVoting}>Open/Close Voting</Button>
-                        </div> 
+                        </div>
                     </div>
                 }
-                { 
+                {
                     this.state.view === 'entries' && this.state.event.entries !== undefined &&
                     <div>
                         <div className="options">
@@ -152,7 +159,6 @@ export default class ViewEvent extends React.Component {
                         </div>
                         <div className="box">
                             {
-                                
                                 Object.values(this.state.event.entries).map((entry, index) => (
                                     <Button key={index} className="listButtons" onClick={() => this.handleEntryEdit(entry.id)}>
                                         {entry.title} by {entry.presenters}
@@ -160,20 +166,20 @@ export default class ViewEvent extends React.Component {
                                 ))
                             }
                             <Button className="listButtons" color="primary" onClick={this.handleAddEntry}>Add New Entry</Button>
-                        </div> 
+                        </div>
                     </div>
                 }
                 {
-                   this.state.view === 'entries' && this.state.event.entries === undefined &&
-                   <div>
+                    this.state.view === 'entries' && this.state.event.entries === undefined &&
+                    <div>
                         <div className="options">
                             <Button className="button1" variant="contained" color="primary" onClick={this.manageEvent}>Manage Event</Button>
                             <Button className="button1" variant="contained" onClick={this.viewResults}>View Results</Button>
                         </div>
                         <div className="box">
                             <Button className="listButtons" color="primary" onClick={this.handleAddEntry}>Add New Entry</Button>
-                        </div>  
-                   </div>
+                        </div>
+                    </div>
                 }
                 {
                     this.state.view === "results" &&
@@ -182,6 +188,13 @@ export default class ViewEvent extends React.Component {
                             <Button className="button1" variant="contained" onClick={this.manageEvent}>Manage Event</Button>
                             <Button className="button1" variant="contained" color="primary" onClick={this.viewResults}>View Results</Button>
                         </div>
+                        <br />
+                        <Typography variant="h5">Add paper ballot(s) manually into system:</Typography>
+                        <br />
+                        <div className="box">
+                            <Button className="listButtons" onClick={this.handleAddVote}>Add Vote</Button>
+                        </div>
+                        <br />
                         <Typography variant="h5">Set up Google Sheets to export results:</Typography>
                         <br />
                         <div className="instructions">
