@@ -4,6 +4,7 @@ import CalendarIcon from '@material-ui/icons/DateRange';
 import { MuiPickersUtilsProvider, DatePicker, DateTimePicker } from 'material-ui-pickers';
 import DateFnsUtils from '@date-io/date-fns';
 import firebase from '../../../firebase';
+import '../../component_style/ViewEvent.css';
 
 function Transition(props) {
     return <Slide direction="up" {...props} />;
@@ -13,18 +14,21 @@ export default class EditEvent extends React.Component {
     state = {
         open: false,
         name: '',
+        id: '',
         location: '',
         startDate: '',
         endDate: '',
         automate: false,
         startVote: '',
         endVote: '',
+        confirmDelete: false,
     };
 
     handleOpen = () => {
         this.setState({
             open: true,
             name: this.props.event.name,
+            id: this.props.event.id,
             location: this.props.event.location,
             startDate: this.props.event.startDate,
             endDate: this.props.event.endDate,
@@ -82,6 +86,13 @@ export default class EditEvent extends React.Component {
         this.setState(prevState => ({
             automate: !prevState.automate,
         }));
+    }
+
+    handleDeleteEvent = () => {
+        this.props.handler(this.props.orgViews.MAIN);
+        const databaseRef = firebase.database().ref();
+        databaseRef.child(`event/${this.state.id}`).remove();
+        databaseRef.child(`organizer/${this.props.googleId}/event/${this.state.id}`).remove();
     }
 
     render() {
@@ -193,6 +204,18 @@ export default class EditEvent extends React.Component {
                                     />
                                 </MuiPickersUtilsProvider>
                             </div>
+                        )}
+                        <br />
+                        {!this.state.confirmDelete ? (
+                            <Button variant="contained" style={{ background: "#B00020", color: "#FFFFFF" }} onClick={() => { this.setState({ confirmDelete: true, }) }}>
+                                Delete Event
+                            </Button>
+                        ) : (
+                            <>
+                                <p>Are you sure you want to delete this event? <br /> (this cannot be undone)</p>
+                                <Button className="button1" variant="contained" color="primary" onClick={() => this.handleDeleteEvent()}> Yes </Button>
+                                <Button className="button1" variant="contained" color="default" onClick={() => { this.setState({ confirmDelete: false, }) }}> No </Button>
+                            </>
                         )}
                     </DialogContent>
                     <DialogActions>
