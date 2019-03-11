@@ -7,7 +7,7 @@ import EditEntries from './Dialogs/EditEntries';
 import EditEvent from './Dialogs/EditEvent';
 import EditVoting from './Dialogs/EditVoting';
 import AddEntries from './Dialogs/AddEntries';
-import AddVotes from './Dialogs/AddVotes';
+import AddBallot from './Dialogs/AddBallot';
 
 /**
  * OrganizerView > ViewEvent
@@ -23,7 +23,7 @@ export default class ViewEvent extends React.Component {
             event: {
                 id: '',
                 name: '',
-                location:'',
+                location: '',
                 startDate: '',
                 endDate: '',
                 automate: false,
@@ -74,8 +74,8 @@ export default class ViewEvent extends React.Component {
 
     handleOpenEntries = () => {
         this.setState({
-                view: 'entries',
-                event: this.state.event
+            view: 'entries',
+            event: this.state.event
         });
     }
 
@@ -126,12 +126,12 @@ export default class ViewEvent extends React.Component {
                 {
                     this.props.user != null &&
                     <div>
-                        <ExportOrgData ref={this.exportChild} event={this.state.event}/>
-                        <EditEntries ref={this.entryChild} event={this.state.event} googleId={this.props.user.googleId}/>
-                        <AddEntries ref={this.addChild} event={this.state.event} googleId={this.props.user.googleId}/>
-                        <AddVotes ref={this.addVoteChild} event={this.state.event} googleId={this.props.user.googleId}/>
-                        <EditEvent ref={this.eventChild} event={this.state.event} googleId={this.props.user.googleId}/>
-                        <EditVoting ref={this.votingChild} event={this.state.event} googleId={this.props.user.googleId}/>
+                        <ExportOrgData ref={this.exportChild} event={this.state.event} />
+                        <EditEntries ref={this.entryChild} event={this.state.event} googleId={this.props.user.googleId} />
+                        <AddEntries ref={this.addChild} event={this.state.event} googleId={this.props.user.googleId} />
+                        <AddBallot ref={this.addVoteChild} event={this.state.event} googleId={this.props.user.googleId} />
+                        <EditEvent ref={this.eventChild} event={this.state.event} googleId={this.props.user.googleId} />
+                        <EditVoting ref={this.votingChild} event={this.state.event} googleId={this.props.user.googleId} />
                         <Typography variant="h3" align='center' gutterBottom>{this.state.event.name}</Typography>
                     </div>
                 }
@@ -171,8 +171,8 @@ export default class ViewEvent extends React.Component {
                     </div>
                 }
                 {
-                   this.state.view === 'entries' && this.state.event.entries === undefined &&
-                   <div>
+                    this.state.view === 'entries' && this.state.event.entries === undefined &&
+                    <div>
                         <div className="options">
                             <Button className="button1" variant="contained" color="primary" onClick={this.manageEvent}>Manage Event</Button>
                             <Button className="button1" variant="contained" onClick={this.viewResults}>View Results</Button>
@@ -180,7 +180,7 @@ export default class ViewEvent extends React.Component {
                         <div className="box">
                             <Button className="listButtons" color="primary" onClick={this.handleAddEntry}>Add New Entry</Button>
                         </div>
-                   </div>
+                    </div>
                 }
                 {
                     this.state.view === "results" &&
