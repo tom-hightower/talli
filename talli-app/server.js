@@ -37,11 +37,9 @@ io.on('connection', function (socket) {
     socket.on('send_url', (data) => {
         if (data.url.length > 0) {
             let entries = data.entries;
-            console.log(entries);
             let url = data.url;
             let googleId = data.googleId;
             let eventId = data.eventId;
-            console.log(eventId);
             if (googleId && eventId) {
                 const eventData = firebase.database().ref(`organizer/${googleId}/event/${eventId}/eventData`);
                 eventData.child('sheetURL').set(url);
@@ -75,6 +73,7 @@ io.on('connection', function (socket) {
         }
     });
 
+    // currently weights don't save in the DB but they do in the spreadsheet
     socket.on('send_weights', (data) => {
         let weights = data.weights;
         let eventId = data.eventId;

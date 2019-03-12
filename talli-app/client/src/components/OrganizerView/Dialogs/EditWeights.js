@@ -12,9 +12,14 @@ function Transition(props) {
 export default class EditWeights extends React.Component {
     state = {
         open: false,
-        weights: [
-            1, 1, 1
-        ],
+        weights: {
+            current: [
+                1, 1, 1
+            ],
+            changed: [
+                1, 1, 1
+            ],
+        }
     };
 
     handleOpen = () => {
@@ -23,20 +28,34 @@ export default class EditWeights extends React.Component {
 
     handleClose = () => {
         this.setState({ open: false });
-        // send weights to DB
-        socket.emit('send_weights', {
-            weights: this.state.weights,
-            eventId: this.props.event.id,
-            googleId: this.props.googleId
+    }
+
+    handleSave = () => {
+        let newWeights = this.state.weights.changed;
+        this.setState({ 
+            open: false,
+            weights: {
+                current: newWeights,
+                changed: newWeights
+            } 
+        }, () => {
+            socket.emit('send_weights', {
+                weights: this.state.weights.current,
+                eventId: this.props.event.id,
+                googleId: this.props.googleId
+            });
         });
+        
     };
 
     handleWeightChange = index => event => {
-        console.log(event.target.value);
-        let newWeights = this.state.weights;
+        let newWeights = this.state.weights.changed;
         newWeights[index] = event.target.value;
         this.setState({
-            weights: newWeights,
+            weights: {
+                current: this.state.weights.current,
+                changed: newWeights,
+            }
         });
     }
 
@@ -47,7 +66,7 @@ export default class EditWeights extends React.Component {
                     <DialogTitle> Edit Weights </DialogTitle>
                     <DialogContent>
                         {
-                            this.state.weights.map((weight, index) => {
+                            this.state.weights.changed.map((weight, index) => {
                                 return (
                                     <div>
                                         <TextField label={'Rank ' + (index + 1)} margin='dense' value={weight} onChange={this.handleWeightChange(index)} />
@@ -57,7 +76,9 @@ export default class EditWeights extends React.Component {
                         }
                     </DialogContent>
                     <DialogActions>
-                        <Button onClick={this.handleClose} color="primary">Save</Button>
+                        {/* Not sure how to make the close button align to the left */}
+                        <Button onClick={this.handleClose} color="default">Close</Button>
+                        <Button onClick={this.handleSave} color="primary">Save</Button>
                     </DialogActions>
                 </Dialog>
             </div>

@@ -125,17 +125,24 @@ export default class ViewEvent extends React.Component {
     }
 
     handleURLChange = (e) => {
+        let newEvent = this.state.event;
+        newEvent['sheetURL'] = e.target.value;
+        this.setState({
+            view: this.state.view,
+            event: newEvent
+        });
+        console.log(this.state);
         socket.emit('send_url', {
             url: e.target.value,
             googleId: this.props.user.googleId,
             eventId: this.state.event.id,
             entries: this.state.event.entries
         });
-        this.setState({
-            event: {
-                sheetURL: e.target.value
-            }
-        });
+        // this.setState({
+        //     event: {
+        //         sheetURL: e.target.value
+        //     }
+        // });
         
     }
 
