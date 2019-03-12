@@ -3,7 +3,7 @@ const firebase = require('./client/src/firebase');
 const express = require('express');
 const bodyParser = require('body-parser');
 const GoogleSpreadsheet = require('google-spreadsheet');
-const urlGoogle = require('./google-util');
+// const urlGoogle = require('./google-util');
 
 const app = express();
 const port = 5000;
@@ -59,9 +59,15 @@ io.on('connection', function (socket) {
                     title: 'weighted rankings'
                 }, (err, sheet) => {
                     if (err) console.log(err);
-                    sheet.setHeaderRow(['weights', 1, 1, 1]);
+                    sheet.setHeaderRow(['RANK', 'FIRST', 'SECOND', 'THIRD'], (err) => {
+                        if (err) console.log(err);
+                        let row = {RANK: 'weights', FIRST: 1, SECOND: 1, THIRD: 1};
+                        sheet.addRow(row, (err) => {
+                            if (err) console.log(err);
+                        });
+                    });
                 });
-            })
+            });
         }
     });
 
@@ -82,11 +88,13 @@ io.on('connection', function (socket) {
                 doc.getInfo((err, info) => {
                     if (err) console.log(err);
                     let weights_sheet = info.worksheets[1];
-                    weights_sheet.setHeaderRow(['weights'].concat(weights));
-                });
-                let data = {'weights': 'some id'};
-                doc.addRow(1, data, (err, row) => {
-                    if (err) console.log(err);
+                    weights_sheet.getRows((err, rows) => {
+                        if (err) console.log(err);
+                        rows[0].FIRST = weights[0];
+                        rows[0].SECOND = weights[1];
+                        rows[0].THIRD = weights[2];
+                        rows[0].save();
+                    });
                 });
             });
         });
@@ -132,8 +140,8 @@ io.on('connection', function (socket) {
         console.log(rankings);
     })
 
-    const url = urlGoogle();
-    io.emit('send_url', url);
+    // const url = urlGoogle();
+    // io.emit('send_url', url);
 });
 io.listen(port);
 
