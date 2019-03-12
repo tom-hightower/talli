@@ -36,12 +36,16 @@ io.on('connection', function (socket) {
 
     socket.on('send_url', (data) => {
         if (data.url.length > 0) {
+            let entries = data.entries;
+            console.log(entries);
             let url = data.url;
             let googleId = data.googleId;
             let eventId = data.eventId;
-
-            const eventData = firebase.database().ref(`organizer/${googleId}/event/${eventId}/eventData`);
-            eventData.child('sheetURL').set(url);
+            console.log(eventId);
+            if (googleId && eventId) {
+                const eventData = firebase.database().ref(`organizer/${googleId}/event/${eventId}/eventData`);
+                eventData.child('sheetURL').set(url);
+            }
 
             // best way to parse for id?
             let id = url.split('/')[5];

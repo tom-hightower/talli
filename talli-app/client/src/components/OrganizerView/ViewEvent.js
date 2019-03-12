@@ -52,7 +52,7 @@ export default class ViewEvent extends React.Component {
             let events = snapshot.val();
             let eventBase = events[this.props.curEvent]['eventData'];
             let eventEntries = events[this.props.curEvent]['entries'];
-            this.setState({ 
+            this.setState({
                 view: this.state.view,
                 event: {
                     id: eventBase['id'],
@@ -125,16 +125,18 @@ export default class ViewEvent extends React.Component {
     }
 
     handleURLChange = (e) => {
+        socket.emit('send_url', {
+            url: e.target.value,
+            googleId: this.props.user.googleId,
+            eventId: this.state.event.id,
+            entries: this.state.event.entries
+        });
         this.setState({
             event: {
                 sheetURL: e.target.value
             }
         });
-        socket.emit('send_url', {
-            url: e.target.value,
-            googleId: this.props.user.googleId,
-            eventId: this.state.event.id
-        });
+        
     }
 
 

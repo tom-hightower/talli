@@ -41,8 +41,8 @@ export default class NavBar extends React.Component {
         console.log("Failed to Login");
     }
 
-    logout() {
-        this.ChangeView('/');
+    logout(view) {
+        this.ChangeView(view);
         this.props.logout();
     }
 
@@ -73,7 +73,7 @@ export default class NavBar extends React.Component {
             //         </ListItem>
             //     )}
             //     onLogoutSuccess={this.logout.bind(this)} />
-            <ListItem button key='Organizer Logout' onClick={() => this.logout()}>
+            <ListItem button key='Organizer Logout' onClick={() => this.logout('/')}>
                 <ListItemIcon><OrganizerIcon /></ListItemIcon>
                 <ListItemText primary='Organizer Logout' />
             </ListItem>
@@ -92,17 +92,17 @@ export default class NavBar extends React.Component {
                 <Drawer open={this.state.open} onClose={this.closeDrawer}>
                     <div tabIndex={0} role="button" onClick={this.closeDrawer}>
                         <div width="250">
-                            <ListItem button key='Home' onClick={() => this.ChangeView('/')}>
+                            <ListItem button key='Home' onClick={() => this.logout('/')}>
                                 <ListItemIcon><HomeIcon /></ListItemIcon>
                                 <ListItemText primary='Home' />
                             </ListItem>
-                            <ListItem button key='Vote' onClick={() => this.ChangeView('/vote')}>
+                            <ListItem button key='Vote' onClick={() => this.logout('/vote')}>
                                 <ListItemIcon><VoteIcon /></ListItemIcon>
                                 <ListItemText primary='Vote' />
                             </ListItem>
                             { loginStatus }
                             <Divider />
-                            <ListItem button key='Help' onClick={() => this.ChangeView('/help')}>
+                            <ListItem button key='Help' onClick={() => this.logout('/help')}>
                                 <ListItemIcon><HelpOutlineIcon /></ListItemIcon>
                                 <ListItemText primary='Help' />
                             </ListItem>
