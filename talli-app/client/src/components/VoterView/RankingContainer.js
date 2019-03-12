@@ -8,6 +8,9 @@ import firebase from '../../firebase';
 import '../component_style/RankingContainer.css';
 import SubmitConfirm from './Dialogs/SubmitConfirm';
 
+import openSocket from 'socket.io-client';
+const socket = openSocket('http://localhost:5000');
+
 const DragHandle = SortableHandle(() => <span><SliderIcon className="Sliders" /></span>);
 
 const SortableItem = SortableElement(({ value, item }) =>
@@ -105,7 +108,14 @@ export default class SortContainer extends Component {
     }
 
     submitted() {
-        this.props.sendToSheets();
+        let items = this.state.items;
+        let organizerId = this.props.organizer;
+        let eventId = this.state.event.id;
+        socket.emit('send_votes', {
+            eventId: eventId,
+            organizerId: organizerId,
+            votes: items
+        });
         this.props.handler(this.props.voteViews.SUBMITTED);
     }
 

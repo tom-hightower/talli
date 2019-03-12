@@ -31,7 +31,13 @@ export default class Voter extends React.Component {
     }
 
     sendToSheets() {
-        socket.emit('send_votes');
+        console.log(this.state);
+        let eventID = this.state.eventID;
+        let organizerID = this.state.organizerID;
+        socket.emit('send_votes', {
+            eventId: eventID,
+            organizerId: organizerID
+        });
     }
 
     updateItems(itemList) {
@@ -49,7 +55,10 @@ export default class Voter extends React.Component {
                 entryToAdd: addedEntry
             });
         } else {
-            this.setState({ curView: newView, entryToAdd: addedEntry });
+            this.setState({ 
+                curView: newView,
+                entryToAdd: addedEntry
+            });
         }
     }
 
@@ -74,7 +83,6 @@ export default class Voter extends React.Component {
                         rankItems={this.state.rankingItems}
                         updateItemsHandler={this.updateItems}
                         handler={this.changeView}
-                        sendToSheets={this.sendToSheets}
                     />);
             case voteViews.SUBMITTED:
                 return (

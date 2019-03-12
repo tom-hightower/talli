@@ -7,6 +7,7 @@ import EditEntries from './Dialogs/EditEntries';
 import EditEvent from './Dialogs/EditEvent';
 import EditVoting from './Dialogs/EditVoting';
 import AddEntries from './Dialogs/AddEntries';
+import EditWeights from './Dialogs/EditWeights';
 import openSocket from 'socket.io-client';
 
 const socket = openSocket('http://localhost:5000');
@@ -41,6 +42,7 @@ export default class ViewEvent extends React.Component {
         this.entryChild = React.createRef();
         this.addChild = React.createRef();
         this.votingChild = React.createRef();
+        this.weightsChild = React.createRef();
     }
 
     componentDidMount() {
@@ -95,6 +97,10 @@ export default class ViewEvent extends React.Component {
         this.votingChild.current.handleOpen();
     }
 
+    handleWeights = () => {
+        this.weightsChild.current.handleOpen();
+    }
+
     goBack = () => {
         if (this.state.view === 'main' || this.state.view === "results") {
             this.props.handler(this.props.orgViews.MAIN);
@@ -124,12 +130,11 @@ export default class ViewEvent extends React.Component {
                 sheetURL: e.target.value
             }
         });
-        socket.emit('send_url', {url: e.target.value});
-        // also send to DB here
-        var googleId = this.props.user.googleId;
-        var eventId = this.state.event.id;
-        const eventData = firebase.database().ref(`organizer/${googleId}/event/${eventId}/eventData`);
-        eventData.child('sheetURL').set(e.target.value);
+        socket.emit('send_url', {
+            url: e.target.value,
+            googleId: this.props.user.googleId,
+            eventId: this.state.event.id
+        });
     }
 
 
@@ -145,6 +150,7 @@ export default class ViewEvent extends React.Component {
                         <AddEntries ref={this.addChild} event={this.state.event} googleId={this.props.user.googleId}/>
                         <EditEvent ref={this.eventChild} event={this.state.event} googleId={this.props.user.googleId}/>
                         <EditVoting ref={this.votingChild} event={this.state.event} googleId={this.props.user.googleId}/>
+                        <EditWeights ref={this.weightsChild} event={this.state.event} googleId={this.props.user.googleId} />
                         <Typography variant="h3" align='center' gutterBottom>{this.state.event.name}</Typography>
                     </div>
                 }
@@ -212,6 +218,7 @@ export default class ViewEvent extends React.Component {
                             </div>
                             <div>3. Share the spreadsheet with editing rights with <b>talli-455@talli-229017.iam.gserviceaccount.com</b></div>
                         </div>
+                        <Button variant="contained" className="buttons" type="button" onClick={this.handleWeights}>Apply Custom Weights</Button>
                     </div>
                 }
                 <br />

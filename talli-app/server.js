@@ -1,3 +1,5 @@
+const firebase = require('./client/src/firebase');
+
 const express = require('express');
 const bodyParser = require('body-parser');
 const GoogleSpreadsheet = require('google-spreadsheet');
@@ -14,48 +16,115 @@ const http = require('http').Server(app);
 const io = require('socket.io')(http);
 const creds = require('./client_secret.json');
 
-// TODO: get spreadsheet ID from organizer's url 
-let doc;
-
+const num_2_str = {
+    1: "one",
+    2: "two",
+    3: "three",
+    4: "four",
+    5: "five",
+    6: "six",
+    7: "seven",
+    8: "eight",
+    9: "nine",
+    10: "ten"
+};
+// might need to store their rankings in the DB on disconnect
 io.on('connection', function (socket) {
 
+    // probably wanna change this
     let rankings;
 
     socket.on('send_url', (data) => {
         if (data.url.length > 0) {
-            let id = data.url.split('/')[5];
-            // is this the best way to parse url for ID?
-            console.log(id);
-            doc = new GoogleSpreadsheet(id);
+            let url = data.url;
+            let googleId = data.googleId;
+            let eventId = data.eventId;
+
+            const eventData = firebase.database().ref(`organizer/${googleId}/event/${eventId}/eventData`);
+            eventData.child('sheetURL').set(url);
+
+            // best way to parse for id?
+            let id = url.split('/')[5];
+            let doc = new GoogleSpreadsheet(id);
+
             doc.useServiceAccountAuth(creds, (err) => {
                 if (err) { console.log(err); }
                 doc.getInfo((err, info) => {
-                    if (err) { console.log(err); }
+                    if (err) console.log(err)
                     let sheet = info.worksheets[0];
-                    sheet.setTitle('nicks title');
-                    sheet.setHeaderRow(['submission_num', 'first', 'second', 'third']);
+                    sheet.setTitle('all votes');
+                    sheet.setHeaderRow(['submission_num', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'ten']);
+                });
+                doc.addWorksheet({
+                    title: 'weighted rankings'
+                }, (err, sheet) => {
+                    if (err) console.log(err);
+                    sheet.setHeaderRow(['weights', 1, 1, 1]);
                 });
             })
         }
-    })
+    });
 
-    socket.on('send_votes', () => {
-        // can probably retreive their column names and use them as the keys in this object
-        let final_votes = {
-            First: rankings.length >= 1 ? rankings[0].name : "",
-            Second: rankings.length >= 2 ? rankings[1].name : "",
-            Third: rankings.length >= 3 ? rankings[2].name : ""
-        };
-        console.log("votes sent!");
-        console.log(final_votes);
-        doc.useServiceAccountAuth(creds, (err) => {
-            console.log(err);
-            doc.addRow(1, final_votes, (err2) => {
-                if (err2) {
-                    console.log(err2);
-                }
+    socket.on('send_weights', (data) => {
+        let weights = data.weights;
+        let eventId = data.eventId;
+        let organizerId = data.googleId;
+
+        let query = firebase.database().ref(`organizer/${organizerId}/event/${eventId}/eventData/sheetURL`);
+
+        query.on('value', (snapshot) => {
+            let url = snapshot.val();
+            let id = url.split('/')[5];
+            let doc = new GoogleSpreadsheet(id);
+
+            doc.useServiceAccountAuth(creds, (err) => {
+                if (err) console.log(err);
+                doc.getInfo((err, info) => {
+                    if (err) console.log(err);
+                    let weights_sheet = info.worksheets[1];
+                    weights_sheet.setHeaderRow(['weights'].concat(weights));
+                });
+                let data = {'weights': 'some id'};
+                doc.addRow(1, data, (err, row) => {
+                    if (err) console.log(err);
+                });
             });
         });
+
+    })
+
+    socket.on('send_votes', (data) => {
+        
+        let final_votes = {};
+        let votes = data.votes;
+        for (let i = 0; i < votes.length; i++) {
+            final_votes[num_2_str[i + 1]] = votes[i].name;
+        }
+        
+        let eventId = data.eventId;
+        let organizerId = data.organizerId;
+        let query = firebase.database().ref(`organizer/${organizerId}/event/${eventId}/eventData/sheetURL`);
+        query.on('value', (snapshot) => {
+            let url = snapshot.val();
+            let id = url.split('/')[5];
+            let doc = new GoogleSpreadsheet(id);
+
+            // wrap these in promises? 
+            doc.useServiceAccountAuth(creds, (err) => {
+                console.log(err);
+                doc.getRows(1, (err, rows) => {
+                    if (err) console.log(err);
+                    final_votes['submission_num'] = rows.length + 1;
+                    doc.addRow(1, final_votes, (err2) => {
+                        if (err2) {
+                            console.log(err2);
+                        }
+                    });
+                });
+            });
+            console.log("votes sent!");
+            console.log(final_votes);
+        })
     });
 
     socket.on('update_rankings', (data) => {
