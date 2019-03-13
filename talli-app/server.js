@@ -31,7 +31,6 @@ const num_2_str = {
 // might need to store their rankings in the DB on disconnect
 io.on('connection', function (socket) {
 
-    // probably wanna change this
     let rankings;
 
     socket.on('send_url', (data) => {
@@ -60,7 +59,7 @@ io.on('connection', function (socket) {
                     title: 'weighted rankings'
                 }, (err, sheet) => {
                     if (err) console.log(err);
-                    sheet.setHeaderRow(['RANK', 'FIRST', 'SECOND', 'THIRD'], (err) => {
+                    sheet.setHeaderRow(['RANK', 'FIRST', 'SECOND', 'THIRD', 'TOTAL'], (err) => {
                         if (err) console.log(err);
                         let row = {RANK: 'weights', FIRST: 1, SECOND: 1, THIRD: 1};
                         sheet.addRow(row, (err) => {
@@ -88,6 +87,7 @@ io.on('connection', function (socket) {
                 doc.getInfo((err, info) => {
                     if (err) console.log(err);
                     let sheet = info.worksheets[1];
+                    
                     sheet.getRows((err, rows) => {
                         if (err) console.log(err);
                         // prevent from adding duplicate entries
@@ -97,7 +97,10 @@ io.on('connection', function (socket) {
                         }
                         for (entry in entries) {
                             if (!existing.includes(entry)) {
-                                sheet.addRow({RANK: entry, FIRST: 0, SECOND: 0, THIRD: 0}, (err) => {if (err) console.log(err)});
+                                let row = {RANK: entry, FIRST: 0, SECOND: 0, THIRD: 0, TOTAL: 0};
+                                sheet.addRow(row, (err) => {
+                                    if (err) console.log(err);
+                                });
                             }
                         }
                     });
@@ -178,20 +181,21 @@ io.on('connection', function (socket) {
                             curr = rows[i];
                             if (top3[0] == curr.rank) {
                                 curr.first = parseInt(curr.first) + 1;
+                                curr.total = `=B2*B${i+2}+C2*C${i+2}+D2*D${i+2}`;
                                 curr.save();
                             } else if (top3[1] == curr.rank) {
                                 curr.second = parseInt(curr.second) + 1;
+                                curr.total = `=B2*B${i+2}+C2*C${i+2}+D2*D${i+2}`;
                                 curr.save();
                             } else if (top3[2] == curr.rank) {
                                 curr.third = parseInt(curr.third) + 1;
+                                curr.total = `=B2*B${i+2}+C2*C${i+2}+D2*D${i+2}`;
                                 curr.save();
                             }
                         }
                     });
                 });
             });
-            console.log("votes sent!");
-            console.log(final_votes);
         })
     });
 
@@ -200,11 +204,7 @@ io.on('connection', function (socket) {
         console.log(rankings);
     })
 
-    // const url = urlGoogle();
-    // io.emit('send_url', url);
 });
 io.listen(port);
 
-// app.use('/auth', authRoutes);
-
-app.get('/', (req, res) => res.send('Hello World!'));
+// app.get('/', (req, res) => res.send('Hello World!'));
