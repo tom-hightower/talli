@@ -17,7 +17,6 @@ const socket = openSocket('http://localhost:5000');
  * OrganizerView > ViewEvent
  * Allows organizers to view the details of an event
  * that they have already created.
- * TODO: read existing events from database and render
  */
 export default class ViewEvent extends React.Component {
     constructor(props) {
@@ -142,13 +141,7 @@ export default class ViewEvent extends React.Component {
             url: e.target.value,
             googleId: this.props.user.googleId,
             eventId: this.state.event.id,
-        });
-        // this.setState({
-        //     event: {
-        //         sheetURL: e.target.value
-        //     }
-        // });
-        
+        });        
     }
 
     sendEntries = () => {
