@@ -50,7 +50,7 @@ io.on('connection', function (socket) {
                 if (err) { console.log(err); }
                 doc.getInfo((err, info) => {
                     if (err) console.log(err);
-                    const sheet = info.worksheets[0];
+                    let sheet = info.worksheets[0];
                     sheet.setTitle('all votes');
                     sheet.setHeaderRow(['submission_num', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'ten']);
                 });
@@ -125,7 +125,7 @@ io.on('connection', function (socket) {
                 if (err) console.log(err);
                 doc.getInfo((err, info) => {
                     if (err) console.log(err);
-                    const weights_sheet = info.worksheets[1];
+                    let weights_sheet = info.worksheets[1];
                     weights_sheet.getRows((err, rows) => {
                         if (err) console.log(err);
                         rows[0].FIRST = weights[0];
