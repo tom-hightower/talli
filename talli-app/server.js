@@ -76,7 +76,6 @@ io.on('connection', function (socket) {
         let eventId = data.eventId;
         let organizerId = data.googleId;
         let entries = data.entries;
-        // console.log(eventId + '\n' + organizerId + '\n' + entries);
         let query = firebase.database().ref(`organizer/${organizerId}/event/${eventId}/eventData/sheetURL`);
 
         query.on('value', (snapshot) => {
@@ -139,10 +138,14 @@ io.on('connection', function (socket) {
     })
 
     socket.on('send_votes', (data) => {
-        
-        let final_votes = {};
         let votes = data.votes;
+        let final_votes = {};
+        let top3 = [];
+
         for (let i = 0; i < votes.length; i++) {
+            if (i < 3) {
+                top3.push(votes[i].id);
+            }
             final_votes[num_2_str[i + 1]] = votes[i].name;
         }
         
@@ -154,7 +157,6 @@ io.on('connection', function (socket) {
             let id = url.split('/')[5];
             let doc = new GoogleSpreadsheet(id);
 
-            // wrap these in promises? 
             doc.useServiceAccountAuth(creds, (err) => {
                 console.log(err);
                 doc.getRows(1, (err, rows) => {
@@ -163,6 +165,27 @@ io.on('connection', function (socket) {
                     doc.addRow(1, final_votes, (err2) => {
                         if (err2) {
                             console.log(err2);
+                        }
+                    });
+                });
+                doc.getInfo((err, info) => {
+                    if (err) console.log(err);
+                    let weights_sheet = info.worksheets[1];
+                    weights_sheet.getRows((err, rows) => {
+                        if (err) console.log(err);
+                        let curr;
+                        for (let i = 0; i < rows.length; i++) {
+                            curr = rows[i];
+                            if (top3[0] == curr.rank) {
+                                curr.first = parseInt(curr.first) + 1;
+                                curr.save();
+                            } else if (top3[1] == curr.rank) {
+                                curr.second = parseInt(curr.second) + 1;
+                                curr.save();
+                            } else if (top3[2] == curr.rank) {
+                                curr.third = parseInt(curr.third) + 1;
+                                curr.save();
+                            }
                         }
                     });
                 });

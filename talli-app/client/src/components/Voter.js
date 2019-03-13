@@ -30,16 +30,6 @@ export default class Voter extends React.Component {
         this.updateItems = this.updateItems.bind(this);
     }
 
-    sendToSheets() {
-        console.log(this.state);
-        let eventID = this.state.eventID;
-        let organizerID = this.state.organizerID;
-        socket.emit('send_votes', {
-            eventId: eventID,
-            organizerId: organizerID
-        });
-    }
-
     updateItems(itemList) {
         this.setState({ rankingItems: itemList }, () => {
             socket.emit('update_rankings', {votes: this.state.rankingItems});
