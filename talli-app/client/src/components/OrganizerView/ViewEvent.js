@@ -9,10 +9,9 @@ import EditVoting from './Dialogs/EditVoting';
 import AddEntries from './Dialogs/AddEntries';
 import EditWeights from './Dialogs/EditWeights';
 import openSocket from 'socket.io-client';
+import AddBallot from './Dialogs/AddBallot';
 
 const socket = openSocket('http://localhost:5000');
-
-import AddBallot from './Dialogs/AddBallot';
 
 /**
  * OrganizerView > ViewEvent
