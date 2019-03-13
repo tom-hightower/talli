@@ -52,7 +52,6 @@ export default class NavBar extends React.Component {
 
     render() {
         // List of buttons for the navigation drawer
-
         let loginStatus = !this.props.loggedIn ? (
             <GoogleLogin 
                 clientId="1061225539650-cp3lrdn3p1u49tsq320l648hcuvg8plb.apps.googleusercontent.com"
@@ -65,16 +64,6 @@ export default class NavBar extends React.Component {
                 onSuccess={this.onSuccess.bind(this)}
                 onFailure={this.onFailure.bind(this)} />
         ) : (
-            // Google logout not working after page refresh, gonna keep it here for now
-            // <GoogleLogout 
-            //     buttonText="Logout"
-            //     render={renderProps => (
-            //         <ListItem button key='Organizer Logout' onClick={renderProps.onClick}>
-            //             <ListItemIcon><OrganizerIcon /></ListItemIcon>
-            //             <ListItemText primary='Organizer Logout' />
-            //         </ListItem>
-            //     )}
-            //     onLogoutSuccess={this.logout.bind(this)} />
             <ListItem button key='Organizer Logout' onClick={() => this.logout('/')}>
                 <ListItemIcon><OrganizerIcon /></ListItemIcon>
                 <ListItemText primary='Organizer Logout' />

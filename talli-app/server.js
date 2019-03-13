@@ -3,11 +3,9 @@ const firebase = require('./client/src/firebase');
 const express = require('express');
 const bodyParser = require('body-parser');
 const GoogleSpreadsheet = require('google-spreadsheet');
-// const urlGoogle = require('./google-util');
 
 const app = express();
 const port = 5000;
-// const authRoutes = require('./routes/auth-routes');
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
@@ -28,6 +26,7 @@ const num_2_str = {
     9: "nine",
     10: "ten"
 };
+
 // might need to store their rankings in the DB on disconnect
 io.on('connection', function (socket) {
 
@@ -36,22 +35,22 @@ io.on('connection', function (socket) {
     socket.on('send_url', (data) => {
         if (data.url.length > 0) {
             let url = data.url;
-            let googleId = data.googleId;
-            let eventId = data.eventId;
+            const googleId = data.googleId;
+            const eventId = data.eventId;
             if (googleId && eventId) {
                 const eventData = firebase.database().ref(`organizer/${googleId}/event/${eventId}/eventData`);
                 eventData.child('sheetURL').set(url);
             }
 
             // best way to parse for id?
-            let id = url.split('/')[5];
+            const id = url.split('/')[5];
             let doc = new GoogleSpreadsheet(id);
 
             doc.useServiceAccountAuth(creds, (err) => {
                 if (err) { console.log(err); }
                 doc.getInfo((err, info) => {
-                    if (err) console.log(err)
-                    let sheet = info.worksheets[0];
+                    if (err) console.log(err);
+                    const sheet = info.worksheets[0];
                     sheet.setTitle('all votes');
                     sheet.setHeaderRow(['submission_num', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'ten']);
                 });
@@ -61,7 +60,7 @@ io.on('connection', function (socket) {
                     if (err) console.log(err);
                     sheet.setHeaderRow(['RANK', 'FIRST', 'SECOND', 'THIRD', 'TOTAL'], (err) => {
                         if (err) console.log(err);
-                        let row = {RANK: 'weights', FIRST: 1, SECOND: 1, THIRD: 1};
+                        const row = {RANK: 'weights', FIRST: 1, SECOND: 1, THIRD: 1};
                         sheet.addRow(row, (err) => {
                             if (err) console.log(err);
                         });
@@ -72,34 +71,34 @@ io.on('connection', function (socket) {
     });
 
     socket.on('send_entries', (data) => {
-        let eventId = data.eventId;
-        let organizerId = data.googleId;
+        const eventId = data.eventId;
+        const organizerId = data.googleId;
         let entries = data.entries;
-        let query = firebase.database().ref(`organizer/${organizerId}/event/${eventId}/eventData/sheetURL`);
+        const query = firebase.database().ref(`organizer/${organizerId}/event/${eventId}/eventData/sheetURL`);
 
         query.on('value', (snapshot) => {
             let url = snapshot.val();
             let id = url.split('/')[5];
             let doc = new GoogleSpreadsheet(id);
 
-            doc.useServiceAccountAuth(creds, function(err) {
+            doc.useServiceAccountAuth(creds, function (err) {
                 if (err) console.log(err);
-                doc.getInfo((err, info) => {
-                    if (err) console.log(err);
+                doc.getInfo((err2, info) => {
+                    if (err2) console.log(err2);
                     let sheet = info.worksheets[1];
                     
-                    sheet.getRows((err, rows) => {
-                        if (err) console.log(err);
+                    sheet.getRows((err3, rows) => {
+                        if (err3) console.log(err3);
                         // prevent from adding duplicate entries
-                        let existing = [];
+                        const existing = [];
                         for (let i = 0; i < rows.length; i++) {
                             existing.push(rows[i].rank);
                         }
-                        for (entry in entries) {
+                        for (let entry in entries) {
                             if (!existing.includes(entry)) {
-                                let row = {RANK: entry, FIRST: 0, SECOND: 0, THIRD: 0, TOTAL: 0};
-                                sheet.addRow(row, (err) => {
-                                    if (err) console.log(err);
+                                let row = { RANK: entry, FIRST: 0, SECOND: 0, THIRD: 0, TOTAL: 0 };
+                                sheet.addRow(row, (err4) => {
+                                    if (err4) console.log(err4);
                                 });
                             }
                         }
@@ -112,21 +111,21 @@ io.on('connection', function (socket) {
     // currently weights don't save in the DB but they do in the spreadsheet
     socket.on('send_weights', (data) => {
         let weights = data.weights;
-        let eventId = data.eventId;
-        let organizerId = data.googleId;
+        const eventId = data.eventId;
+        const organizerId = data.googleId;
 
-        let query = firebase.database().ref(`organizer/${organizerId}/event/${eventId}/eventData/sheetURL`);
+        const query = firebase.database().ref(`organizer/${organizerId}/event/${eventId}/eventData/sheetURL`);
 
         query.on('value', (snapshot) => {
             let url = snapshot.val();
             let id = url.split('/')[5];
-            let doc = new GoogleSpreadsheet(id);
+            const doc = new GoogleSpreadsheet(id);
 
             doc.useServiceAccountAuth(creds, (err) => {
                 if (err) console.log(err);
                 doc.getInfo((err, info) => {
                     if (err) console.log(err);
-                    let weights_sheet = info.worksheets[1];
+                    const weights_sheet = info.worksheets[1];
                     weights_sheet.getRows((err, rows) => {
                         if (err) console.log(err);
                         rows[0].FIRST = weights[0];
@@ -137,13 +136,12 @@ io.on('connection', function (socket) {
                 });
             });
         });
-
     })
 
     socket.on('send_votes', (data) => {
-        let votes = data.votes;
+        const votes = data.votes;
         let final_votes = {};
-        let top3 = [];
+        const top3 = [];
 
         for (let i = 0; i < votes.length; i++) {
             if (i < 3) {
@@ -151,20 +149,20 @@ io.on('connection', function (socket) {
             }
             final_votes[num_2_str[i + 1]] = votes[i].name;
         }
-        
-        let eventId = data.eventId;
-        let organizerId = data.organizerId;
-        let query = firebase.database().ref(`organizer/${organizerId}/event/${eventId}/eventData/sheetURL`);
+
+        const eventId = data.eventId;
+        const organizerId = data.organizerId;
+        const query = firebase.database().ref(`organizer/${organizerId}/event/${eventId}/eventData/sheetURL`);
         query.on('value', (snapshot) => {
-            let url = snapshot.val();
-            let id = url.split('/')[5];
+            const url = snapshot.val();
+            const id = url.split('/')[5];
             let doc = new GoogleSpreadsheet(id);
 
             doc.useServiceAccountAuth(creds, (err) => {
                 console.log(err);
-                doc.getRows(1, (err, rows) => {
-                    if (err) console.log(err);
-                    final_votes['submission_num'] = rows.length + 1;
+                doc.getRows(1, (err2, rows) => {
+                    if (err2) console.log(err2);
+                    final_votes.submission_num = rows.length + 1;
                     doc.addRow(1, final_votes, (err2) => {
                         if (err2) {
                             console.log(err2);
@@ -179,17 +177,17 @@ io.on('connection', function (socket) {
                         let curr;
                         for (let i = 0; i < rows.length; i++) {
                             curr = rows[i];
-                            if (top3[0] == curr.rank) {
+                            if (top3[0] === curr.rank) {
                                 curr.first = parseInt(curr.first) + 1;
-                                curr.total = `=B2*B${i+2}+C2*C${i+2}+D2*D${i+2}`;
+                                curr.total = `=B2*B${i + 2}+C2*C${i + 2}+D2*D${i + 2}`;
                                 curr.save();
-                            } else if (top3[1] == curr.rank) {
+                            } else if (top3[1] === curr.rank) {
                                 curr.second = parseInt(curr.second) + 1;
-                                curr.total = `=B2*B${i+2}+C2*C${i+2}+D2*D${i+2}`;
+                                curr.total = `=B2*B${i + 2}+C2*C${i + 2}+D2*D${i + 2}`;
                                 curr.save();
-                            } else if (top3[2] == curr.rank) {
+                            } else if (top3[2] === curr.rank) {
                                 curr.third = parseInt(curr.third) + 1;
-                                curr.total = `=B2*B${i+2}+C2*C${i+2}+D2*D${i+2}`;
+                                curr.total = `=B2*B${i + 2}+C2*C${i + 2}+D2*D${i + 2}`;
                                 curr.save();
                             }
                         }
@@ -203,8 +201,5 @@ io.on('connection', function (socket) {
         rankings = data.votes;
         console.log(rankings);
     })
-
 });
 io.listen(port);
-
-// app.get('/', (req, res) => res.send('Hello World!'));

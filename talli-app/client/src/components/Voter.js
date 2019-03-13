@@ -1,9 +1,10 @@
 import React from 'react';
+import openSocket from 'socket.io-client';
 import Ranking from './VoterView/RankingContainer';
 import AddEntry from './VoterView/AddEntryVote';
 import JoinEvent from './VoterView/JoinEvent';
 import Submitted from './VoterView/Submitted';
-import openSocket from 'socket.io-client';
+
 const socket = openSocket('http://localhost:5000');
 
 const voteViews = {
@@ -32,7 +33,7 @@ export default class Voter extends React.Component {
 
     updateItems(itemList) {
         this.setState({ rankingItems: itemList }, () => {
-            socket.emit('update_rankings', {votes: this.state.rankingItems});
+            socket.emit('update_rankings', { votes: this.state.rankingItems });
         });
     }
 
@@ -45,7 +46,7 @@ export default class Voter extends React.Component {
                 entryToAdd: addedEntry
             });
         } else {
-            this.setState({ 
+            this.setState({
                 curView: newView,
                 entryToAdd: addedEntry
             });

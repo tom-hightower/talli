@@ -4,14 +4,14 @@ import SliderIcon from '@material-ui/icons/Sort';
 import AddCircleIcon from '@material-ui/icons/AddCircle';
 import { Typography, Button } from '@material-ui/core';
 import BellIcon from '@material-ui/icons/NotificationImportant';
+import openSocket from 'socket.io-client';
 import firebase from '../../firebase';
 import { getCookie } from '../../cookies.js';
-import '../component_style/RankingContainer.css';
 import SubmitConfirm from './Dialogs/SubmitConfirm';
 import Countdown from './Countdown';
 import EventClosed from './Dialogs/EventClosed';
+import '../component_style/RankingContainer.css';
 
-import openSocket from 'socket.io-client';
 const socket = openSocket('http://localhost:5000');
 
 const DragHandle = SortableHandle(() => <span><SliderIcon className="Sliders" /></span>);
@@ -125,12 +125,12 @@ export default class SortContainer extends Component {
     }
 
     submitted() {
-        let items = this.state.items;
-        let organizerId = this.props.organizer;
+        const items = this.state.items;
+        const organizerId = this.props.organizer;
         let eventId = this.state.event.id;
         socket.emit('send_votes', {
-            eventId: eventId,
-            organizerId: organizerId,
+            eventId,
+            organizerId,
             votes: items
         });
         this.props.handler(this.props.voteViews.SUBMITTED);

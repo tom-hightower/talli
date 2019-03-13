@@ -1,5 +1,4 @@
 import React from 'react';
-// import firebase from '../../../firebase.js';
 import { Slide, Dialog, DialogTitle, DialogContent, DialogActions, Button, TextField } from '@material-ui/core';
 import openSocket from 'socket.io-client';
 
@@ -18,7 +17,7 @@ export default class EditWeights extends React.Component {
             weights: [
                 "", "", ""
             ]
-        }
+        };
     }
 
     handleOpen = () => {
@@ -27,7 +26,7 @@ export default class EditWeights extends React.Component {
 
     handleClose = () => {
         this.setState({ open: false });
-    }
+    };
 
     handleSave = () => {
         socket.emit('send_weights', {
@@ -36,7 +35,6 @@ export default class EditWeights extends React.Component {
             googleId: this.props.googleId
         });
         this.setState({ open: false });
-        
     };
 
     handleWeightChange = index => event => {
@@ -45,7 +43,7 @@ export default class EditWeights extends React.Component {
         this.setState({
             weights: curr
         });
-    }
+    };
 
     render() {
         return !this.state.open ? null : (

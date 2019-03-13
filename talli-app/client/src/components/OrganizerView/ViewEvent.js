@@ -1,6 +1,6 @@
 import React from 'react';
 import { Typography, Button } from '@material-ui/core';
-import '../component_style/ViewEvent.css';
+import openSocket from 'socket.io-client';
 import firebase from '../../firebase';
 import ExportOrgData from './Dialogs/ExportOrgData';
 import EditEntries from './Dialogs/EditEntries';
@@ -8,8 +8,8 @@ import EditEvent from './Dialogs/EditEvent';
 import EditVoting from './Dialogs/EditVoting';
 import AddEntries from './Dialogs/AddEntries';
 import EditWeights from './Dialogs/EditWeights';
-import openSocket from 'socket.io-client';
 import AddBallot from './Dialogs/AddBallot';
+import '../component_style/ViewEvent.css';
 
 const socket = openSocket('http://localhost:5000');
 
@@ -102,7 +102,7 @@ export default class ViewEvent extends React.Component {
     handleWeights = () => {
         this.weightsChild.current.handleOpen();
     }
-    
+
     handleAddVote = () => {
         this.addVoteChild.current.handleOpen();
     }
@@ -131,8 +131,8 @@ export default class ViewEvent extends React.Component {
     }
 
     handleURLChange = (e) => {
-        let newEvent = this.state.event;
-        newEvent['sheetURL'] = e.target.value;
+        const newEvent = this.state.event;
+        newEvent.sheetURL = e.target.value;
         this.setState({
             view: this.state.view,
             event: newEvent
@@ -141,7 +141,7 @@ export default class ViewEvent extends React.Component {
             url: e.target.value,
             googleId: this.props.user.googleId,
             eventId: this.state.event.id,
-        });        
+        });
     }
 
     sendEntries = () => {
@@ -151,8 +151,6 @@ export default class ViewEvent extends React.Component {
             entries: this.state.event.entries
         });
     }
-
-
 
     render() {
         return (
@@ -235,7 +233,12 @@ export default class ViewEvent extends React.Component {
                         <div className="instructions">
                             <div>1. Create a Google Sheet in your desired location</div>
                             <div>
-                                <form><label>2. Grab the spreadsheet's URL and paste it here: <input type="text" value={this.state.event.sheetURL} onChange={this.handleURLChange} className="sheetURL"></input></label></form>
+                                <form>
+                                    <label>
+                                        2. Grab the spreadsheet's URL and paste it here:
+                                        <input type="text" value={this.state.event.sheetURL} onChange={this.handleURLChange} className="sheetURL" />
+                                    </label>
+                                </form>
                             </div>
                             <div>3. Share the spreadsheet with editing rights with <b>talli-455@talli-229017.iam.gserviceaccount.com</b></div>
                         </div>
