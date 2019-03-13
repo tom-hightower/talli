@@ -9,18 +9,17 @@ function Transition(props) {
     return <Slide direction="up" {...props} />;
 }
 
+// maybe for future, have it load current weights into text fields
 export default class EditWeights extends React.Component {
-    state = {
-        open: false,
-        weights: {
-            current: [
-                1, 1, 1
-            ],
-            changed: [
-                1, 1, 1
-            ],
+    constructor(props) {
+        super(props);
+        this.state = {
+            open: false,
+            weights: [
+                "", "", ""
+            ]
         }
-    };
+    }
 
     handleOpen = () => {
         this.setState({ open: true });
@@ -31,31 +30,20 @@ export default class EditWeights extends React.Component {
     }
 
     handleSave = () => {
-        let newWeights = this.state.weights.changed;
-        this.setState({ 
-            open: false,
-            weights: {
-                current: newWeights,
-                changed: newWeights
-            } 
-        }, () => {
-            socket.emit('send_weights', {
-                weights: this.state.weights.current,
-                eventId: this.props.event.id,
-                googleId: this.props.googleId
-            });
+        socket.emit('send_weights', {
+            weights: this.state.weights,
+            eventId: this.props.event.id,
+            googleId: this.props.googleId
         });
+        this.setState({ open: false });
         
     };
 
     handleWeightChange = index => event => {
-        let newWeights = this.state.weights.changed;
-        newWeights[index] = event.target.value;
+        let curr = this.state.weights;
+        curr[index] = event.target.value;
         this.setState({
-            weights: {
-                current: this.state.weights.current,
-                changed: newWeights,
-            }
+            weights: curr
         });
     }
 
@@ -66,7 +54,7 @@ export default class EditWeights extends React.Component {
                     <DialogTitle> Edit Weights </DialogTitle>
                     <DialogContent>
                         {
-                            this.state.weights.changed.map((weight, index) => {
+                            this.state.weights.map((weight, index) => {
                                 return (
                                     <div>
                                         <TextField label={'Rank ' + (index + 1)} margin='dense' value={weight} onChange={this.handleWeightChange(index)} />

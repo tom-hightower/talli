@@ -131,12 +131,10 @@ export default class ViewEvent extends React.Component {
             view: this.state.view,
             event: newEvent
         });
-        console.log(this.state);
         socket.emit('send_url', {
             url: e.target.value,
             googleId: this.props.user.googleId,
             eventId: this.state.event.id,
-            entries: this.state.event.entries
         });
         // this.setState({
         //     event: {
@@ -144,6 +142,14 @@ export default class ViewEvent extends React.Component {
         //     }
         // });
         
+    }
+
+    sendEntries = () => {
+        socket.emit('send_entries', {
+            googleId: this.props.user.googleId,
+            eventId: this.state.event.id,
+            entries: this.state.event.entries
+        });
     }
 
 
@@ -227,7 +233,10 @@ export default class ViewEvent extends React.Component {
                             </div>
                             <div>3. Share the spreadsheet with editing rights with <b>talli-455@talli-229017.iam.gserviceaccount.com</b></div>
                         </div>
-                        <Button variant="contained" className="buttons" type="button" onClick={this.handleWeights}>Apply Custom Weights</Button>
+                        <div>
+                            <Button variant="contained" className="buttons weights" type="button" onClick={this.handleWeights}>Apply Custom Weights</Button>
+                            <Button variant="contained" className="buttons" type="button" onClick={this.sendEntries}>Sync entries</Button>
+                        </div>
                     </div>
                 }
                 <br />

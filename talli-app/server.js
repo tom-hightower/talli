@@ -36,7 +36,6 @@ io.on('connection', function (socket) {
 
     socket.on('send_url', (data) => {
         if (data.url.length > 0) {
-            let entries = data.entries;
             let url = data.url;
             let googleId = data.googleId;
             let eventId = data.eventId;
@@ -71,6 +70,41 @@ io.on('connection', function (socket) {
                 });
             });
         }
+    });
+
+    socket.on('send_entries', (data) => {
+        let eventId = data.eventId;
+        let organizerId = data.googleId;
+        let entries = data.entries;
+        // console.log(eventId + '\n' + organizerId + '\n' + entries);
+        let query = firebase.database().ref(`organizer/${organizerId}/event/${eventId}/eventData/sheetURL`);
+
+        query.on('value', (snapshot) => {
+            let url = snapshot.val();
+            let id = url.split('/')[5];
+            let doc = new GoogleSpreadsheet(id);
+
+            doc.useServiceAccountAuth(creds, function(err) {
+                if (err) console.log(err);
+                doc.getInfo((err, info) => {
+                    if (err) console.log(err);
+                    let sheet = info.worksheets[1];
+                    sheet.getRows((err, rows) => {
+                        if (err) console.log(err);
+                        // prevent from adding duplicate entries
+                        let existing = [];
+                        for (let i = 0; i < rows.length; i++) {
+                            existing.push(rows[i].rank);
+                        }
+                        for (entry in entries) {
+                            if (!existing.includes(entry)) {
+                                sheet.addRow({RANK: entry, FIRST: 0, SECOND: 0, THIRD: 0}, (err) => {if (err) console.log(err)});
+                            }
+                        }
+                    });
+                });
+            });
+        });
     });
 
     // currently weights don't save in the DB but they do in the spreadsheet

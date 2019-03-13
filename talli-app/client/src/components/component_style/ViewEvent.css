@@ -11,6 +11,10 @@
     margin-bottom: 40px;
 }
 
+.weights {
+    margin-right: 20px !important;
+}
+
 .box {
     border: 2px solid #03a9f4;
     margin-left: 12%;
