@@ -2,13 +2,10 @@ import React from 'react';
 import { Dialog, DialogTitle, DialogContent, DialogActions, Button, Slide } from '@material-ui/core';
 
 function Transition(props) {
-    return <Slide direction="up" {...props} />;
-}
+    return (<Slide direction="up" {...props} />);
+  }
 
-/**
- * Help view
- */
-export default class HelpView extends React.Component {
+export default class RejoinEvent extends React.Component {
     state = {
         open: false,
     };
@@ -21,22 +18,28 @@ export default class HelpView extends React.Component {
         this.setState({ open: false });
     };
 
+    handleConfirm = () => {
+        this.setState({ open: false });
+        this.props.handler();
+    };
+
     render() {
-        return(
+        return (
             <div>
                 <Dialog open={this.state.open} TransitionComponent={Transition} onClose={this.handleClose}>
                     <DialogTitle>
-                        Help/About
+                        Current Event
                     </DialogTitle>
                     <DialogContent>
-                        <b>Help:</b>
-                        Choose to vote as an event attendee or login to the event organizer dashboard to begin.
+                        You are currently signed in to:
                         <br />
-                        <b>About:</b>
-                        Talli is a portable voting platform for events that let attendees vote on entries.
+                        <b>{this.props.entryName}</b>
+                        <br />
+                        Would you like to rejoin?
                     </DialogContent>
                     <DialogActions>
-                        <Button onClick={this.handleClose} color="primary">Ok</Button>
+                        <Button onClick={this.handleClose}>No</Button>
+                        <Button onClick={this.handleConfirm} color="primary">Yes</Button>
                     </DialogActions>
                 </Dialog>
             </div>

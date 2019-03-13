@@ -3,7 +3,7 @@ import { Dialog, DialogTitle, DialogContent, DialogActions, Button, Slide } from
 
 function Transition(props) {
     return <Slide direction="up" {...props} />;
-  }
+}
 
 export default class NotFound extends React.Component {
     state = {

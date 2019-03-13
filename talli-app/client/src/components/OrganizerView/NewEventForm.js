@@ -19,18 +19,20 @@ export default class NewEventForm extends React.Component {
             automate: false,
             startVote: undefined,
             endVote: undefined,
-            sheetURL: ""
+            sheetURL: "",
+            startVote: new Date(),
+            endVote: new Date(),
         },
     }
 
     // Sends form data to Firebase and navigates to the next page
     AddEntries = (event) => {
         event.preventDefault();
-        let item = this.state.eventData;
+        const item = this.state.eventData;
         if (!item.id) {
             item.id = Math.floor((Math.random() * 10000) + 1);
         }
-        let googleId = this.props.user.googleId;
+        const googleId = this.props.user.googleId;
 
         const ref = firebase.database().ref('event');
         ref.once('value', (snapshot) => {
@@ -70,7 +72,7 @@ export default class NewEventForm extends React.Component {
     }
 
     toggleAutomation = () => {
-        let oldData = this.state.eventData;
+        const oldData = this.state.eventData;
         oldData.automate = !this.state.eventData.automate;
         this.setState({
             eventData: oldData,
@@ -78,7 +80,7 @@ export default class NewEventForm extends React.Component {
     }
 
     handleEventChange = field => event => {
-        let oldData = this.state.eventData;
+        const oldData = this.state.eventData;
         oldData[field] = event.target.value;
         this.setState({
             eventData: oldData,
@@ -86,7 +88,7 @@ export default class NewEventForm extends React.Component {
     }
 
     handleDateChange = field => date => {
-        let oldData = this.state.eventData;
+        const oldData = this.state.eventData;
         oldData[field] = date;
         this.setState({
             eventData: oldData,
@@ -183,7 +185,7 @@ export default class NewEventForm extends React.Component {
                                 <DateTimePicker
                                     margin="dense"
                                     className="entryFormText"
-                                    value={this.state.eventData.startVote ? this.state.eventData.startVote : new Date()}
+                                    value={this.state.eventData.startVote}
                                     onChange={this.handleDateChange('startVote')}
                                     InputProps={{
                                         startAdornment: (
@@ -197,7 +199,7 @@ export default class NewEventForm extends React.Component {
                                 <DateTimePicker
                                     margin="dense"
                                     className="entryFormText"
-                                    value={this.state.eventData.endVote ? this.state.eventData.endVote : new Date()}
+                                    value={this.state.eventData.endVote}
                                     onChange={this.handleDateChange('endVote')}
                                     InputProps={{
                                         startAdornment: (

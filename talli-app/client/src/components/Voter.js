@@ -24,7 +24,7 @@ export default class Voter extends React.Component {
             eventID: '',
             organizerID: '',
             entryToAdd: '',
-            rankingItems: []
+            rankingItems: [],
         };
         this.changeView = this.changeView.bind(this);
         this.updateItems = this.updateItems.bind(this);
@@ -84,6 +84,7 @@ export default class Voter extends React.Component {
                 return (
                     <JoinEvent
                         voteViews={voteViews}
+                        updateItemsHandler={this.updateItems}
                         handler={this.changeView}
                     />);
         }

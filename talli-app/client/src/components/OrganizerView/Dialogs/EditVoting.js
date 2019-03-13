@@ -23,7 +23,7 @@ export default class EditVoting extends React.Component {
         const itemsRef = firebase.database().ref('organizer/' + this.props.googleId +
             '/event/' + this.props.event.id +
             '/eventData/');
-        itemsRef.child('startVote').set(new Date().toLocaleString());
+        itemsRef.child('startVote').set(new Date().toISOString());
         this.handleClose();
     }
 
@@ -31,7 +31,7 @@ export default class EditVoting extends React.Component {
         const itemsRef = firebase.database().ref('organizer/' + this.props.googleId +
             '/event/' + this.props.event.id +
             '/eventData/');
-        itemsRef.child('endVote').set(new Date().toLocaleString());
+        itemsRef.child('endVote').set(new Date().toISOString());
         this.handleClose();
     }
 
@@ -39,7 +39,7 @@ export default class EditVoting extends React.Component {
         const itemsRef = firebase.database().ref('organizer/' + this.props.googleId +
             '/event/' + this.props.event.id +
             '/eventData/');
-        itemsRef.child('startVote').set(new Date().toLocaleString());
+        itemsRef.child('startVote').set(new Date().toISOString());
         itemsRef.child('endVote').set('none');
         this.handleClose();
     }
@@ -53,6 +53,14 @@ export default class EditVoting extends React.Component {
         return 'closed';
     }
 
+    addLeadingZeros(value) {
+        let valueStr = String(value);
+        while (valueStr.length < 2) {
+            valueStr = `0${valueStr}`;
+        }
+        return valueStr;
+    }
+
     parseDate(isoDate) {
         const dateString = `${isoDate.substring(5, 7)}/${isoDate.substring(8, 10)}/${isoDate.substring(0, 4)}`;
         return dateString;
@@ -60,7 +68,7 @@ export default class EditVoting extends React.Component {
 
     parseTime(isoDate) {
         const date = new Date(isoDate);
-        const timeString = `${date.getHours()}:${date.getMinutes()}`;
+        const timeString = `${date.getHours()}:${this.addLeadingZeros(date.getMinutes())}`;
         return timeString;
     }
 

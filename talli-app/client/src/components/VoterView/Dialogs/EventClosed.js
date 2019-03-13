@@ -5,10 +5,7 @@ function Transition(props) {
     return <Slide direction="up" {...props} />;
 }
 
-/**
- * Help view
- */
-export default class HelpView extends React.Component {
+export default class EventClosed extends React.Component {
     state = {
         open: false,
     };
@@ -18,25 +15,22 @@ export default class HelpView extends React.Component {
     };
 
     handleClose = () => {
+        this.props.handler();
         this.setState({ open: false });
     };
 
     render() {
-        return(
+        return (
             <div>
                 <Dialog open={this.state.open} TransitionComponent={Transition} onClose={this.handleClose}>
                     <DialogTitle>
-                        Help/About
+                        Event Closed
                     </DialogTitle>
                     <DialogContent>
-                        <b>Help:</b>
-                        Choose to vote as an event attendee or login to the event organizer dashboard to begin.
-                        <br />
-                        <b>About:</b>
-                        Talli is a portable voting platform for events that let attendees vote on entries.
+                        The event {this.props.eventName} has concluded.  Your latest rankings have been automatically submitted.
                     </DialogContent>
                     <DialogActions>
-                        <Button onClick={this.handleClose} color="primary">Ok</Button>
+                        <Button onClick={this.handleClose} color="primary">Close</Button>
                     </DialogActions>
                 </Dialog>
             </div>
