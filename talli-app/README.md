@@ -8,6 +8,8 @@
 
 ## Install necessary modules (typically after pulling from master)
 
-### `npm i` followed by `npm run client-install`
+### `npm run update` on Mac/Linux
+
+### otherwise `npm i` followed by `npm run client-install`
 
 <!-- npm inst? -->
