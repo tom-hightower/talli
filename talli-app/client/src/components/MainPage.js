@@ -8,6 +8,7 @@ import { setCookie, getCookie } from '../cookies.js'
 
 import openSocket from 'socket.io-client';
 import HelpView from './Help';
+import CookieConsent from './CookieConsent';
 
 const socket = openSocket('http://localhost:5000');
 var config = require('../config.json');
@@ -76,6 +77,7 @@ export default class MainPage extends React.Component {
                 {/* <a href={signInUrl}>Sign in w google new way</a> */}
                 <br />
                 <p align="center" onClick={() => this.helpChild.current.handleOpen()}>About Talli</p>
+                <CookieConsent nav={this.ChangeView} />
             </div>
         );
     }

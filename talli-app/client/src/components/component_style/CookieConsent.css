@@ -1,0 +1,33 @@
+.cookieConsent {
+    position: fixed;
+    bottom: 0;
+    right: 0;
+    width: 100%;
+    display: flex;
+    flex-flow: column;
+    align-items: center;
+    padding-bottom: 4px;
+}
+
+@media only screen and (min-width: 600px) {
+    .cookieInfo {
+        padding: 10vh 20% 0 20%;
+    }
+}
+
+#cc_content {
+    text-align: center;
+    padding-bottom: 0;
+}
+
+#cc_confirm {
+    padding-bottom: 12px;
+}
+
+#link {
+    color: #0000FF;
+}
+
+#link:hover {
+    cursor: pointer;
+}
