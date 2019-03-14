@@ -29,11 +29,14 @@ export default class EditWeights extends React.Component {
     };
 
     handleSave = () => {
-        socket.emit('send_weights', {
-            weights: this.state.weights,
-            eventId: this.props.event.id,
-            googleId: this.props.googleId
-        });
+        let weights = this.state.weights;
+        if (weights[0] !== "" && weights[1] !== "" && weights[2] !== "") {
+            socket.emit('send_weights', {
+                weights: this.state.weights,
+                eventId: this.props.event.id,
+                googleId: this.props.googleId
+            });
+        }
         this.setState({ open: false });
     };
 

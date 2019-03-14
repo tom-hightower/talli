@@ -131,14 +131,19 @@ export default class ViewEvent extends React.Component {
     }
 
     handleURLChange = (e) => {
+        e.preventDefault();
         const newEvent = this.state.event;
         newEvent.sheetURL = e.target.value;
         this.setState({
             view: this.state.view,
             event: newEvent
         });
+    }
+
+    handleSubmit = (e) => {
+        e.preventDefault();
         socket.emit('send_url', {
-            url: e.target.value,
+            url: this.state.event.sheetURL,
             googleId: this.props.user.googleId,
             eventId: this.state.event.id,
         });
@@ -232,15 +237,16 @@ export default class ViewEvent extends React.Component {
                         <br />
                         <div className="instructions">
                             <div>1. Create a Google Sheet in your desired location</div>
+                            <div>2. Share the spreadsheet with editing rights with <b>talli-455@talli-229017.iam.gserviceaccount.com</b></div>
                             <div>
-                                <form>
+                                <form onSubmit={this.handleSubmit}>
                                     <label>
-                                        2. Grab the spreadsheet's URL and paste it here:
+                                        3. Grab the spreadsheet's URL and paste it here:
                                         <input type="text" value={this.state.event.sheetURL} onChange={this.handleURLChange} className="sheetURL" />
                                     </label>
+                                    <input type="submit" value="Submit" />
                                 </form>
                             </div>
-                            <div>3. Share the spreadsheet with editing rights with <b>talli-455@talli-229017.iam.gserviceaccount.com</b></div>
                         </div>
                         <div>
                             <Button variant="contained" className="buttons weights" type="button" onClick={this.handleWeights}>Apply Custom Weights</Button>
