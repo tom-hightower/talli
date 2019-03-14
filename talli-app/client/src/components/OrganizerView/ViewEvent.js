@@ -8,8 +8,10 @@ import EditEvent from './Dialogs/EditEvent';
 import EditVoting from './Dialogs/EditVoting';
 import AddEntries from './Dialogs/AddEntries';
 import EditWeights from './Dialogs/EditWeights';
+import Error from './Dialogs/ShowError'
 import AddBallot from './Dialogs/AddBallot';
 import '../component_style/ViewEvent.css';
+import ShowError from './Dialogs/ShowError';
 
 const socket = openSocket('http://localhost:5000');
 
@@ -43,6 +45,7 @@ export default class ViewEvent extends React.Component {
         this.votingChild = React.createRef();
         this.weightsChild = React.createRef();
         this.addVoteChild = React.createRef();
+        this.errorChild = React.createRef();
     }
 
     componentDidMount() {
@@ -70,6 +73,15 @@ export default class ViewEvent extends React.Component {
                 });
             }
         });
+
+        socket.on('error', (data) => {
+            console.log(data.error);
+            this.handleError(data.error);
+        });
+    }
+
+    componentWillUnmount() {
+        socket.removeListener('error');
     }
 
     handleExport = () => {
@@ -101,6 +113,10 @@ export default class ViewEvent extends React.Component {
 
     handleWeights = () => {
         this.weightsChild.current.handleOpen();
+    }
+
+    handleError = (message) => {
+        this.errorChild.current.handleOpen(message);
     }
 
     handleAddVote = () => {
@@ -170,6 +186,7 @@ export default class ViewEvent extends React.Component {
                         <AddBallot ref={this.addVoteChild} event={this.state.event} googleId={this.props.user.googleId} />
                         <EditVoting ref={this.votingChild} event={this.state.event} googleId={this.props.user.googleId} />
                         <EditWeights ref={this.weightsChild} event={this.state.event} googleId={this.props.user.googleId} />
+                        <ShowError ref={this.errorChild} event={this.state.event} googleId={this.props.googleID} />
                         <Typography variant="h3" align='center' gutterBottom>{this.state.event.name}</Typography>
                     </div>
                 }

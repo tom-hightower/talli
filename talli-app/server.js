@@ -27,12 +27,24 @@ const num_2_str = {
     10: "ten"
 };
 
+process.on('uncaughtException', (err) => {
+    io.emit('error', {
+        error: err.message
+    });
+});
+
 // might need to store their rankings in the DB on disconnect
 io.on('connection', function (socket) {
 
     let rankings;
 
-    socket.on('send_url', (data) => {
+    const sendError = (message) => {
+        io.emit('error', {
+            error: message
+        });
+    }
+
+    const connectUrl = (data) => {
         if (data.url.length > 0) {
             let url = data.url;
             const googleId = data.googleId;
@@ -47,30 +59,48 @@ io.on('connection', function (socket) {
             let doc = new GoogleSpreadsheet(id);
 
             doc.useServiceAccountAuth(creds, (err) => {
-                if (err) { console.log(err); }
-                doc.getInfo((err, info) => {
-                    if (err) console.log(err);
-                    let sheet = info.worksheets[0];
-                    sheet.setTitle('all votes');
-                    sheet.setHeaderRow(['submission_num', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'ten']);
-                });
-                doc.addWorksheet({
-                    title: 'weighted rankings'
-                }, (err, sheet) => {
-                    if (err) console.log(err);
-                    sheet.setHeaderRow(['RANK', 'FIRST', 'SECOND', 'THIRD', 'TOTAL'], (err) => {
-                        if (err) console.log(err);
-                        const row = {RANK: 'weights', FIRST: 1, SECOND: 1, THIRD: 1};
-                        sheet.addRow(row, (err) => {
-                            if (err) console.log(err);
-                        });
+                if (err) {
+                    sendError('Error with sheet authentication');
+                    return;
+                } else {
+                    doc.getInfo((err2, info) => {
+                        if (err2) {
+                            sendError('Could not get sheet information');
+                            return;
+                        }
+                        let sheet = info.worksheets[0];
+                        sheet.setTitle('all votes');
+                        sheet.setHeaderRow(['submission_num', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'ten']);
+                        if (info.worksheets.length < 2) {
+                            doc.addWorksheet({
+                                title: 'weighted rankings'
+                            }, (err3, sheet) => {
+                                if (err3) {
+                                    sendError('Could not add new worksheet');
+                                    return;
+                                } 
+                                sheet.setHeaderRow(['RANK', 'FIRST', 'SECOND', 'THIRD', 'TOTAL'], (err4) => {
+                                    if (err4) {
+                                        sendError('Could not set header row of weightes ranks sheet');
+                                        return;
+                                    }
+                                    const row = {RANK: 'weights', FIRST: 1, SECOND: 1, THIRD: 1};
+                                    sheet.addRow(row, (err5) => {
+                                        if (err5) {
+                                            sendError('Could not add row to weighted ranks sheet');
+                                            return;
+                                        }
+                                    });
+                                });
+                            });
+                        }
                     });
-                });
+                }
             });
         }
-    });
+    }
 
-    socket.on('send_entries', (data) => {
+    const sendEntries = (data) => {
         const eventId = data.eventId;
         const organizerId = data.googleId;
         let entries = data.entries;
@@ -82,34 +112,46 @@ io.on('connection', function (socket) {
             let doc = new GoogleSpreadsheet(id);
 
             doc.useServiceAccountAuth(creds, function (err) {
-                if (err) console.log(err);
-                doc.getInfo((err2, info) => {
-                    if (err2) console.log(err2);
-                    let sheet = info.worksheets[1];
-                    
-                    sheet.getRows((err3, rows) => {
-                        if (err3) console.log(err3);
-                        // prevent from adding duplicate entries
-                        const existing = [];
-                        for (let i = 0; i < rows.length; i++) {
-                            existing.push(rows[i].rank);
+                if (err) {
+                    sendError('Could not authenticate sheet');
+                    return;
+                } else {
+                    doc.getInfo((err2, info) => {
+                        if (err2) {
+                            sendError('Could not get sheet information');
+                            return;
                         }
-                        for (let entry in entries) {
-                            if (!existing.includes(entry)) {
-                                let row = { RANK: entry, FIRST: 0, SECOND: 0, THIRD: 0, TOTAL: 0 };
-                                sheet.addRow(row, (err4) => {
-                                    if (err4) console.log(err4);
-                                });
+                        let sheet = info.worksheets[1];
+                        
+                        sheet.getRows((err3, rows) => {
+                            if (err3) {
+                                sendError('Could not get information from weighted ranks sheet');
+                                return;
                             }
-                        }
+                            // prevent from adding duplicate entries
+                            const existing = [];
+                            for (let i = 0; i < rows.length; i++) {
+                                existing.push(rows[i].rank);
+                            }
+                            for (let entry in entries) {
+                                if (!existing.includes(entry)) {
+                                    let row = { RANK: entry, FIRST: 0, SECOND: 0, THIRD: 0, TOTAL: 0 };
+                                    sheet.addRow(row, (err4) => {
+                                        if (err4) {
+                                            sendError('Could not get add row to weighted ranks sheet');
+                                            return;
+                                        }
+                                    });
+                                }
+                            }
+                        });
                     });
-                });
+                }
             });
         });
-    });
+    }
 
-    // currently weights don't save in the DB but they do in the spreadsheet
-    socket.on('send_weights', (data) => {
+    const sendWeights = (data) => {
         let weights = data.weights;
         const eventId = data.eventId;
         const organizerId = data.googleId;
@@ -122,12 +164,21 @@ io.on('connection', function (socket) {
             const doc = new GoogleSpreadsheet(id);
 
             doc.useServiceAccountAuth(creds, (err) => {
-                if (err) console.log(err);
-                doc.getInfo((err, info) => {
-                    if (err) console.log(err);
+                if (err) {
+                    sendError('Could not authenticate sheet');
+                    return;
+                }
+                doc.getInfo((err2, info) => {
+                    if (err2) {
+                        sendError('Could not get information from weighted ranks sheet');
+                        return;
+                    }
                     let weights_sheet = info.worksheets[1];
-                    weights_sheet.getRows((err, rows) => {
-                        if (err) console.log(err);
+                    weights_sheet.getRows((err3, rows) => {
+                        if (err3) {
+                            sendError('Could not get rows from weighted ranks sheet');
+                            return;
+                        }
                         rows[0].FIRST = weights[0];
                         rows[0].SECOND = weights[1];
                         rows[0].THIRD = weights[2];
@@ -136,9 +187,9 @@ io.on('connection', function (socket) {
                 });
             });
         });
-    })
+    }
 
-    socket.on('send_votes', (data) => {
+    const sendVotes = (data) => {
         const votes = data.votes;
         let final_votes = {};
         const top3 = [];
@@ -159,21 +210,34 @@ io.on('connection', function (socket) {
             let doc = new GoogleSpreadsheet(id);
 
             doc.useServiceAccountAuth(creds, (err) => {
-                console.log(err);
+                if (err) {
+                    sendError('Could not authenticate sheet');
+                    return;
+                }
                 doc.getRows(1, (err2, rows) => {
-                    if (err2) console.log(err2);
+                    if (err2) {
+                        sendError('Could not get information from weighted ranks sheet');
+                        return;
+                    }
                     final_votes.submission_num = rows.length + 1;
-                    doc.addRow(1, final_votes, (err2) => {
-                        if (err2) {
-                            console.log(err2);
+                    doc.addRow(1, final_votes, (err3) => {
+                        if (err3) {
+                            sendError('Could not add row to votes sheet');
+                            return;
                         }
                     });
                 });
-                doc.getInfo((err, info) => {
-                    if (err) console.log(err);
+                doc.getInfo((err2, info) => {
+                    if (err2) {
+                        sendError('Could not get information from weighted ranks sheet');
+                        return;
+                    }
                     let weights_sheet = info.worksheets[1];
-                    weights_sheet.getRows((err, rows) => {
-                        if (err) console.log(err);
+                    weights_sheet.getRows((err3, rows) => {
+                        if (err3) {
+                            sendError('Could not get rows from weights sheet');
+                            return;
+                        }
                         let curr;
                         for (let i = 0; i < rows.length; i++) {
                             curr = rows[i];
@@ -195,11 +259,28 @@ io.on('connection', function (socket) {
                 });
             });
         })
+    }
+
+    socket.on('send_url', (data) => {
+        connectUrl(data);
+    });
+
+    socket.on('send_entries', (data) => {
+        sendEntries(data);
+    });
+
+    // currently weights don't save in the DB but they do in the spreadsheet
+    socket.on('send_weights', (data) => {
+        sendWeights(data);
+    });
+
+    socket.on('send_votes', (data) => {
+        sendVotes(data);
     });
 
     socket.on('update_rankings', (data) => {
         rankings = data.votes;
-        console.log(rankings);
     })
 });
+
 io.listen(port);
