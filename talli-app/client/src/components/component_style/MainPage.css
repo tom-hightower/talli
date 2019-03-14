@@ -8,3 +8,11 @@
     margin-right: 25%;
     border: none;
 }
+
+#aboutLink {
+    text-align: center;
+}
+
+#aboutLink:hover {
+    cursor: pointer;
+}

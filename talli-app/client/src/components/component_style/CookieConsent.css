@@ -9,6 +9,11 @@
     padding-bottom: 4px;
 }
 
+.cookieInfo {
+    padding: 10px;
+    margin-bottom: 20vh;
+}
+
 @media only screen and (min-width: 600px) {
     .cookieInfo {
         padding: 10vh 20% 0 20%;

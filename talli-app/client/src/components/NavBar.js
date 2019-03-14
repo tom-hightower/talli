@@ -13,7 +13,9 @@ import { Drawer, ListItemIcon, ListItemText, ListItem, Divider } from '@material
 import './component_style/NavBar.css';
 import logoSvg from '../logo.svg';
 import { navigate } from 'react-mini-router';
+import { getCookie } from '../cookies.js'
 import HelpView from './Help';
+import CookieWarning from './CookieWarning';
 
 /**
  * The NavBar contains the top AppBar as well as the navigation Drawer on
@@ -27,12 +29,20 @@ export default class NavBar extends React.Component {
         };
 
         this.helpChild = React.createRef();
+        this.warningChild = React.createRef();
     }
 
     toggleDrawer = () => this.setState({ open: !this.state.open });
     closeDrawer = () => this.setState({open: false});
-    ChangeView(page) { navigate(page); }
-
+    
+    ChangeView(page) { 
+        var consent_value = getCookie('TalliConsent');
+        if (page === "/vote" && consent_value === "") {
+            this.warningChild.current.handleOpen();
+        } else {
+           navigate(page);  
+        } 
+    }
 
     onSuccess = (response) => {
         this.props.onSuccess(response);
@@ -108,10 +118,15 @@ export default class NavBar extends React.Component {
                                 <ListItemIcon><HelpOutlineIcon /></ListItemIcon>
                                 <ListItemText primary='Help' />
                             </ListItem>
+                            <ListItem button key='Cookies' onClick={() => this.ChangeView('/cookies')}>
+                                <ListItemIcon><HelpOutlineIcon /></ListItemIcon>
+                                <ListItemText primary='Cookies' />
+                            </ListItem> 
                         </div>
                     </div>
                 </Drawer>
                 <HelpView ref={this.helpChild} />
+                <CookieWarning ref={this.warningChild}/>
             </div>
         );
     }

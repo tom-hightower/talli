@@ -1,5 +1,6 @@
 import React from 'react';
 import { Button, Card, CardActions, CardContent, Slide } from '@material-ui/core';
+import { setCookie, getCookie } from '../cookies.js'
 import './component_style/CookieConsent.css';
 
 /**
@@ -10,12 +11,15 @@ import './component_style/CookieConsent.css';
 export default class CookieConsent extends React.Component {
     state = {
         open: true,
-    };
+    }
 
     handleClose = () => {
+        var consent_value = getCookie('TalliConsent');
+        if (consent_value === "") {
+            setCookie("TalliConsent", true, 30);
+        }
         this.setState({ open: false });
-        // should do something to indicate that consent has been given??
-    };
+    }
 
     goToLink = () => {
         this.props.nav('/cookies');
@@ -25,7 +29,7 @@ export default class CookieConsent extends React.Component {
         return (
             <div>
                 <Slide direction="up" in={this.state.open} mountOnEnter unmountOnExit>
-                    <Card className="cookieConsent">
+                    <Card className="cookieConsent" elevation={16}>
                         <CardContent id="cc_content">
                             This website uses&nbsp;
                             <span id="link" onClick={() => this.goToLink()}><u>cookies</u></span> 

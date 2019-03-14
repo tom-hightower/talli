@@ -29,11 +29,11 @@ export default class HelpView extends React.Component {
                         Help/About
                     </DialogTitle>
                     <DialogContent>
-                        <b>Help:</b>
+                        <b>Help:</b><br />
                         Choose to vote as an event attendee or login to the event organizer dashboard to begin.
-                        <br />
-                        <b>About:</b>
-                        Talli is a portable voting platform for events that let attendees vote on entries.
+                        <br /><br />
+                        <b>About:</b><br />
+                        Talli is a portable voting platform built to streamline popular voting at events.
                     </DialogContent>
                     <DialogActions>
                         <Button onClick={this.handleClose} color="primary">Ok</Button>
