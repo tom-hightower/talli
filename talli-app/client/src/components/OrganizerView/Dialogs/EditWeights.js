@@ -34,7 +34,7 @@ export default class EditWeights extends React.Component {
             socket.emit('send_weights', {
                 weights: this.state.weights,
                 eventId: this.props.event.id,
-                googleId: this.props.googleId
+                organizerId: this.props.googleId
             });
         }
         this.setState({ open: false });
