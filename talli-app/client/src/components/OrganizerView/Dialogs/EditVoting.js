@@ -24,6 +24,7 @@ export default class EditVoting extends React.Component {
             '/event/' + this.props.event.id +
             '/eventData/');
         itemsRef.child('startVote').set(new Date().toISOString());
+        itemsRef.child('endVote').set('none');
         this.handleClose();
     }
 
