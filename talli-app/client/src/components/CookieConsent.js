@@ -1,6 +1,6 @@
 import React from 'react';
 import { Button, Card, CardActions, CardContent, Slide } from '@material-ui/core';
-import { setCookie, getCookie } from '../cookies.js'
+import { setCookie, getCookie } from '../cookies';
 import './component_style/CookieConsent.css';
 
 /**
@@ -14,8 +14,8 @@ export default class CookieConsent extends React.Component {
     }
 
     handleClose = () => {
-        var consent_value = getCookie('TalliConsent');
-        if (consent_value === "") {
+        let consentValue = getCookie('TalliConsent');
+        if (consentValue === "") {
             setCookie("TalliConsent", true, 30);
         }
         this.setState({ open: false });

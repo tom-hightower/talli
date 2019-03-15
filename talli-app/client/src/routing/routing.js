@@ -57,7 +57,7 @@ var RoutedApp = createReactClass({
         );
     },
 
-    cookies: function() {
+    cookies: function () {
         return <CookieInfo />;
     },
 

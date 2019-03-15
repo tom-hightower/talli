@@ -44,7 +44,7 @@ export default class CookieInfo extends React.Component {
                     If you consent to the usage of cookies by this site, please select "Got It!" on the banner below if you have not already.
                     Please note that you <b>cannot</b> use the voting features on this application without consenting to cookie usage.
                 </Typography>
-                <CookieConsent nav={this.ChangeView}/>
+                <CookieConsent nav={this.ChangeView} />
             </div>
         );
     }

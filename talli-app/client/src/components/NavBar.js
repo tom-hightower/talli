@@ -13,7 +13,7 @@ import { Drawer, ListItemIcon, ListItemText, ListItem, Divider } from '@material
 import './component_style/NavBar.css';
 import logoSvg from '../logo.svg';
 import { navigate } from 'react-mini-router';
-import { getCookie } from '../cookies.js'
+import { getCookie } from '../cookies';
 import HelpView from './Help';
 import CookieWarning from './CookieWarning';
 
@@ -34,15 +34,6 @@ export default class NavBar extends React.Component {
 
     toggleDrawer = () => this.setState({ open: !this.state.open });
     closeDrawer = () => this.setState({open: false});
-    
-    ChangeView(page) { 
-        var consent_value = getCookie('TalliConsent');
-        if (page === "/vote" && consent_value === "") {
-            this.warningChild.current.handleOpen();
-        } else {
-           navigate(page);  
-        } 
-    }
 
     onSuccess = (response) => {
         this.props.onSuccess(response);
@@ -51,6 +42,15 @@ export default class NavBar extends React.Component {
 
     onFailure = () => {
         console.log("Failed to Login");
+    }
+
+    ChangeView(page) {
+        let consentValue = getCookie('TalliConsent');
+        if (page === "/vote" && consentValue === "") {
+            this.warningChild.current.handleOpen();
+        } else {
+           navigate(page);
+        }
     }
 
     logout() {
@@ -90,7 +90,7 @@ export default class NavBar extends React.Component {
                 <ListItemText primary='Organizer Logout' />
             </ListItem>
         );
-        
+
         return (
             <div className="root">
                 <AppBar position="static" >
@@ -121,12 +121,12 @@ export default class NavBar extends React.Component {
                             <ListItem button key='Cookies' onClick={() => this.ChangeView('/cookies')}>
                                 <ListItemIcon><HelpOutlineIcon /></ListItemIcon>
                                 <ListItemText primary='Cookies' />
-                            </ListItem> 
+                            </ListItem>
                         </div>
                     </div>
                 </Drawer>
                 <HelpView ref={this.helpChild} />
-                <CookieWarning ref={this.warningChild}/>
+                <CookieWarning ref={this.warningChild} />
             </div>
         );
     }

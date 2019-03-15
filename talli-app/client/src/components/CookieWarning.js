@@ -22,7 +22,7 @@ export default class CookieWarning extends React.Component {
     };
 
     render() {
-        return(
+        return (
             <div>
                 <Dialog open={this.state.open} TransitionComponent={Transition} onClose={this.handleClose}>
                     <DialogTitle>

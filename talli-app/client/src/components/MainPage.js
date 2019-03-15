@@ -32,13 +32,13 @@ export default class MainPage extends React.Component {
     }
 
     GetCookies(page) {
-        var cookies_value = getCookie('UserID');
-        var consent_value = getCookie('TalliConsent');
-        if (consent_value === "") {
+        let cookiesValue = getCookie('UserID');
+        let consentValue = getCookie('TalliConsent');
+        if (consentValue === "") {
             this.warningChild.current.handleOpen();
         } else {
-            if (cookies_value === "") {
-                var userID = "" + Math.random().toString(36).substr(2, 9);
+            if (cookiesValue === "") {
+                let userID = "" + Math.random().toString(36).substr(2, 9);
                 setCookie("UserID", userID, 30);
                 const itemsRef = firebase.database().ref('cookies');
                 itemsRef.child(userID).set(userID);
@@ -85,10 +85,11 @@ export default class MainPage extends React.Component {
                 </Grid>
                 {/* <a href={signInUrl}>Sign in w google new way</a> */}
                 <br />
-                <Typography 
-                    variant="body2" 
-                    id="aboutLink" 
-                    onClick={() => this.helpChild.current.handleOpen()}>
+                <Typography
+                    variant="body2"
+                    id="aboutLink"
+                    onClick={() => this.helpChild.current.handleOpen()}
+                >
                         <u>About Talli</u>
                 </Typography>
                 <CookieConsent nav={this.ChangeView} />
