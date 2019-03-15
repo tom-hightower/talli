@@ -61,6 +61,7 @@ export default class JoinEvent extends React.Component {
                                     if (votingState === 'closed') {
                                         this.rejoinClosedChild.current.handleOpen();
                                         firebase.database().ref(`attendees/${cookie}/currentEvent`).set('');
+                                        firebase.database().ref(`attendees/${cookie}/pastEvents`).set(`${event['eventData'].id}`);
                                         return;
                                     }
                                     this.rejoinChild.current.handleOpen();
@@ -75,10 +76,9 @@ export default class JoinEvent extends React.Component {
 
     getVotingState(event) {
         const date = new Date().toISOString();
-        if ((event.endDate > date) && (event.startVote === 'none' || (event.startVote > date))) { // not open yet
+        if (event.startVote === 'none' || (event.startVote > date)) { // not open yet
             return 'before';
-        }
-        if ((event.startDate < date) && (event.endDate > date) && (event.endVote === 'none' || (event.endVote > date))) { // open
+        } else if (event.endVote === 'none' || (event.endVote > date)) { // open
             return 'open';
         }
         return 'closed';
@@ -100,6 +100,7 @@ export default class JoinEvent extends React.Component {
                         this.setState({ eventName: event.eventData.name }, () => {
                             // Checks whether an even has not started or has ended
                             const votingState = this.getVotingState(event.eventData);
+                            console.log(votingState);
                             if (votingState === 'before') {
                                 this.earlyJoinChild.current.handleOpen();
                                 return;
@@ -149,7 +150,14 @@ export default class JoinEvent extends React.Component {
     }
 
     handleText() {
-        if (this.state.idFieldValue === this.state.eventID && this.state.idFieldValue.length > 2) {
+        const cookie = getCookie('UserID');
+        let currentEventId = '';
+        firebase.database().ref(`attendees/${cookie}/currentEvent`).once('value').then(snapshot => {
+            currentEventId = snapshot.val();
+            console.log(currentEventId);
+            });
+        if (this.state.idFieldValue === this.state.eventID && this.state.idFieldValue.length > 2 && this.state.eventID === currentEventId) {
+            console.log("rejoined");
             this.handleRejoinEvent();
             return;
         }
