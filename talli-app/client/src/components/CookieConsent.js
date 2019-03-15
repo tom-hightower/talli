@@ -14,7 +14,7 @@ export default class CookieConsent extends React.Component {
     }
 
     handleClose = () => {
-        let consentValue = getCookie('TalliConsent');
+        const consentValue = getCookie('TalliConsent');
         if (consentValue === "") {
             setCookie("TalliConsent", true, 30);
         }

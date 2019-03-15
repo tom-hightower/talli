@@ -7,7 +7,7 @@ export function setCookie(c_name, value, exdays){
 }
 
 export function getCookie(c_name) {
-    let cookiesArray = document.cookie.split("; ");
+    const cookiesArray = document.cookie.split("; ");
     for (let i = 0; i < cookiesArray.length; i++) {
         const nameValueArray = cookiesArray[i].split("=");
         if (nameValueArray[0] === c_name) {

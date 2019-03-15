@@ -4,7 +4,7 @@ import GoogleLogin from 'react-google-login';
 import { navigate } from 'react-mini-router';
 import './component_style/MainPage.css';
 import firebase from '../firebase.js';
-import { setCookie, getCookie } from '../cookies.js'
+import { setCookie, getCookie } from '../cookies';
 
 import openSocket from 'socket.io-client';
 import HelpView from './Help';
@@ -32,13 +32,13 @@ export default class MainPage extends React.Component {
     }
 
     GetCookies(page) {
-        let cookiesValue = getCookie('UserID');
-        let consentValue = getCookie('TalliConsent');
+        const cookiesValue = getCookie('UserID');
+        const consentValue = getCookie('TalliConsent');
         if (consentValue === "") {
             this.warningChild.current.handleOpen();
         } else {
             if (cookiesValue === "") {
-                let userID = "" + Math.random().toString(36).substr(2, 9);
+                const userID = "" + Math.random().toString(36).substr(2, 9);
                 setCookie("UserID", userID, 30);
                 const itemsRef = firebase.database().ref('cookies');
                 itemsRef.child(userID).set(userID);
@@ -55,6 +55,11 @@ export default class MainPage extends React.Component {
         // this.sendLoginRequest = this.sendLoginRequest.bind(this);
         this.helpChild = React.createRef();
         this.warningChild = React.createRef();
+    }
+
+    gaveConsent = () => {
+        const consentValue = getCookie('TalliConsent');
+        return (consentValue !== "");
     }
 
     render() {
@@ -81,18 +86,20 @@ export default class MainPage extends React.Component {
                             {/* Nick messing around with other login possibilities */}
                             {/* <Button variant="contained" color="primary" className="buttons" onClick={() => this.sendLoginRequest()}>Organizer Login</Button> */}
                         </ListItem>
-                    </div>
+                    </div>                  
                 </Grid>
+                <div className="links">
+                    <Typography variant="body2" id="aboutLink" onClick={() => this.helpChild.current.handleOpen()}>
+                         <u>About Talli</u>
+                    </Typography>  
+                </div>
                 {/* <a href={signInUrl}>Sign in w google new way</a> */}
                 <br />
-                <Typography
-                    variant="body2"
-                    id="aboutLink"
-                    onClick={() => this.helpChild.current.handleOpen()}
-                >
-                        <u>About Talli</u>
-                </Typography>
-                <CookieConsent nav={this.ChangeView} />
+                
+                {
+                    !this.gaveConsent() && <CookieConsent nav={this.ChangeView} />
+                }
+                
             </div>
         );
     }

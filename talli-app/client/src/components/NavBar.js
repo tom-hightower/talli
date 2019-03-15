@@ -45,7 +45,7 @@ export default class NavBar extends React.Component {
     }
 
     ChangeView(page) {
-        let consentValue = getCookie('TalliConsent');
+        const consentValue = getCookie('TalliConsent');
         if (page === "/vote" && consentValue === "") {
             this.warningChild.current.handleOpen();
         } else {

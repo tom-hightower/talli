@@ -9,8 +9,10 @@
     border: none;
 }
 
-#aboutLink {
-    text-align: center;
+.links {
+    display: flex;
+    justify-content: center; 
+    margin-top: 5vh;
 }
 
 #aboutLink:hover {
