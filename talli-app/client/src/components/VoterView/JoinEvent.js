@@ -61,7 +61,6 @@ export default class JoinEvent extends React.Component {
                                     if (votingState === 'closed') {
                                         this.rejoinClosedChild.current.handleOpen();
                                         firebase.database().ref(`attendees/${cookie}/currentEvent`).set('');
-                                        firebase.database().ref(`attendees/${cookie}/pastEvents`).push(`${event['eventData'].id}`);
                                         return;
                                     }
                                     this.rejoinChild.current.handleOpen();
