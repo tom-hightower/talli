@@ -5,7 +5,7 @@ import AddCircleIcon from '@material-ui/icons/AddCircle';
 import { Typography, Button } from '@material-ui/core';
 import BellIcon from '@material-ui/icons/NotificationImportant';
 import firebase from '../../firebase';
-import { getCookie } from '../../cookies.js'
+import { getCookie } from '../../cookies.js';
 import '../component_style/RankingContainer.css';
 import SubmitConfirm from './Dialogs/SubmitConfirm';
 import Countdown from './Countdown';
@@ -24,7 +24,7 @@ const SortableItem = SortableElement(({ value, item }) =>
 const SortableList = SortableContainer(({ items }) => {
     return (
         <ul>
-            {items.length !== 0 ? <div></div> : <div>Tap the Plus to add an entry</div>}
+            {items.length !== 0 ? <div/> : <div>Tap the Plus to add an entry</div>}
             {items.map((value, index) => (
                 <SortableItem key={`item-${index}`} item={index} index={index} value={value.name} />
             ))}
@@ -68,15 +68,15 @@ export default class SortContainer extends Component {
         this.setState({
             items: this.props.rankItems,
         }, () => {
-            firebase.database().ref('/organizer/' + this.props.organizer + '/event/').once('value').then(snapshot => {
-                let events = snapshot.val();
+            firebase.database().ref(`/organizer/${this.props.organizer}/event/`).once('value').then(snapshot => {
+                const events = snapshot.val();
                 if (!events || !events[this.props.eventID]) {
-                    //error
-                    console.log('DEV ERROR')
+                    // Error
+                    console.log('DEV ERROR');
                 }
-                let eventBase = events[this.props.eventID]['eventData'];
-                let eventEntries = events[this.props.eventID]['entries'];
-                var itemList = this.state.items;
+                const eventBase = events[this.props.eventID].eventData;
+                const eventEntries = events[this.props.eventID].entries;
+                const itemList = this.state.items;
                 if (eventEntries && this.props.entryToAdd && !this.state.items.some(e => e.id === this.props.entryToAdd)) {
                     itemList.push({ name: eventEntries[this.props.entryToAdd].title, id: this.props.entryToAdd });
                     this.updateDatabaseRankings(itemList);
@@ -111,7 +111,7 @@ export default class SortContainer extends Component {
     updateDatabaseRankings(items) {
         const cookie = getCookie('UserID');
         const ref = firebase.database().ref(`event/${this.props.eventID}/attendees/${cookie}/rankings/`);
-        for (var i = 0; i < items.length; i++) {
+        for (let i = 0; i < items.length; i++) {
             ref.child(items[i].id).set(i + 1);
         }
     }
@@ -144,8 +144,13 @@ export default class SortContainer extends Component {
                 </div>
                 <div>
                     <div className="SortContainer">
-                        <SortableList items={this.state.items} onSortEnd={this.onSortEnd} lockAxis='y'
-                            useDragHandle={true} helperClass='sortHelp' />
+                        <SortableList
+                            items={this.state.items}
+                            onSortEnd={this.onSortEnd}
+                            lockAxis='y'
+                            useDragHandle={true}
+                            helperClass='sortHelp'
+                        />
                     </div>
                 </div>
 

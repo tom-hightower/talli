@@ -4,7 +4,7 @@ import { TextField, Typography, Button } from '@material-ui/core';
 import EntryConfirmation from './Dialogs/EntryConfirmation';
 import '../component_style/Voter.css';
 import firebase from '../../firebase';
-import { getCookie } from '../../cookies.js'
+import { getCookie } from '../../cookies.js';
 import BlockJoin from './Dialogs/BlockJoin';
 import EarlyJoin from './Dialogs/EarlyJoin';
 import ClosedJoin from './Dialogs/ClosedJoin';
@@ -12,7 +12,7 @@ import RejoinClosed from './Dialogs/RejoinClosed';
 import NotFound from './Dialogs/NotFound';
 import RejoinEvent from './Dialogs/RejoinEvent';
 
-var config = require('../../config.json');
+const config = require('../../config.json');
 
 /**
  * Join Event via QR Code or UID
@@ -131,7 +131,6 @@ export default class JoinEvent extends React.Component {
                 } else {
                     // Event not found
                     this.notFoundChild.current.handleOpen();
-                    return;
                 }
             });
         });
