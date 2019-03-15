@@ -46,16 +46,15 @@ io.on('connection', function (socket) {
 
     const connectUrl = (data) => {
         if (data.url.length > 0) {
-            let url = data.url;
-            const { googleId, eventId } = data;
-            if (googleId && eventId) {
-                const eventData = firebase.database().ref(`organizer/${googleId}/event/${eventId}/eventData`);
+            const { url, organizerId, eventId } = data;
+            if (organizerId && eventId) {
+                const eventData = firebase.database().ref(`organizer/${organizerId}/event/${eventId}/eventData`);
                 eventData.child('sheetURL').set(url);
             }
 
             // best way to parse for id?
             const id = url.split('/')[5];
-            let doc = new GoogleSpreadsheet(id);
+            const doc = new GoogleSpreadsheet(id);
 
             doc.useServiceAccountAuth(creds, (err) => {
                 if (err) {
@@ -99,10 +98,7 @@ io.on('connection', function (socket) {
     };
 
     const sendEntries = (data) => {
-        // const { eventId, organizerId, entries } = data;
-        const eventId = data.eventId;
-        const organizerId = data.organizerId;
-        const entries = data.entries;
+        const { eventId, organizerId, entries } = data;
         
         const query = firebase.database().ref(`organizer/${organizerId}/event/${eventId}/eventData/sheetURL`);
 
