@@ -153,7 +153,7 @@ export default class JoinEvent extends React.Component {
         firebase.database().ref(`attendees/${cookie}/currentEvent`).once('value').then(snapshot => {
             currentEventId = snapshot.val();
             console.log(currentEventId);
-            });
+        });
         if (this.state.idFieldValue === this.state.eventID && this.state.idFieldValue.length > 2 && this.state.eventID === currentEventId) {
             console.log("rejoined");
             this.handleRejoinEvent();

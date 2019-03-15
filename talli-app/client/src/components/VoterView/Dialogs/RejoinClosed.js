@@ -26,8 +26,8 @@ export default class RejoinClosed extends React.Component {
                         Alerts
                     </DialogTitle>
                     <DialogContent>
-                        The event you were participating in, <b>{this.props.eventName}</b>, has closed. 
-                        Your vote has been automatically submitted. 
+                        The event you were participating in, <b>{this.props.eventName}</b>, has closed.
+                        Your vote has been automatically submitted.
                     </DialogContent>
                     <DialogActions>
                         <Button onClick={this.handleClose} color="primary">Go Back</Button>
