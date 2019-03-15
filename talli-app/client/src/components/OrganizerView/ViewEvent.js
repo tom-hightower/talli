@@ -178,7 +178,7 @@ export default class ViewEvent extends React.Component {
         e.preventDefault();
         socket.emit('send_url', {
             url: this.state.event.sheetURL,
-            organizerId: this.props.user.googleId,
+            googleId: this.props.user.googleId,
             eventId: this.state.event.id,
         });
     }
