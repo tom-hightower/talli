@@ -1,5 +1,5 @@
 import React from 'react';
-import { Typography, Button } from '@material-ui/core';
+import { Typography, Button, TextField } from '@material-ui/core';
 import openSocket from 'socket.io-client';
 import firebase from '../../firebase';
 import ExportOrgData from './Dialogs/ExportOrgData';
@@ -8,10 +8,10 @@ import EditEvent from './Dialogs/EditEvent';
 import EditVoting from './Dialogs/EditVoting';
 import AddEntries from './Dialogs/AddEntries';
 import EditWeights from './Dialogs/EditWeights';
-import Error from './Dialogs/ShowError'
 import AddBallot from './Dialogs/AddBallot';
 import '../component_style/ViewEvent.css';
 import ShowError from './Dialogs/ShowError';
+import ConfirmFinalize from './Dialogs/ConfirmFinalize';
 
 const socket = openSocket('http://localhost:5000');
 
@@ -46,6 +46,7 @@ export default class ViewEvent extends React.Component {
         this.weightsChild = React.createRef();
         this.addVoteChild = React.createRef();
         this.errorChild = React.createRef();
+        this.finalizeChild = React.createRef();
     }
 
     componentDidMount() {
@@ -146,6 +147,23 @@ export default class ViewEvent extends React.Component {
         });
     }
 
+    finalizeConfirm = () => {
+        this.finalizeChild.current.handleOpen();
+    }
+
+    finalizeResults = () => {
+        socket.emit('finalize_results', {
+            googleId: this.props.user.googleId,
+            eventId: this.state.event.id
+        });
+    }
+
+    keyPress(e) {
+        if (e.key === 'Enter') {
+            this.handleSubmit();
+        }
+    }
+
     handleURLChange = (e) => {
         e.preventDefault();
         const newEvent = this.state.event;
@@ -181,6 +199,7 @@ export default class ViewEvent extends React.Component {
                     <div>
                         <ExportOrgData ref={this.exportChild} event={this.state.event} />
                         <EditEntries ref={this.entryChild} event={this.state.event} googleId={this.props.user.googleId} />
+                        <ConfirmFinalize ref={this.finalizeChild} handler={this.finalizeResults} />
                         <AddEntries ref={this.addChild} event={this.state.event} googleId={this.props.user.googleId} />
                         <EditEvent ref={this.eventChild} event={this.state.event} googleId={this.props.user.googleId} handler={this.props.handler} orgViews={this.props.orgViews} />
                         <AddBallot ref={this.addVoteChild} event={this.state.event} googleId={this.props.user.googleId} />
@@ -244,30 +263,54 @@ export default class ViewEvent extends React.Component {
                             <Button className="button1" variant="contained" color="primary" onClick={this.viewResults}>View Results</Button>
                         </div>
                         <br />
-                        <Typography variant="h5">Add paper ballot(s) manually into system:</Typography>
-                        <br />
-                        <div className="box">
-                            <Button className="listButtons" onClick={this.handleAddVote}>Add Vote</Button>
-                        </div>
-                        <br />
-                        <Typography variant="h5">Set up Google Sheets to export results:</Typography>
-                        <br />
-                        <div className="instructions">
-                            <div>1. Create a Google Sheet in your desired location</div>
-                            <div>2. Share the spreadsheet with editing rights with <b>talli-455@talli-229017.iam.gserviceaccount.com</b></div>
-                            <div>
-                                <form onSubmit={this.handleSubmit}>
-                                    <label>
+                        <div className="saveItems">
+                            <div className="sheetsExport">
+                                <Typography variant="h5">Set up Google Sheets to export results:</Typography>
+                                <br />
+                                <div className="instructions">
+                                    <div>1. Create a Google Sheet in your desired location</div>
+                                    <div>
+                                        2. Share the spreadsheet with editing rights with:
+                                        <br />
+                                        <div className="main">
+                                            <b>talli-455@talli-229017.iam.gserviceaccount.com</b>
+                                        </div>
+                                    </div>
+                                    <div>
                                         3. Grab the spreadsheet's URL and paste it here:
-                                        <input type="text" value={this.state.event.sheetURL} onChange={this.handleURLChange} className="sheetURL" />
-                                    </label>
-                                    <input type="submit" value="Submit" />
-                                </form>
+                                        <div className="main">
+                                            <TextField
+                                                id="standard-dense"
+                                                label="Spreadsheet URL"
+                                                margin="dense"
+                                                className="sheetURL"
+                                                value={this.state.event.sheetURL}
+                                                onKeyDown={this.keyPress}
+                                                onChange={this.handleURLChange}
+                                            />
+                                            <br />
+                                            <Button variant="contained" size="small" color="default" onClick={this.handleSubmit}>
+                                                Submit
+                                            </Button>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
-                        </div>
-                        <div>
-                            <Button variant="contained" className="buttons weights" type="button" onClick={this.handleWeights}>Apply Custom Weights</Button>
-                            <Button variant="contained" className="buttons" type="button" onClick={this.sendEntries}>Sync entries</Button>
+                            <div className="manualBallots">
+                                <Typography variant="h5">Add paper ballot(s) manually into system:</Typography>
+                                <br />
+                                <div className="addVoteBox">
+                                    <Button className="listButtons" onClick={this.handleAddVote}>Add Vote</Button>
+                                </div>
+                                <br />
+                                <div>
+                                    <Typography variant="h5">Results Controls:</Typography>
+                                    <Button variant="contained" className="buttons weights" type="button" onClick={this.handleWeights}>Apply Custom Weights</Button>
+                                    <Button variant="contained" className="buttons" type="button" onClick={this.sendEntries}>Sync entries</Button>
+                                    <br />
+                                    <Button variant="contained" className="buttons" color="primary" type="button" onClick={this.finalizeConfirm}>Finalize Results</Button>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 }

@@ -20,25 +20,19 @@ export default class EditVoting extends React.Component {
     };
 
     openVoting = () => {
-        const itemsRef = firebase.database().ref('organizer/' + this.props.googleId +
-            '/event/' + this.props.event.id +
-            '/eventData/');
+        const itemsRef = firebase.database().ref(`organizer/${this.props.googleId}/event/${this.props.event.id}/eventData/`);
         itemsRef.child('startVote').set(new Date().toISOString());
         this.handleClose();
     }
 
     closeVoting = () => {
-        const itemsRef = firebase.database().ref('organizer/' + this.props.googleId +
-            '/event/' + this.props.event.id +
-            '/eventData/');
+        const itemsRef = firebase.database().ref(`organizer/${this.props.googleId}/event/${this.props.event.id}/eventData/`);
         itemsRef.child('endVote').set(new Date().toISOString());
         this.handleClose();
     }
 
     reopenVoting = () => {
-        const itemsRef = firebase.database().ref('organizer/' + this.props.googleId +
-            '/event/' + this.props.event.id +
-            '/eventData/');
+        const itemsRef = firebase.database().ref(`organizer/${this.props.googleId}/event/${this.props.event.id}/eventData/`);
         itemsRef.child('startVote').set(new Date().toISOString());
         itemsRef.child('endVote').set('none');
         this.handleClose();

@@ -32,6 +32,23 @@
     background-color: #EEE;
 }
 
+.addVoteBox {
+    border: 2px solid #03a9f4;
+    margin: auto;
+    width: 90%;
+    font-size: 150%;
+    text-align: left;
+    padding: 0 1px 0 1px;
+}
+
+.addVoteBox > * {
+    cursor: pointer;
+}
+
+.addVoteBox > *:nth-child(odd) {
+    background-color: #EEE;
+}
+
 .button1 {
     margin: 10px !important;
 }
@@ -42,13 +59,12 @@
 }
 
 .sheetURL {
-    width: 40%;
+    min-width: 100px;
+    width: 60%;
 }
 
 .instructions {
     border: 2px solid #03a9f4;
-    margin-left: 12%;
-    margin-right: 12%;
     text-align: left;
     font-size: 105%;
     padding: 1px;
@@ -67,3 +83,35 @@
 /* .instructions > *:nth-child(odd) {
     background-color: #EEE;
 } */
+
+.saveItems {
+    display: flex;
+    margin: auto;
+    width: 100%;
+    flex-wrap: wrap;
+}
+
+.manualBallots {
+    width: 100%;
+    min-width: 200px;
+}
+
+.sheetsExport {
+    width: 100%;
+    min-width: 200px;
+    margin-bottom: 25px;
+}
+
+@media only screen and (min-width: 768px) {
+    .saveItems {
+        width: 80%;
+    }
+
+    .manualBallots {
+        width: 50%;
+    }
+
+    .sheetsExport {
+        width: 50%;
+    }
+}
