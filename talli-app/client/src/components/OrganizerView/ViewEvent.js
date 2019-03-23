@@ -8,6 +8,8 @@ import EditEvent from './Dialogs/EditEvent';
 import EditVoting from './Dialogs/EditVoting';
 import AddEntries from './Dialogs/AddEntries';
 import AddBallot from './Dialogs/AddBallot';
+import ArchiveVote from './Dialogs/ArchiveVote';
+import DeleteVote from './Dialogs/DeleteVote';
 
 /**
  * OrganizerView > ViewEvent
@@ -38,6 +40,8 @@ export default class ViewEvent extends React.Component {
         this.addChild = React.createRef();
         this.votingChild = React.createRef();
         this.addVoteChild = React.createRef();
+        this.archiveVoteChild = React.createRef();
+        this.deleteVoteChild = React.createRef();
     }
 
     componentDidMount() {
@@ -97,6 +101,14 @@ export default class ViewEvent extends React.Component {
         this.addVoteChild.current.handleOpen();
     }
 
+    handleArchiveVote = () => {
+        this.archiveVoteChild.current.handleOpen();
+    }
+
+    handleDeleteVote = () => {
+        this.deleteVoteChild.current.handleOpen();
+    }
+
     goBack = () => {
         if (this.state.view === 'main' || this.state.view === "results") {
             this.props.handler(this.props.orgViews.MAIN);
@@ -131,6 +143,8 @@ export default class ViewEvent extends React.Component {
                         <AddEntries ref={this.addChild} event={this.state.event} googleId={this.props.user.googleId} />
                         <EditEvent ref={this.eventChild} event={this.state.event} googleId={this.props.user.googleId} handler={this.props.handler} orgViews={this.props.orgViews} />
                         <AddBallot ref={this.addVoteChild} event={this.state.event} googleId={this.props.user.googleId} />
+                        <ArchiveVote ref={this.archiveVoteChild} event={this.state.event} googleId={this.props.user.googleId} />
+                        <DeleteVote ref={this.deleteVoteChild} event={this.state.event} googleId={this.props.user.googleId} />
                         <EditVoting ref={this.votingChild} event={this.state.event} googleId={this.props.user.googleId} />
                         <Typography variant="h3" align='center' gutterBottom>{this.state.event.name}</Typography>
                     </div>
@@ -193,6 +207,13 @@ export default class ViewEvent extends React.Component {
                         <br />
                         <div className="box">
                             <Button className="listButtons" onClick={this.handleAddVote}>Add Vote</Button>
+                        </div>
+                        <br />
+                        <Typography variant="h5">Delet Vote(s) and Archive Vote(s) Instructions:</Typography>
+                        <br />
+                        <div className="box">
+                            <Button className="listButtons" onClick={this.handleDeleteVote}>Delet Vote(s)</Button>
+                            <Button className="listButtons" onClick={this.handleArchiveVote}>Archive Vote(s)</Button>
                         </div>
                         <br />
                         <Typography variant="h5">Set up Google Sheets to export results:</Typography>
