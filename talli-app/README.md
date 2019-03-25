@@ -10,6 +10,6 @@
 
 ### `npm run update` on Mac/Linux
 
-### otherwise `npm i` followed by `npm run client-install`
+### otherwise `npm i` followed by `npm run client-install` followed by `npm run server-install`
 
 <!-- npm inst? -->
