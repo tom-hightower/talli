@@ -24,7 +24,7 @@ export default class DeleteVote extends React.Component {
                 <Dialog open={this.state.open} TransitionComponent={Transition} onClose={this.handleClose}>
                     <DialogTitle> Delete Vote Instruction</DialogTitle>
                     <DialogContent>
-                        Delete Vote
+                        <p>To delete a submission, right click on the row number in the left most column, and click "delete row".</ p>
                     </DialogContent>
                     <DialogActions>
                         <Button onClick={this.handleClose} color="primary">go back</Button>
