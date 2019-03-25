@@ -8,3 +8,13 @@
     margin-right: 25%;
     border: none;
 }
+
+.links {
+    display: flex;
+    justify-content: center; 
+    margin-top: 5vh;
+}
+
+#aboutLink:hover {
+    cursor: pointer;
+}

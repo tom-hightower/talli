@@ -22,6 +22,7 @@ export default class EditVoting extends React.Component {
     openVoting = () => {
         const itemsRef = firebase.database().ref(`organizer/${this.props.googleId}/event/${this.props.event.id}/eventData/`);
         itemsRef.child('startVote').set(new Date().toISOString());
+        itemsRef.child('endVote').set('none');
         this.handleClose();
     }
 

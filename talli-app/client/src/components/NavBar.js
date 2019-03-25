@@ -13,7 +13,9 @@ import { Drawer, ListItemIcon, ListItemText, ListItem, Divider } from '@material
 import './component_style/NavBar.css';
 import logoSvg from '../logo.svg';
 import { navigate } from 'react-mini-router';
+import { getCookie } from '../cookies';
 import HelpView from './Help';
+import CookieWarning from './CookieWarning';
 
 /**
  * The NavBar contains the top AppBar as well as the navigation Drawer on
@@ -27,12 +29,11 @@ export default class NavBar extends React.Component {
         };
 
         this.helpChild = React.createRef();
+        this.warningChild = React.createRef();
     }
 
     toggleDrawer = () => this.setState({ open: !this.state.open });
     closeDrawer = () => this.setState({open: false});
-    ChangeView(page) { navigate(page); }
-
 
     onSuccess = (response) => {
         this.props.onSuccess(response);
@@ -41,6 +42,15 @@ export default class NavBar extends React.Component {
 
     onFailure = () => {
         console.log("Failed to Login");
+    }
+
+    ChangeView(page) {
+        const consentValue = getCookie('TalliConsent');
+        if (page === "/vote" && consentValue === "") {
+            this.warningChild.current.handleOpen();
+        } else {
+           navigate(page);
+        }
     }
 
     logout(view) {
@@ -69,7 +79,7 @@ export default class NavBar extends React.Component {
                 <ListItemText primary='Organizer Logout' />
             </ListItem>
         );
-        
+
         return (
             <div className="root">
                 <AppBar position="static" >
@@ -97,10 +107,15 @@ export default class NavBar extends React.Component {
                                 <ListItemIcon><HelpOutlineIcon /></ListItemIcon>
                                 <ListItemText primary='Help' />
                             </ListItem>
+                            <ListItem button key='Cookies' onClick={() => this.ChangeView('/cookies')}>
+                                <ListItemIcon><HelpOutlineIcon /></ListItemIcon>
+                                <ListItemText primary='Cookies' />
+                            </ListItem>
                         </div>
                     </div>
                 </Drawer>
                 <HelpView ref={this.helpChild} />
+                <CookieWarning ref={this.warningChild} />
             </div>
         );
     }

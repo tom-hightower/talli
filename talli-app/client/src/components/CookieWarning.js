@@ -5,7 +5,10 @@ function Transition(props) {
     return <Slide direction="up" {...props} />;
 }
 
-export default class RejoinClosed extends React.Component {
+/**
+ * Cookies warning
+ */
+export default class CookieWarning extends React.Component {
     state = {
         open: false,
     };
@@ -23,14 +26,13 @@ export default class RejoinClosed extends React.Component {
             <div>
                 <Dialog open={this.state.open} TransitionComponent={Transition} onClose={this.handleClose}>
                     <DialogTitle>
-                        Alerts
+                        Cookies Required
                     </DialogTitle>
                     <DialogContent>
-                        The event you were participating in, <b>{this.props.eventName}</b>, has closed.
-                        Your vote has been automatically submitted.
+                        Before you can vote, you <b>must consent</b> to the use of cookies.
                     </DialogContent>
                     <DialogActions>
-                        <Button onClick={this.handleClose} color="primary">Go Back</Button>
+                        <Button onClick={this.handleClose} color="primary">Close</Button>
                     </DialogActions>
                 </Dialog>
             </div>
