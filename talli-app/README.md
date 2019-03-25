@@ -12,4 +12,15 @@
 
 ### otherwise `npm i` followed by `npm run client-install` followed by `npm run server-install`
 
+## Create client prod build
+
+### `npm run build`
+
+### Run this before trying to run prod
+
+## Run production build
+
+### `npm run prod`
+
 <!-- npm inst? -->
+
