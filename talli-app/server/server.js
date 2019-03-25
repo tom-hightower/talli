@@ -1,4 +1,4 @@
-const firebase = require('./client/src/firebase');
+const firebase = require('../client/src/firebase');
 
 const express = require('express');
 const bodyParser = require('body-parser');
@@ -46,9 +46,9 @@ io.on('connection', function (socket) {
 
     const connectUrl = (data) => {
         if (data.url.length > 0) {
-            const { url, organizerId, eventId } = data;
-            if (organizerId && eventId) {
-                const eventData = firebase.database().ref(`organizer/${organizerId}/event/${eventId}/eventData`);
+            const { url, googleId, eventId } = data;
+            if (googleId && eventId) {
+                const eventData = firebase.database().ref(`organizer/${googleId}/event/${eventId}/eventData`);
                 eventData.child('sheetURL').set(url);
             }
 
@@ -98,9 +98,9 @@ io.on('connection', function (socket) {
     };
 
     const sendEntries = (data) => {
-        const { eventId, organizerId, entries } = data;
+        const { eventId, googleId, entries } = data;
         
-        const query = firebase.database().ref(`organizer/${organizerId}/event/${eventId}/eventData/sheetURL`);
+        const query = firebase.database().ref(`organizer/${googleId}/event/${eventId}/eventData/sheetURL`);
 
         query.on('value', (snapshot) => {
             let url = snapshot.val();
@@ -147,8 +147,8 @@ io.on('connection', function (socket) {
     };
 
     const sendWeights = (data) => {
-        const { weights, eventId, organizerId } = data;
-        const query = firebase.database().ref(`organizer/${organizerId}/event/${eventId}/eventData/sheetURL`);
+        const { weights, eventId, googleId } = data;
+        const query = firebase.database().ref(`organizer/${googleId}/event/${eventId}/eventData/sheetURL`);
 
         query.on('value', (snapshot) => {
             let url = snapshot.val();
@@ -280,7 +280,53 @@ io.on('connection', function (socket) {
                         sendError('Could not authenticate sheet');
                         return;
                     }
-                    // TODO: send entries (in 'ballots') to sheet
+                    doc.getInfo((err2, info) => {
+                        if (err2) {
+                            sendError('Could not get information from weighted ranks sheet');
+                            return;
+                        }
+                        let votes_sheet = info.worksheets[0];
+                        votes_sheet.getRows((err3, rows) => {
+                            if (err3) {
+                                sendError('Could not get rows from all votes sheet');
+                                return;
+                            }
+                            let curr = [];
+                            for (let i = 0; i < rows.length; i++) {
+                                if (ballots[i]) {
+                                    curr = rows[i];
+                                    for (let n = 1; n <= 10; n++) {
+                                        curr[num_2_str[n]] = '';
+                                    }
+                                    curr["submission_num"] = i+1;
+                                    for (let item in ballots[i]) {
+                                        curr[num_2_str[ballots[i][item]]] = item;
+                                    }
+                                    curr.save();
+                                }
+                            }
+                            for (let r = rows.length; r < ballots.length; r++) {
+                                for (let n = 1; n <= 10; n++) {
+                                    curr[num_2_str[n]] = '';
+                                }
+                                curr["submission_num"] = i+1;
+                                for (let item in ballots[r]) {
+                                    curr[num_2_str[ballots[r][item]]] = item;
+                                }
+                                votes_sheet.addRow(curr, (err5) => {
+                                    if (err5) {
+                                        sendError('Could not add row to all votes sheet');
+                                        return;
+                                    }
+                                });
+                            }
+                            if (rows.length > ballots.length) {
+                                for (let y = ballots.length; y < rows.length; y++) {
+                                    rows[y].del();
+                                }
+                            }
+                        });
+                    });
                 });
             });
         });
