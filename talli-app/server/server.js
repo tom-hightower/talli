@@ -85,7 +85,7 @@ io.on('connection', function (socket) {
                                     sendError('Could not set header row of weightes ranks sheet');
                                     return;
                                 }
-                                const row = { RANK: 'weights', FIRST: 1, SECOND: 1, THIRD: 1 };
+                                const row = { RANK: 'weights', FIRST: 3, SECOND: 2, THIRD: 1 };
                                 sheet2.addRow(row, (err5) => {
                                     if (err5) {
                                         sendError('Could not add row to weighted ranks sheet');
@@ -269,33 +269,6 @@ io.on('connection', function (socket) {
                         if (err3) {
                             sendError('Could not add row to votes sheet');
                             return;
-                        }
-                    });
-                });
-                doc.getInfo((err2, info) => {
-                    if (err2) {
-                        sendError('Could not get information from weighted ranks sheet');
-                        return;
-                    }
-                    let weights_sheet = info.worksheets[1];
-                    weights_sheet.getRows((err3, rows) => {
-                        if (err3) {
-                            sendError('Could not get rows from weights sheet');
-                            return;
-                        }
-                        let curr;
-                        for (let i = 0; i < rows.length; i++) {
-                            curr = rows[i];
-                            if (top3[0] === curr.rank) {
-                                curr.total = `=B2*B${i + 2}+C2*C${i + 2}+D2*D${i + 2}`;
-                                curr.save();
-                            } else if (top3[1] === curr.rank) {
-                                curr.total = `=B2*B${i + 2}+C2*C${i + 2}+D2*D${i + 2}`;
-                                curr.save();
-                            } else if (top3[2] === curr.rank) {
-                                curr.total = `=B2*B${i + 2}+C2*C${i + 2}+D2*D${i + 2}`;
-                                curr.save();
-                            }
                         }
                     });
                 });

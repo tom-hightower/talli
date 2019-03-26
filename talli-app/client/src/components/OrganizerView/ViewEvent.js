@@ -1,5 +1,5 @@
 import React from 'react';
-import { Typography, Button, TextField } from '@material-ui/core';
+import { Typography, Button, TextField, Tooltip } from '@material-ui/core';
 import openSocket from 'socket.io-client';
 import firebase from '../../firebase';
 import ExportOrgData from './Dialogs/ExportOrgData';
@@ -305,10 +305,26 @@ export default class ViewEvent extends React.Component {
                                 <br />
                                 <div>
                                     <Typography variant="h5">Results Controls:</Typography>
-                                    <Button variant="contained" className="buttons weights" type="button" onClick={this.handleWeights}>Apply Custom Weights</Button>
-                                    <Button variant="contained" className="buttons" type="button" onClick={this.sendEntries}>Sync entries</Button>
+                                    <Tooltip
+                                        title="Adjust the weights applied to first, second, and third place votes">
+                                        <Button variant="contained" className="buttons weights" type="button" onClick={this.handleWeights}>
+                                            Apply Custom Weights
+                                        </Button>
+                                    </Tooltip>
+                                    <Tooltip
+                                        title="Updates linked google sheet with current list of entries. Its best to do this before the event starts!"
+                                        placement="bottom">
+                                        <Button variant="contained" className="buttons" type="button" onClick={this.sendEntries}>
+                                            Sync entries
+                                        </Button>
+                                    </Tooltip>
                                     <br />
-                                    <Button variant="contained" className="buttons" color="primary" type="button" onClick={this.finalizeConfirm}>Finalize Results</Button>
+                                    <Tooltip
+                                        title="Updates linked google sheet with all voting ballots submitted or manually entered">
+                                        <Button variant="contained" className="buttons" color="primary" type="button" onClick={this.finalizeConfirm}>
+                                            Finalize Results
+                                        </Button>
+                                    </Tooltip>
                                 </div>
                             </div>
                         </div>
