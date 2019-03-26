@@ -32,9 +32,7 @@ export default class Voter extends React.Component {
     }
 
     updateItems(itemList) {
-        this.setState({ rankingItems: itemList }, () => {
-            socket.emit('update_rankings', { votes: this.state.rankingItems });
-        });
+        this.setState({ rankingItems: itemList });
     }
 
     changeView(newView, event = 'na', organizer = 'na', addedEntry = '') {

@@ -39,8 +39,6 @@ process.on('uncaughtException', (err) => {
 // might need to store their rankings in the DB on disconnect
 io.on('connection', function (socket) {
 
-    let rankings;
-
     const sendError = (message) => {
         io.emit('error', {
             error: message
@@ -180,9 +178,9 @@ io.on('connection', function (socket) {
                             let curr;
                             for (let i = 1; i < rows.length; i++) {
                                 curr = rows[i];
-                                curr.first = `=countif('all votes'!B2:B1000, "${curr.rank}")`;
-                                curr.second = `=countif('all votes'!C2:C1000, "${curr.rank}")`;
-                                curr.third = `=countif('all votes'!D2:D1000, "${curr.rank}")`;
+                                curr.first = `=countif('all votes'!B1:B999, "${curr.rank}")`;
+                                curr.second = `=countif('all votes'!C1:C999, "${curr.rank}")`;
+                                curr.third = `=countif('all votes'!D1:D999, "${curr.rank}")`;
                                 curr.total = `=B2*B${i + 2}+C2*C${i + 2}+D2*D${i + 2}`;
                                 curr.save();
                             }
@@ -259,19 +257,39 @@ io.on('connection', function (socket) {
                     sendError('Could not authenticate sheet');
                     return;
                 }
-                doc.getRows(1, (err2, rows) => {
+                doc.getInfo((err2, info) => {
                     if (err2) {
-                        sendError('Could not get information from weighted ranks sheet');
+                        sendError('Could not get info about sheets document');
                         return;
                     }
-                    final_votes.submission_num = rows.length + 1;
-                    doc.addRow(1, final_votes, (err3) => {
+                    let sheet = info.worksheets[0];
+                    sheet.getRows((err3, rows) => {
                         if (err3) {
-                            sendError('Could not add row to votes sheet');
+                            sendError('Could not access votes sheet');
                             return;
                         }
+                        final_votes.submission_num = rows.length + 1;
+                        sheet.addRow(final_votes, (err4) => {
+                            if (err4) {
+                                sendError('Could not add rows to votes sheet');
+                                return;
+                            }
+                        });
                     });
                 });
+                // doc.getRows(1, (err2, rows) => {
+                //     if (err2) {
+                //         sendError('Could not get information from weighted ranks sheet');
+                //         return;
+                //     }
+                //     final_votes.submission_num = rows.length + 1;
+                //     doc.addRow(1, final_votes, (err3) => {
+                //         if (err3) {
+                //             sendError('Could not add row to votes sheet');
+                //             return;
+                //         }
+                //     });
+                // });
             });
         });
     };
@@ -365,17 +383,12 @@ io.on('connection', function (socket) {
         sendEntries(data);
     });
 
-    // currently weights don't save in the DB but they do in the spreadsheet
     socket.on('send_weights', (data) => {
         sendWeights(data);
     });
 
     socket.on('send_votes', (data) => {
         sendVotes(data);
-    });
-
-    socket.on('update_rankings', (data) => {
-        rankings = data.votes;
     });
 
     socket.on('finalize_results', (data) => {
