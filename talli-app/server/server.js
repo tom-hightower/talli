@@ -99,6 +99,7 @@ io.on('connection', function (socket) {
 
     const sendEntries = (data) => {
         const { eventId, googleId, entries } = data;
+        console.log(entries);
         
         const query = firebase.database().ref(`organizer/${googleId}/event/${eventId}/eventData/sheetURL`);
 
@@ -130,8 +131,8 @@ io.on('connection', function (socket) {
                             existing.push(rows[i].rank);
                         }
                         for (let entry in entries) {
-                            if (!existing.includes(entry)) {
-                                let row = { RANK: entry, FIRST: 0, SECOND: 0, THIRD: 0, TOTAL: 0 };
+                            if (!existing.includes(entries[entry].title)) {
+                                let row = { RANK: entries[entry].title, FIRST: 0, SECOND: 0, THIRD: 0, TOTAL: 0 };
                                 sheet.addRow(row, (err4) => {
                                     if (err4) {
                                         sendError('Could not get add row to weighted ranks sheet');

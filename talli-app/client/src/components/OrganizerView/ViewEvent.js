@@ -184,6 +184,7 @@ export default class ViewEvent extends React.Component {
     }
 
     sendEntries = () => {
+        console.log(this.state.event.entries);
         socket.emit('send_entries', {
             googleId: this.props.user.googleId,
             eventId: this.state.event.id,
