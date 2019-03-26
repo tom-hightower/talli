@@ -1,8 +1,11 @@
 import React from 'react';
+import openSocket from 'socket.io-client';
 import Ranking from './VoterView/RankingContainer';
 import AddEntry from './VoterView/AddEntryVote';
 import JoinEvent from './VoterView/JoinEvent';
 import Submitted from './VoterView/Submitted';
+
+const socket = openSocket('http://localhost:5000');
 
 const voteViews = {
     JOIN: 'JoinEvent',
@@ -41,7 +44,10 @@ export default class Voter extends React.Component {
                 entryToAdd: addedEntry
             });
         } else {
-            this.setState({ curView: newView, entryToAdd: addedEntry });
+            this.setState({
+                curView: newView,
+                entryToAdd: addedEntry
+            });
         }
     }
 

@@ -1,19 +1,24 @@
 import React from 'react';
-import { Typography, Button } from '@material-ui/core';
-import '../component_style/ViewEvent.css';
+import { Typography, Button, TextField, Tooltip } from '@material-ui/core';
+import openSocket from 'socket.io-client';
 import firebase from '../../firebase';
 import ExportOrgData from './Dialogs/ExportOrgData';
 import EditEntries from './Dialogs/EditEntries';
 import EditEvent from './Dialogs/EditEvent';
 import EditVoting from './Dialogs/EditVoting';
 import AddEntries from './Dialogs/AddEntries';
+import EditWeights from './Dialogs/EditWeights';
 import AddBallot from './Dialogs/AddBallot';
+import '../component_style/ViewEvent.css';
+import ShowError from './Dialogs/ShowError';
+import ConfirmFinalize from './Dialogs/ConfirmFinalize';
+
+const socket = openSocket('http://localhost:5000');
 
 /**
  * OrganizerView > ViewEvent
  * Allows organizers to view the details of an event
  * that they have already created.
- * TODO: read existing events from database and render
  */
 export default class ViewEvent extends React.Component {
     constructor(props) {
@@ -29,6 +34,7 @@ export default class ViewEvent extends React.Component {
                 automate: false,
                 startVote: '',
                 endVote: '',
+                sheetURL: 'Google Sheet URL',
                 entries: []
             },
         };
@@ -37,7 +43,10 @@ export default class ViewEvent extends React.Component {
         this.entryChild = React.createRef();
         this.addChild = React.createRef();
         this.votingChild = React.createRef();
+        this.weightsChild = React.createRef();
         this.addVoteChild = React.createRef();
+        this.errorChild = React.createRef();
+        this.finalizeChild = React.createRef();
     }
 
     componentDidMount() {
@@ -59,11 +68,21 @@ export default class ViewEvent extends React.Component {
                         automate: eventBase['automate'],
                         startVote: eventBase['startVote'],
                         endVote: eventBase['endVote'],
+                        sheetURL: eventBase['sheetURL'],
                         entries: eventEntries
                     }
                 });
             }
         });
+
+        socket.on('error', (data) => {
+            console.log(data.error);
+            this.handleError(data.error);
+        });
+    }
+
+    componentWillUnmount() {
+        socket.removeListener('error');
     }
 
     handleExport = () => {
@@ -93,6 +112,14 @@ export default class ViewEvent extends React.Component {
         this.votingChild.current.handleOpen();
     }
 
+    handleWeights = () => {
+        this.weightsChild.current.handleOpen();
+    }
+
+    handleError = (message) => {
+        this.errorChild.current.handleOpen(message);
+    }
+
     handleAddVote = () => {
         this.addVoteChild.current.handleOpen();
     }
@@ -120,6 +147,50 @@ export default class ViewEvent extends React.Component {
         });
     }
 
+    finalizeConfirm = () => {
+        this.finalizeChild.current.handleOpen();
+    }
+
+    finalizeResults = () => {
+        socket.emit('finalize_results', {
+            googleId: this.props.user.googleId,
+            eventId: this.state.event.id
+        });
+    }
+
+    keyPress(e) {
+        if (e.key === 'Enter') {
+            this.handleSubmit();
+        }
+    }
+
+    handleURLChange = (e) => {
+        e.preventDefault();
+        const newEvent = this.state.event;
+        newEvent.sheetURL = e.target.value;
+        this.setState({
+            view: this.state.view,
+            event: newEvent
+        });
+    }
+
+    handleSubmit = (e) => {
+        e.preventDefault();
+        socket.emit('send_url', {
+            url: this.state.event.sheetURL,
+            googleId: this.props.user.googleId,
+            eventId: this.state.event.id,
+        });
+    }
+
+    sendEntries = () => {
+        socket.emit('send_entries', {
+            googleId: this.props.user.googleId,
+            eventId: this.state.event.id,
+            entries: this.state.event.entries
+        });
+    }
+
     render() {
         return (
             <div className="main">
@@ -128,10 +199,13 @@ export default class ViewEvent extends React.Component {
                     <div>
                         <ExportOrgData ref={this.exportChild} event={this.state.event} />
                         <EditEntries ref={this.entryChild} event={this.state.event} googleId={this.props.user.googleId} />
+                        <ConfirmFinalize ref={this.finalizeChild} handler={this.finalizeResults} />
                         <AddEntries ref={this.addChild} event={this.state.event} googleId={this.props.user.googleId} />
                         <EditEvent ref={this.eventChild} event={this.state.event} googleId={this.props.user.googleId} handler={this.props.handler} orgViews={this.props.orgViews} />
                         <AddBallot ref={this.addVoteChild} event={this.state.event} googleId={this.props.user.googleId} />
                         <EditVoting ref={this.votingChild} event={this.state.event} googleId={this.props.user.googleId} />
+                        <EditWeights ref={this.weightsChild} event={this.state.event} googleId={this.props.user.googleId} />
+                        <ShowError ref={this.errorChild} event={this.state.event} googleId={this.props.googleID} />
                         <Typography variant="h3" align='center' gutterBottom>{this.state.event.name}</Typography>
                     </div>
                 }
@@ -189,22 +263,70 @@ export default class ViewEvent extends React.Component {
                             <Button className="button1" variant="contained" color="primary" onClick={this.viewResults}>View Results</Button>
                         </div>
                         <br />
-                        <Typography variant="h5">Add paper ballot(s) manually into system:</Typography>
-                        <br />
-                        <div className="box">
-                            <Button className="listButtons" onClick={this.handleAddVote}>Add Vote</Button>
-                        </div>
-                        <br />
-                        <Typography variant="h5">Set up Google Sheets to export results:</Typography>
-                        <br />
-                        <div className="instructions">
-                            <div>1. Create a Google Sheet in your desired location</div>
-                            <div>
-                                {/* TODO: This should automatically save, probably to firebase */}
-                                2. Grab the spreadsheet ID from the URL and paste it here: <input className="sheetId" placeholder="Google sheet ID"/>
-                                <div className="note">https://docs.google.com/spreadsheets/d/<b>SPREADSHEET ID</b>/edit#gid=0</div>
+                        <div className="saveItems">
+                            <div className="sheetsExport">
+                                <Typography variant="h5">Set up Google Sheets to export results:</Typography>
+                                <br />
+                                <div className="instructions">
+                                    <div>1. Create a Google Sheet in your desired location</div>
+                                    <div>
+                                        2. Share the spreadsheet with editing rights with:
+                                        <br />
+                                        <div className="main">
+                                            <b>talli-455@talli-229017.iam.gserviceaccount.com</b>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        3. Grab the spreadsheet's URL and paste it here:
+                                        <div className="main">
+                                            <TextField
+                                                id="standard-dense"
+                                                label="Spreadsheet URL"
+                                                margin="dense"
+                                                className="sheetURL"
+                                                value={this.state.event.sheetURL}
+                                                onKeyDown={this.keyPress}
+                                                onChange={this.handleURLChange}
+                                            />
+                                            <br />
+                                            <Button variant="contained" size="small" color="default" onClick={this.handleSubmit}>
+                                                Submit
+                                            </Button>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
-                            <div>3. Share the spreadsheet with editing rights with <b>talli-455@talli-229017.iam.gserviceaccount.com</b></div>
+                            <div className="manualBallots">
+                                <Typography variant="h5">Add paper ballot(s) manually into system:</Typography>
+                                <br />
+                                <div className="addVoteBox">
+                                    <Button className="listButtons" onClick={this.handleAddVote}>Add Vote</Button>
+                                </div>
+                                <br />
+                                <div>
+                                    <Typography variant="h5">Results Controls:</Typography>
+                                    <Tooltip
+                                        title="Adjust the weights applied to first, second, and third place votes">
+                                        <Button variant="contained" className="buttons weights" type="button" onClick={this.handleWeights}>
+                                            Apply Custom Weights
+                                        </Button>
+                                    </Tooltip>
+                                    <Tooltip
+                                        title="Updates linked google sheet with current list of entries. Its best to do this before the event starts!"
+                                        placement="bottom">
+                                        <Button variant="contained" className="buttons" type="button" onClick={this.sendEntries}>
+                                            Sync entries
+                                        </Button>
+                                    </Tooltip>
+                                    <br />
+                                    <Tooltip
+                                        title="Updates linked google sheet with all voting ballots submitted or manually entered">
+                                        <Button variant="contained" className="buttons" color="primary" type="button" onClick={this.finalizeConfirm}>
+                                            Finalize Results
+                                        </Button>
+                                    </Tooltip>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 }

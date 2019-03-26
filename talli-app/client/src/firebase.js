@@ -1,7 +1,7 @@
-import * as firebase from 'firebase'
+const firebase = require('firebase');
 
 // Initialize Firebase
-var config = {
+const config = {
     apiKey: "AIzaSyAJdDmQLsBBoxMKV0GYrhYIpWfsSvptytw",
     authDomain: "talli-9582a.firebaseapp.com",
     databaseURL: "https://talli-9582a.firebaseio.com",
@@ -9,5 +9,6 @@ var config = {
     storageBucket: "talli-9582a.appspot.com",
     messagingSenderId: "637663865216"
 };
+
 firebase.initializeApp(config);
-export default firebase;
+module.exports = firebase;

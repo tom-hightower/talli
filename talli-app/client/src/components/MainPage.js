@@ -6,20 +6,10 @@ import './component_style/MainPage.css';
 import firebase from '../firebase.js';
 import { setCookie, getCookie } from '../cookies';
 
-import openSocket from 'socket.io-client';
 import HelpView from './Help';
 import CookieConsent from './CookieConsent';
 import CookieWarning from './CookieWarning';
 
-const socket = openSocket('http://localhost:5000');
-var config = require('../config.json');
-
-// tried not to hardcode this but oh well
-let signInUrl = config.Global.signInUrl;
-
-socket.on('send_url', url => {
-    signInUrl = url;
-})
 
 /**
  * Main View, just contains buttons for navigating to organizer and voting
@@ -49,10 +39,6 @@ export default class MainPage extends React.Component {
 
     constructor(props) {
         super(props);
-        this.state = {
-            url: signInUrl
-        };
-        // this.sendLoginRequest = this.sendLoginRequest.bind(this);
         this.helpChild = React.createRef();
         this.warningChild = React.createRef();
     }
@@ -86,12 +72,12 @@ export default class MainPage extends React.Component {
                             {/* Nick messing around with other login possibilities */}
                             {/* <Button variant="contained" color="primary" className="buttons" onClick={() => this.sendLoginRequest()}>Organizer Login</Button> */}
                         </ListItem>
-                    </div>                  
+                    </div>
                 </Grid>
                 <div className="links">
                     <Typography variant="body2" id="aboutLink" onClick={() => this.helpChild.current.handleOpen()}>
                          <u>About Talli</u>
-                    </Typography>  
+                    </Typography>
                 </div>
                 {/* <a href={signInUrl}>Sign in w google new way</a> */}
                 <br />
