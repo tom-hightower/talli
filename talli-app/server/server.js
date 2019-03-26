@@ -3,6 +3,7 @@ const firebase = require('../client/src/firebase');
 const express = require('express');
 const bodyParser = require('body-parser');
 const GoogleSpreadsheet = require('google-spreadsheet');
+const async = require('async');
 
 const app = express();
 const port = 5000;
@@ -28,9 +29,11 @@ const num_2_str = {
 };
 
 process.on('uncaughtException', (err) => {
-    io.emit('error', {
-        error: err.message
-    });
+    if (err.message !== "Callback was already called.") {
+        io.emit('error', {
+            error: err.message
+        });
+    }
 });
 
 // might need to store their rankings in the DB on disconnect
@@ -99,7 +102,6 @@ io.on('connection', function (socket) {
 
     const sendEntries = (data) => {
         const { eventId, googleId, entries } = data;
-        console.log(entries);
         
         const query = firebase.database().ref(`organizer/${googleId}/event/${eventId}/eventData/sheetURL`);
 
@@ -108,41 +110,93 @@ io.on('connection', function (socket) {
             let id = url.split('/')[5];
             let doc = new GoogleSpreadsheet(id);
 
-            doc.useServiceAccountAuth(creds, function (err) {
-                if (err) {
-                    sendError('Could not authenticate sheet');
-                    return;
-                }
-                doc.getInfo((err2, info) => {
-                    if (err2) {
-                        sendError('Could not get sheet information');
-                        return;
-                    }
-                    let sheet = info.worksheets[1];
-
-                    sheet.getRows((err3, rows) => {
-                        if (err3) {
-                            sendError('Could not get information from weighted ranks sheet');
-                            return;
-                        }
-                        // prevent from adding duplicate entries
-                        const existing = [];
-                        for (let i = 0; i < rows.length; i++) {
-                            existing.push(rows[i].rank);
-                        }
-                        for (let entry in entries) {
-                            if (!existing.includes(entries[entry].title)) {
-                                let row = { RANK: entries[entry].title, FIRST: 0, SECOND: 0, THIRD: 0, TOTAL: 0 };
-                                sheet.addRow(row, (err4) => {
-                                    if (err4) {
-                                        sendError('Could not get add row to weighted ranks sheet');
-                                        return;
-                                    }
-                                });
-                            }
+            let response = {};
+            const tasks = [
+                function auth(cb) {
+                    doc.useServiceAccountAuth(creds, (err) => {
+                        if (err) {
+                            return cb(err);
+                        } else {
+                            response.doc = doc;
+                            return cb(null, doc);
                         }
                     });
-                });
+                },
+                function getSheetInfo(cb) {
+                    response.doc.getInfo((err, info) => {
+                        if (err) {
+                            return cb(err);
+                        } else {
+                            response.info = info;
+                            return cb(null, info);
+                        }
+                    });
+                },
+                function getSheetRows(cb) {
+                    response.info.worksheets[1].getRows((err, rows) => {
+                        if (err) {
+                            return cb(err);
+                        } else {
+                            response.rows = rows;
+                            return cb(null, rows);
+                        }
+                    });
+                },
+                function addSheetRows(cb) {
+                    let rows = response.rows;
+                    const existing = [];
+                    for (let i = 0; i < rows.length; i++) {
+                        existing.push(rows[i].rank);
+                    }
+                    for (let entry in entries) {
+                        if (!existing.includes(entries[entry].title)) {
+                            let row = {
+                                RANK: entries[entry].title,
+                                FIRST: 0,
+                                SECOND: 0,
+                                THIRD: 0,
+                                TOTAL: 0,
+                            };
+                            response.info.worksheets[1].addRow(row, (err, row) => {
+                                if (err) {
+                                    return cb(err);
+                                } else {
+                                    return cb(null, row);
+                                }
+                            });
+                        }
+                    }
+                },
+                function applyFormulas(cb) {
+                    response.doc.getInfo((err, info) => {
+                        if (err) {
+                            return cb(err);
+                        }
+                        let sheet = info.worksheets[1];
+                        sheet.getRows((err1, rows) => {
+                            if (err1) {
+                                return cb(err);
+                            }
+                            let curr;
+                            for (let i = 1; i < rows.length; i++) {
+                                curr = rows[i];
+                                curr.first = `=countif('all votes'!B2:B1000, "${curr.rank}")`;
+                                curr.second = `=countif('all votes'!C2:C1000, "${curr.rank}")`;
+                                curr.third = `=countif('all votes'!D2:D1000, "${curr.rank}")`;
+                                curr.total = `=B2*B${i + 2}+C2*C${i + 2}+D2*D${i + 2}`;
+                                curr.save();
+                            }
+                            response.rows = rows;
+                        })
+                    });
+                }
+            ];
+
+            async.series(tasks, (err) => {
+                if (err) {
+                    sendError('Problem with executing asynchronously');
+                    return;
+                }
             });
         });
     };
@@ -233,15 +287,12 @@ io.on('connection', function (socket) {
                         for (let i = 0; i < rows.length; i++) {
                             curr = rows[i];
                             if (top3[0] === curr.rank) {
-                                curr.first = parseInt(curr.first) + 1;
                                 curr.total = `=B2*B${i + 2}+C2*C${i + 2}+D2*D${i + 2}`;
                                 curr.save();
                             } else if (top3[1] === curr.rank) {
-                                curr.second = parseInt(curr.second) + 1;
                                 curr.total = `=B2*B${i + 2}+C2*C${i + 2}+D2*D${i + 2}`;
                                 curr.save();
                             } else if (top3[2] === curr.rank) {
-                                curr.third = parseInt(curr.third) + 1;
                                 curr.total = `=B2*B${i + 2}+C2*C${i + 2}+D2*D${i + 2}`;
                                 curr.save();
                             }
