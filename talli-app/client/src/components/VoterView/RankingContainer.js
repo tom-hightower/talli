@@ -6,7 +6,7 @@ import { Typography, Button } from '@material-ui/core';
 import BellIcon from '@material-ui/icons/NotificationImportant';
 import openSocket from 'socket.io-client';
 import firebase from '../../firebase';
-import { getCookie } from '../../cookies.js';
+import { getCookie } from '../../cookies';
 import SubmitConfirm from './Dialogs/SubmitConfirm';
 import Countdown from './Countdown';
 import EventClosed from './Dialogs/EventClosed';
@@ -22,18 +22,18 @@ const socket = openSocket(
 );
 const DragHandle = SortableHandle(() => <span><SliderIcon className="Sliders" /></span>);
 
-const SortableItem = SortableElement(({ value, item }) =>
+const SortableItem = SortableElement(({ value, item }) => (
     <li className="rankings">
         <div id='rankNumber'>{item + 1}</div>
         <div id='rankTitle'>{value}</div>
         <DragHandle id='rankHandle' />
     </li>
-);
+));
 
 const SortableList = SortableContainer(({ items }) => {
     return (
         <ul>
-            {items.length !== 0 ? <div/> : <div>Tap the Plus to add an entry</div>}
+            {items.length !== 0 ? <div /> : <div>Tap the Plus to add an entry</div>}
             {items.map((value, index) => (
                 <SortableItem key={`item-${index}`} item={index} index={index} value={value.name} />
             ))}
@@ -92,14 +92,14 @@ export default class SortContainer extends Component {
                 }
                 this.setState({
                     event: {
-                        id: eventBase['id'],
-                        name: eventBase['name'],
-                        location: eventBase['location'],
-                        startDate: eventBase['startDate'],
-                        endDate: eventBase['endDate'],
-                        automate: eventBase['automate'],
-                        startVote: eventBase['startVote'],
-                        endVote: eventBase['endVote'],
+                        id: eventBase.id,
+                        name: eventBase.name,
+                        location: eventBase.location,
+                        startDate: eventBase.startDate,
+                        endDate: eventBase.endDate,
+                        automate: eventBase.automate,
+                        startVote: eventBase.startVote,
+                        endVote: eventBase.endVote,
                         entries: eventEntries
                     },
                     items: itemList,
@@ -133,7 +133,7 @@ export default class SortContainer extends Component {
     submitted() {
         const items = this.state.items;
         const organizerId = this.props.organizer;
-        let eventId = this.state.event.id;
+        const eventId = this.state.event.id;
         socket.emit('send_votes', {
             eventId,
             organizerId,
@@ -145,7 +145,7 @@ export default class SortContainer extends Component {
     countdownFinished() {
         const cookie = getCookie('UserID');
         const itemsRef = firebase.database().ref(`attendees/${cookie}`);
-        itemsRef.child("currentEvent").set('');
+        itemsRef.child('currentEvent').set('');
         itemsRef.child(`pastEvents/${this.props.eventID}/`).set(this.props.eventID);
         this.closedChild.current.handleOpen();
     }
@@ -165,7 +165,7 @@ export default class SortContainer extends Component {
                             items={this.state.items}
                             onSortEnd={this.onSortEnd}
                             lockAxis='y'
-                            useDragHandle={true}
+                            useDragHandle
                             helperClass='sortHelp'
                         />
                     </div>
@@ -183,12 +183,12 @@ export default class SortContainer extends Component {
                         </div>
                     </div>
                 ) : (
-                    <div className='CenterSubmitDiv'>
-                        <div className='CenterButtonDiv'>
-                            <Button variant="contained" color="primary" onClick={this.submitConfirm}> Submit </Button>
+                        <div className='CenterSubmitDiv'>
+                            <div className='CenterButtonDiv'>
+                                <Button variant="contained" color="primary" onClick={this.submitConfirm}> Submit </Button>
+                            </div>
                         </div>
-                    </div>
-                )}
+                    )}
 
             </div>
         );

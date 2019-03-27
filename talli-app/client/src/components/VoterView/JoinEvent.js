@@ -4,7 +4,7 @@ import { TextField, Typography, Button } from '@material-ui/core';
 import EntryConfirmation from './Dialogs/EntryConfirmation';
 import '../component_style/Voter.css';
 import firebase from '../../firebase';
-import { getCookie } from '../../cookies.js';
+import { getCookie } from '../../cookies';
 import BlockJoin from './Dialogs/BlockJoin';
 import EarlyJoin from './Dialogs/EarlyJoin';
 import ClosedJoin from './Dialogs/ClosedJoin';
@@ -48,7 +48,7 @@ export default class JoinEvent extends React.Component {
             if (allCookies && allCookies.currentEvent) {
                 firebase.database().ref('event/').once('value').then(orgSnap => {
                     const orgID = orgSnap.val()[allCookies.currentEvent];
-                    this.setState({ organizerID: (orgID ? orgID['organizer'] : '') }, () => {
+                    this.setState({ organizerID: (orgID ? orgID.organizer : '') }, () => {
                         if (this.state.organizerID && this.state.organizerID !== '') {
                             firebase.database().ref(`/organizer/${this.state.organizerID}/event/${allCookies.currentEvent}`).once('value').then(eventSnap => {
                                 const event = eventSnap.val();
@@ -57,7 +57,7 @@ export default class JoinEvent extends React.Component {
                                         eventName: event.eventData.name,
                                         eventID: allCookies.currentEvent,
                                     }, () => {
-                                        const votingState = this.getVotingState(event['eventData']);
+                                        const votingState = this.getVotingState(event.eventData);
                                         if (votingState === 'closed') {
                                             this.rejoinClosedChild.current.handleOpen();
                                             firebase.database().ref(`attendees/${cookie}/currentEvent`).set('');
@@ -89,10 +89,10 @@ export default class JoinEvent extends React.Component {
 
     requestConfirm = () => {
         firebase.database().ref('event/').once('value').then((snap) => {
-            let orgID = snap.val()[this.state.eventID];
+            const orgID = snap.val()[this.state.eventID];
             this.setState({ organizerID: (orgID ? orgID.organizer : '') }, () => {
                 if (this.state.organizerID && this.state.organizerID !== '') {
-                    firebase.database().ref('/organizer/' + this.state.organizerID + '/event/' + this.state.eventID).once('value').then(snapshot => {
+                    firebase.database().ref(`/organizer/${this.state.organizerID}/event/${this.state.eventID}`).once('value').then(snapshot => {
                         const event = snapshot.val();
                         if (!event) {
                             // Event not found
@@ -140,7 +140,7 @@ export default class JoinEvent extends React.Component {
     }
 
     handleScan(data) {
-        if (data && data.toLowerCase().includes((config.Global.hostURL + "/vote/").toLowerCase())) {
+        if (data && data.toLowerCase().includes((`${config.Global.hostURL}/vote/`).toLowerCase())) {
             const id = data.substring(data.indexOf("/vote/") + 6).replace(/\W/g, '');
             if (this.state.eventID === id) {
                 this.handleRejoinEvent();
@@ -218,14 +218,14 @@ export default class JoinEvent extends React.Component {
         return (
             <div>
                 <RejoinEvent entryName={this.state.eventName} ref={this.rejoinChild} handler={this.handleRejoinEvent} />
-                <NotFound ref={this.notFoundChild} idType={'Event'} id={this.state.eventID} />
+                <NotFound ref={this.notFoundChild} idType='Event' id={this.state.eventID} />
                 <EntryConfirmation entryName={this.state.eventName} ref={this.confirmChild} handler={this.handleJoinEvent} />
-                <BlockJoin entryName={this.state.eventName} idType={'Event'} ref={this.blockChild} />
+                <BlockJoin entryName={this.state.eventName} idType='Event' ref={this.blockChild} />
                 <EarlyJoin eventName={this.state.eventName} ref={this.earlyJoinChild} />
                 <ClosedJoin eventName={this.state.eventName} ref={this.closedJoinChild} />
                 <RejoinClosed eventName={this.state.eventName} ref={this.rejoinClosedChild} />
                 <QrReader delay={300} onScan={this.handleScan} onError={this.handleError} style={{ width: '80%', margin: '20px auto 0px' }} />
-                <Typography variant='h5' align='center' className="QRText">Scan QR Code or enter Event ID:</Typography>
+                <Typography variant='h5' align='center' className='QRText'>Scan QR Code or enter Event ID:</Typography>
                 <div className="textField">
                     <TextField
                         id="outlined-dense"
