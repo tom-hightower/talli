@@ -52,7 +52,6 @@ export default class JoinEvent extends React.Component {
                         if (this.state.organizerID && this.state.organizerID !== '') {
                             firebase.database().ref(`/organizer/${this.state.organizerID}/event/${allCookies.currentEvent}`).once('value').then(eventSnap => {
                                 const event = eventSnap.val();
-                                console.log(event)
                                 if (event) {
                                     this.setState({
                                         eventName: event.eventData.name,
