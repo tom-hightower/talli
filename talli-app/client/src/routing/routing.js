@@ -46,7 +46,7 @@ var RoutedApp = createReactClass({
     },
 
     voteWithID: function (text) {
-        return <Voter />;
+        return <Voter scanID={text} />;
     },
 
     organizer: function () {

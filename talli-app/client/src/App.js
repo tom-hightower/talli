@@ -39,7 +39,8 @@ export default class App extends Component {
                     <RoutedApp
                         onSuccess={this.onSuccess.bind(this)}
                         logout={this.logout.bind(this)}
-                        user={this.state.user} />
+                        user={this.state.user}
+                        history={true} />
                 </div>
             </MuiThemeProvider>
         );
