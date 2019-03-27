@@ -14,6 +14,7 @@ import ConfirmFinalize from './Dialogs/ConfirmFinalize';
 import '../component_style/ViewEvent.css';
 
 const config = require('../../config.json');
+
 const socket = openSocket(
     (config.Global.devMode ?
         `http://localhost:${config.Global.serverPort}` :

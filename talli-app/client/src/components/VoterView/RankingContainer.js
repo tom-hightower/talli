@@ -13,6 +13,7 @@ import EventClosed from './Dialogs/EventClosed';
 import '../component_style/RankingContainer.css';
 
 const config = require('../../config.json');
+
 const socket = openSocket(
     (config.Global.devMode ?
         `http://localhost:${config.Global.serverPort}` :

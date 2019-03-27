@@ -3,6 +3,7 @@ import { Slide, Dialog, DialogTitle, DialogContent, DialogActions, Button, TextF
 import openSocket from 'socket.io-client';
 
 const config = require('../../../config.json');
+
 const socket = openSocket(
     (config.Global.devMode ?
         `http://localhost:${config.Global.serverPort}` :

@@ -14,6 +14,7 @@ const http = require('http').Server(app);
 const io = require('socket.io')(http);
 const secretConfig = require('../client/src/secret.config.json');
 const config = require('../client/src/config.json');
+
 const creds = secretConfig.ClientSecret;
 
 const num_2_str = {
