@@ -13,7 +13,7 @@ app.use(bodyParser.json());
 
 const http = require('http').Server(app);
 const io = require('socket.io')(http);
-const creds = require('./client_secret.json');
+const config = require('../client/src/secret.config.json');
 
 const num_2_str = {
     1: "one",
@@ -57,7 +57,7 @@ io.on('connection', function (socket) {
             const id = url.split('/')[5];
             const doc = new GoogleSpreadsheet(id);
 
-            doc.useServiceAccountAuth(creds, (err) => {
+            doc.useServiceAccountAuth(config.ClientSecret, (err) => {
                 if (err) {
                     sendError('Error with sheet authentication');
                     return;
@@ -111,7 +111,7 @@ io.on('connection', function (socket) {
             let response = {};
             const tasks = [
                 function auth(cb) {
-                    doc.useServiceAccountAuth(creds, (err) => {
+                    doc.useServiceAccountAuth(config.ClientSecret, (err) => {
                         if (err) {
                             return cb(err);
                         } else {
@@ -208,7 +208,7 @@ io.on('connection', function (socket) {
             let id = url.split('/')[5];
             const doc = new GoogleSpreadsheet(id);
 
-            doc.useServiceAccountAuth(creds, (err) => {
+            doc.useServiceAccountAuth(config.ClientSecret, (err) => {
                 if (err) {
                     sendError('Could not authenticate sheet');
                     return;
@@ -252,7 +252,7 @@ io.on('connection', function (socket) {
             const id = url.split('/')[5];
             let doc = new GoogleSpreadsheet(id);
 
-            doc.useServiceAccountAuth(creds, (err) => {
+            doc.useServiceAccountAuth(config.ClientSecret, (err) => {
                 if (err) {
                     sendError('Could not authenticate sheet');
                     return;
@@ -318,7 +318,7 @@ io.on('connection', function (socket) {
                     }
                 }
                 const doc = new GoogleSpreadsheet(sheetID);
-                doc.useServiceAccountAuth(creds, (err) => {
+                doc.useServiceAccountAuth(config.ClientSecret, (err) => {
                     if (err) {
                         sendError('Could not authenticate sheet');
                         return;

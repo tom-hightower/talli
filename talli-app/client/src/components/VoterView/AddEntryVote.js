@@ -6,7 +6,8 @@ import firebase from '../../firebase';
 import '../component_style/Voter.css';
 import NotFound from './Dialogs/NotFound';
 import BlockJoin from './Dialogs/BlockJoin';
-var config = require('../../config.json');
+
+const config = require('../../config.json');
 
 /**
  * Entry Add

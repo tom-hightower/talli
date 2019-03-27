@@ -3,7 +3,7 @@ import { Slide, Dialog, DialogTitle, DialogContent, DialogActions, Button, FormC
 import qr from 'qr-image';
 import jsPDF from 'jspdf';
 
-var config = require('../../../config.json');
+const config = require('../../../config.json');
 
 function Transition(props) {
     return <Slide direction="up" {...props} />;
