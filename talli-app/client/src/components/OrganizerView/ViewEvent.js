@@ -289,7 +289,7 @@ export default class ViewEvent extends React.Component {
                                         </div>
                                         <div>
                                             3. Grab the spreadsheet's URL and paste it here:
-                                        <div className="main">
+                                            <div className="main">
                                                 <TextField
                                                     id="standard-dense"
                                                     label="Spreadsheet URL"
@@ -302,7 +302,7 @@ export default class ViewEvent extends React.Component {
                                                 <br />
                                                 <Button variant="contained" size="small" color="default" onClick={this.handleSubmit}>
                                                     Submit
-                                            </Button>
+                                                </Button>
                                             </div>
                                         </div>
                                     </div>
@@ -319,7 +319,7 @@ export default class ViewEvent extends React.Component {
                                         <Tooltip title="Adjust the weights applied to first, second, and third place votes">
                                             <Button variant="contained" className="buttons weights" type="button" onClick={this.handleWeights}>
                                                 Apply Custom Weights
-                                        </Button>
+                                            </Button>
                                         </Tooltip>
                                         <Tooltip
                                             title="Updates linked google sheet with current list of entries. Its best to do this before the event starts!"
@@ -327,13 +327,13 @@ export default class ViewEvent extends React.Component {
                                         >
                                             <Button variant="contained" className="buttons" type="button" onClick={this.sendEntries}>
                                                 Sync entries
-                                        </Button>
+                                            </Button>
                                         </Tooltip>
                                         <br />
                                         <Tooltip title="Updates linked google sheet with all voting ballots submitted or manually entered">
                                             <Button variant="contained" className="buttons" color="primary" type="button" onClick={this.finalizeConfirm}>
                                                 Finalize Results
-                                        </Button>
+                                            </Button>
                                         </Tooltip>
                                     </div>
                                 </div>

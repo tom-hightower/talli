@@ -343,7 +343,7 @@ io.on('connection', function (socket) {
                                     for (let n = 1; n <= 10; n++) {
                                         curr[num_2_str[n]] = '';
                                     }
-                                    curr["submission_num"] = i+1;
+                                    curr.submission_num = i + 1;
                                     for (let item in ballots[i]) {
                                         curr[num_2_str[ballots[i][item]]] = item;
                                     }
@@ -354,7 +354,7 @@ io.on('connection', function (socket) {
                                 for (let n = 1; n <= 10; n++) {
                                     curr[num_2_str[n]] = '';
                                 }
-                                curr["submission_num"] = r+1;
+                                curr.submission_num = r + 1;
                                 for (let item in ballots[r]) {
                                     curr[num_2_str[ballots[r][item]]] = item;
                                 }
