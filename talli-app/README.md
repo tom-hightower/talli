@@ -5,7 +5,7 @@
 Before you run the application, see the Configuration section below to ensure that your `config.json` and `secret.config.json` files are properly set up.
 
 ### Run app in development mode (client and server concurrently)
-#### `npm run dev`
+`npm run dev`
 
 ### Install necessary modules (typically after pulling from master)
 `npm run update` on Mac/Linux
