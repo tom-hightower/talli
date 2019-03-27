@@ -24,10 +24,13 @@ Run this before trying to run prod
 The configuration for Talli is stored in two files.
 
 ### Global Configuration: `client\src\config.json`
-| field     | description   |
-| --------- |:-------------|
-| `hostURL` | the host url (ie `tallivote.com`) that the application will be running on.  Make sure that if you are running the application on a subdomain or subdirectory you put the root of the application in this field (ie `subdomain.tallivote.com` or `tallivote.com/subdirectory`) |
-| `entryQRPrefix` | the prefix used to generate entry QR codes (ie `entry//` will result in QR codes of the form `entry//1234`) |
+| field     | type | description   |
+| --------- |:----:|:-------------|
+| `hostURL` | string | The host url (ie `tallivote.com`) that the application will be running on.  Make sure that if you are running the application on a subdomain or subdirectory you put the root of the application in this field (ie `subdomain.tallivote.com` or `tallivote.com/subdirectory`) |
+| `entryQRPrefix` | string | The prefix used to generate entry QR codes (ie `entry//` will result in QR codes of the form `entry//1234`) |
+| `sslEnabled` | bool | Tells the application if you're running securely (via ssl/https).  Make sure this matches your server configuration, and note that it must be anabled for QR scanning to function. |
+| `serverPort` | string | The port that the node.js backend of the application is running on |
+| `devMode` | bool | Enables dev mode if true, which tells the client to communicate with the server on localhost instead of the hostURL |
 
 ### API Key Configuration: `client\src\secret.config.json`
 This file contains private API keys, client secrets, and authorization urls.  It is reccomended to leave this file untracked to prevent making private keys public.  The structure is as follows:

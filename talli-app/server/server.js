@@ -6,14 +6,14 @@ const GoogleSpreadsheet = require('google-spreadsheet');
 const async = require('async');
 
 const app = express();
-const port = 5000;
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
 const http = require('http').Server(app);
 const io = require('socket.io')(http);
-const config = require('../client/src/secret.config.json');
+const secretConfig = require('../client/src/secret.config.json');
+const config = require('../client/src/config.json');
 
 const num_2_str = {
     1: "one",
@@ -57,7 +57,7 @@ io.on('connection', function (socket) {
             const id = url.split('/')[5];
             const doc = new GoogleSpreadsheet(id);
 
-            doc.useServiceAccountAuth(config.ClientSecret, (err) => {
+            doc.useServiceAccountAuth(secretConfig.ClientSecret, (err) => {
                 if (err) {
                     sendError('Error with sheet authentication');
                     return;
@@ -111,7 +111,7 @@ io.on('connection', function (socket) {
             let response = {};
             const tasks = [
                 function auth(cb) {
-                    doc.useServiceAccountAuth(config.ClientSecret, (err) => {
+                    doc.useServiceAccountAuth(secretConfig.ClientSecret, (err) => {
                         if (err) {
                             return cb(err);
                         } else {
@@ -208,7 +208,7 @@ io.on('connection', function (socket) {
             let id = url.split('/')[5];
             const doc = new GoogleSpreadsheet(id);
 
-            doc.useServiceAccountAuth(config.ClientSecret, (err) => {
+            doc.useServiceAccountAuth(secretConfig.ClientSecret, (err) => {
                 if (err) {
                     sendError('Could not authenticate sheet');
                     return;
@@ -252,7 +252,7 @@ io.on('connection', function (socket) {
             const id = url.split('/')[5];
             let doc = new GoogleSpreadsheet(id);
 
-            doc.useServiceAccountAuth(config.ClientSecret, (err) => {
+            doc.useServiceAccountAuth(secretConfig.ClientSecret, (err) => {
                 if (err) {
                     sendError('Could not authenticate sheet');
                     return;
@@ -318,7 +318,7 @@ io.on('connection', function (socket) {
                     }
                 }
                 const doc = new GoogleSpreadsheet(sheetID);
-                doc.useServiceAccountAuth(config.ClientSecret, (err) => {
+                doc.useServiceAccountAuth(secretConfig.ClientSecret, (err) => {
                     if (err) {
                         sendError('Could not authenticate sheet');
                         return;
@@ -396,4 +396,4 @@ io.on('connection', function (socket) {
     });
 });
 
-io.listen(port);
+io.listen(config.Global.serverPort);

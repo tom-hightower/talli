@@ -2,7 +2,13 @@ import React from 'react';
 import { Slide, Dialog, DialogTitle, DialogContent, DialogActions, Button, TextField } from '@material-ui/core';
 import openSocket from 'socket.io-client';
 
-const socket = openSocket('http://localhost:5000');
+const config = require('../../../config.json');
+const socket = openSocket(
+    (config.Global.devMode ?
+        `http://localhost:${config.Global.serverPort}` :
+        `${(config.Global.sslEnabled ? "https" : "http")}://${config.Global.hostURL}:${config.Global.serverPort}`
+    )
+);
 
 function Transition(props) {
     return <Slide direction="up" {...props} />;

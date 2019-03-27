@@ -1,6 +1,9 @@
 {
     "Global": {
         "hostURL": "tallivote.com",
-        "entryQRPrefix": "entry//"
+        "entryQRPrefix": "entry//",
+        "sslEnabled": true,
+        "serverPort": "5000",
+        "devMode": true
     }
 }
