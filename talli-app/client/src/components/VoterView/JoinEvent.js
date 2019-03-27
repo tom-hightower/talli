@@ -52,23 +52,28 @@ export default class JoinEvent extends React.Component {
                         if (this.state.organizerID && this.state.organizerID !== '') {
                             firebase.database().ref(`/organizer/${this.state.organizerID}/event/${allCookies.currentEvent}`).once('value').then(eventSnap => {
                                 const event = eventSnap.val();
-                                if (!event) return;
-                                this.setState({
-                                    eventName: event.eventData.name,
-                                    eventID: allCookies.currentEvent,
-                                }, () => {
-                                    const votingState = this.getVotingState(event['eventData']);
-                                    if (votingState === 'closed') {
-                                        this.rejoinClosedChild.current.handleOpen();
-                                        firebase.database().ref(`attendees/${cookie}/currentEvent`).set('');
-                                        return;
-                                    }
-                                    this.rejoinChild.current.handleOpen();
-                                });
+                                console.log(event)
+                                if (event) {
+                                    this.setState({
+                                        eventName: event.eventData.name,
+                                        eventID: allCookies.currentEvent,
+                                    }, () => {
+                                        const votingState = this.getVotingState(event['eventData']);
+                                        if (votingState === 'closed') {
+                                            this.rejoinClosedChild.current.handleOpen();
+                                            firebase.database().ref(`attendees/${cookie}/currentEvent`).set('');
+                                            return;
+                                        }
+                                        this.rejoinChild.current.handleOpen();
+                                    });
+                                }
                             });
                         }
                     });
                 });
+            } else if (this.props.scanID) {
+                this.setState({ eventID: this.props.scanID });
+                this.requestConfirm();
             }
         });
     }

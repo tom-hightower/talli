@@ -1,5 +1,7 @@
 import React from 'react';
 import { Dialog, DialogTitle, DialogContent, DialogActions, Button, Slide } from '@material-ui/core';
+import firebase from '../../../firebase';
+import { getCookie } from '../../../cookies';
 
 function Transition(props) {
     return (<Slide direction="up" {...props} />);
@@ -15,6 +17,8 @@ export default class RejoinEvent extends React.Component {
     };
 
     handleClose = () => {
+        const cookie = getCookie('UserID');
+        firebase.database().ref(`attendees/${cookie}/currentEvent`).set('');
         this.setState({ open: false });
     };
 
