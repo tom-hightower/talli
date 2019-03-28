@@ -16,25 +16,6 @@ const socket = openSocket('http://localhost:5000');
 
 const DragHandle = SortableHandle(() => <span><SliderIcon className="Sliders" /></span>);
 
-const SortableItem = SortableElement(({ value, item }) =>
-    <li className="rankings">
-        <div id='rankNumber'>{item + 1}</div>
-        <div id='rankTitle'>{value}</div>
-        <DragHandle id='rankHandle' />
-    </li>
-);
-
-const SortableList = SortableContainer(({ items }) => {
-    return (
-        <ul>
-            {items.length !== 0 ? <div/> : <div>Tap the Plus to add an entry</div>}
-            {items.map((value, index) => (
-                <SortableItem key={`item-${index}`} item={index} index={index} value={value.name} />
-            ))}
-        </ul>
-    );
-});
-
 export default class SortContainer extends Component {
     constructor(props) {
         super(props);
@@ -81,7 +62,13 @@ export default class SortContainer extends Component {
                 const eventEntries = events[this.props.eventID].entries;
                 const itemList = this.state.items;
                 if (eventEntries && this.props.entryToAdd && !this.state.items.some(e => e.id === this.props.entryToAdd)) {
-                    itemList.push({ name: eventEntries[this.props.entryToAdd].title, id: this.props.entryToAdd });
+                    const entryId = this.props.entryToAdd;
+                    itemList.push({
+                        name: eventEntries[this.props.entryToAdd].title,
+                        id: this.props.entryToAdd,
+                        presenters: eventEntries[entryId].presenters,
+                        showInfo: false,
+                    });
                     this.updateDatabaseRankings(itemList);
                 }
                 this.setState({
@@ -144,7 +131,42 @@ export default class SortContainer extends Component {
         this.closedChild.current.handleOpen();
     }
 
+    toggleShowInfo = (item) => {
+        let oldItems = this.state.items;
+        oldItems[item].showInfo = !oldItems[item].showInfo;
+        this.setState({
+            items: oldItems
+        });
+    }
+
     render() {
+        const SortableItem = SortableElement(({ value, item }) =>
+            <li className="rankings" onClick={() => this.toggleShowInfo(item)}>
+                <div id='rankNumber'>{item + 1}</div>
+                <div id='rankTitle'>
+                    {value.name}
+                    {value.showInfo ? (<div><b>Presenters:</b> {value.presenters}</div>) : ''}
+                </div>
+                <DragHandle id='rankHandle' />
+            </li>
+        );
+
+        const SortableList = SortableContainer(({ items }) => {
+            return (
+                <ul>
+                    {items.length !== 0 ? <div /> : <div>Tap the Plus to add an entry</div>}
+                    {items.map((value, index) => (
+                        <SortableItem
+                            key={`item-${index}`}
+                            item={index}
+                            index={index}
+                            value={value}
+                        />
+                    ))}
+                </ul>
+            );
+        });
+
         return (
             <div>
                 <EventClosed handler={this.submitted} ref={this.closedChild} eventName={this.state.event.name} />
@@ -177,12 +199,12 @@ export default class SortContainer extends Component {
                         </div>
                     </div>
                 ) : (
-                    <div className='CenterSubmitDiv'>
-                        <div className='CenterButtonDiv'>
-                            <Button variant="contained" color="primary" onClick={this.submitConfirm}> Submit </Button>
+                        <div className='CenterSubmitDiv'>
+                            <div className='CenterButtonDiv'>
+                                <Button variant="contained" color="primary" onClick={this.submitConfirm}> Submit </Button>
+                            </div>
                         </div>
-                    </div>
-                )}
+                    )}
 
             </div>
         );

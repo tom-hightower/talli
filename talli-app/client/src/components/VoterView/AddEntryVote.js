@@ -40,13 +40,13 @@ export default class AddEntryVote extends React.Component {
         }
         firebase.database().ref('organizer/').once('value').then((snapshot) => {
             let organizer = snapshot.val();
-            let event = organizer[this.props.organizer]['event'][this.props.eventID];
-            let entry = event['entries'][this.state.entryID];
+            let event = organizer[this.props.organizer].event[this.props.eventID];
+            let entry = event.entries[this.state.entryID];
             if (!entry) {
                 this.notFoundChild.current.handleOpen();
                 return;
             }
-            this.setState({ entryTitle: entry['title'] }, () => {
+            this.setState({ entryTitle: entry.title }, () => {
                 this.confirmChild.current.handleOpen();
             });
         });

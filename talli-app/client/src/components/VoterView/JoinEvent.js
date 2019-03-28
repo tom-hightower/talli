@@ -140,12 +140,17 @@ export default class JoinEvent extends React.Component {
     }
 
     handleScan(data) {
-        if (data && data.toLowerCase().includes((config.Global.hostURL + "/vote/").toLowerCase())) {
-            const id = data.substring(data.indexOf("/vote/") + 6).replace(/\W/g, '');
-            if (this.state.eventID === id) {
-                this.handleRejoinEvent();
-                return;
-            }
+        if (data && data.toLowerCase().includes((`${config.Global.hostURL}/vote/`).toLowerCase())) {
+            const id = data.substring(data.indexOf('/vote/') + 6).replace(/\W/g, '');
+            const cookie = getCookie('UserID');
+            firebase.database().ref(`event/${id}`).once('value').then(snapshot => {
+                const event = snapshot.val();
+                const hasRankings = event ? (event.attendees ? (event.attendees[cookie] ? true : false) : false) : false;
+                if (id === this.state.eventID || hasRankings) {
+                    this.handleRejoinEvent();
+                    return;
+                }
+            });
             this.setState({ eventID: id });
             this.requestConfirm();
         }
@@ -153,16 +158,16 @@ export default class JoinEvent extends React.Component {
 
     handleText() {
         const cookie = getCookie('UserID');
-        let currentEventId = '';
-        firebase.database().ref(`attendees/${cookie}/currentEvent`).once('value').then(snapshot => {
-            currentEventId = snapshot.val();
-            console.log(currentEventId);
+        firebase.database().ref(`/`).once('value').then(snapshot => {
+            const root = snapshot.val();
+            const currentEventId = root.attendees[cookie].currentEvent;
+            const event = root.event[this.state.idFieldValue];
+            const hasRankings = event ? (event.attendees ? (event.attendees[cookie] ? true : false) : false) : false;
+            if (this.state.idFieldValue === currentEventId || hasRankings) {
+                this.handleRejoinEvent();
+                return;
+            }
         });
-        if (this.state.idFieldValue === this.state.eventID && this.state.idFieldValue.length > 2 && this.state.eventID === currentEventId) {
-            console.log("rejoined");
-            this.handleRejoinEvent();
-            return;
-        }
         this.setState({ eventID: this.state.idFieldValue });
         if (this.state.idFieldValue.length > 2) {
             this.requestConfirm();
@@ -170,7 +175,7 @@ export default class JoinEvent extends React.Component {
     }
 
     handleRejoinEvent() {
-        const cookie = getCookie("UserID");
+        const cookie = getCookie('UserID');
         firebase.database().ref(`event/${this.state.eventID}/attendees/${cookie}/rankings/`).once("value").then(rankSnap => {
             const rankings = rankSnap.val();
             const items = [];
@@ -188,7 +193,12 @@ export default class JoinEvent extends React.Component {
                 for (let i = 0; i < items.length; i++) {
                     const entry = event.entries[items[i]];
                     if (entry) {
-                        itemList.push({ name: entry.title, id: entry.id.toString() });
+                        itemList.push({
+                            name: entry.title,
+                            id: entry.id.toString(),
+                            presenters: entry.presenters,
+                            showInfo: false,
+                        });
                     }
                 }
                 this.props.updateItemsHandler(itemList);
