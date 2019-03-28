@@ -145,10 +145,13 @@ export default class JoinEvent extends React.Component {
             const cookie = getCookie('UserID');
             firebase.database().ref(`event/${id}`).once('value').then(snapshot => {
                 const event = snapshot.val();
-                const hasRankings = event ? (event.attendees ? (event.attendees[cookie] ? true : false) : false) : false;
-                if (id === this.state.eventID || hasRankings) {
-                    this.handleRejoinEvent();
-                    return;
+                if (id === this.state.eventID || this.hasRankings(event, cookie)) {
+                    this.setState({
+                        organizerID: event.organizer,
+                        eventID: id,
+                    }, () => {
+                        this.handleRejoinEvent();
+                    });
                 }
             });
             this.setState({ eventID: id });
@@ -162,16 +165,25 @@ export default class JoinEvent extends React.Component {
             const root = snapshot.val();
             const currentEventId = root.attendees[cookie].currentEvent;
             const event = root.event[this.state.idFieldValue];
-            const hasRankings = event ? (event.attendees ? (event.attendees[cookie] ? true : false) : false) : false;
-            if (this.state.idFieldValue === currentEventId || hasRankings) {
-                this.handleRejoinEvent();
-                return;
+            if (this.state.idFieldValue === currentEventId || this.hasRankings(event, cookie)) {
+                this.setState({
+                    organizerID: event.organizer,
+                }, () => {
+                    this.handleRejoinEvent();
+                });
             }
         });
         this.setState({ eventID: this.state.idFieldValue });
         if (this.state.idFieldValue.length > 2) {
             this.requestConfirm();
         }
+    }
+
+    hasRankings(event, cookie) {
+        if (event && event.attendees && event.attendees[cookie]) {
+            return true;
+        }
+        return false;
     }
 
     handleRejoinEvent() {

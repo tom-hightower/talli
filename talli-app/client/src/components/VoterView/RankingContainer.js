@@ -132,7 +132,7 @@ export default class SortContainer extends Component {
     }
 
     toggleShowInfo = (item) => {
-        let oldItems = this.state.items;
+        const oldItems = this.state.items;
         oldItems[item].showInfo = !oldItems[item].showInfo;
         this.setState({
             items: oldItems
@@ -140,7 +140,7 @@ export default class SortContainer extends Component {
     }
 
     render() {
-        const SortableItem = SortableElement(({ value, item }) =>
+        const SortableItem = SortableElement(({ value, item }) => (
             <li className="rankings" onClick={() => this.toggleShowInfo(item)}>
                 <div id='rankNumber'>{item + 1}</div>
                 <div id='rankTitle'>
@@ -149,7 +149,7 @@ export default class SortContainer extends Component {
                 </div>
                 <DragHandle id='rankHandle' />
             </li>
-        );
+        ));
 
         const SortableList = SortableContainer(({ items }) => {
             return (

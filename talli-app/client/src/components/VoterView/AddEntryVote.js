@@ -31,7 +31,7 @@ export default class AddEntryVote extends React.Component {
     }
 
     requestConfirm = () => {
-        let itemMatch = this.props.rankItems.filter(item => item.id === this.state.entryID);
+        const itemMatch = this.props.rankItems.filter(item => item.id === this.state.entryID);
         if (itemMatch.length > 0) {
             this.setState({ entryTitle: itemMatch[0].name }, () => {
                 this.blockChild.current.handleOpen();
@@ -39,8 +39,8 @@ export default class AddEntryVote extends React.Component {
             return;
         }
         firebase.database().ref('organizer/').once('value').then((snapshot) => {
-            let organizer = snapshot.val();
-            let event = organizer[this.props.organizer].event[this.props.eventID];
+            const organizer = snapshot.val();
+            const event = organizer[this.props.organizer].event[this.props.eventID];
             let entry = event.entries[this.state.entryID];
             if (!entry) {
                 this.notFoundChild.current.handleOpen();
