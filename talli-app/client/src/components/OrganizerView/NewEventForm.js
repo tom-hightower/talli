@@ -17,6 +17,7 @@ export default class NewEventForm extends React.Component {
             startDate: new Date(),
             endDate: new Date(),
             automate: false,
+            sheetURL: "",
             startVote: new Date(),
             endVote: new Date(),
         },

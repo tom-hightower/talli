@@ -13,7 +13,9 @@ import { Drawer, ListItemIcon, ListItemText, ListItem, Divider } from '@material
 import './component_style/NavBar.css';
 import logoSvg from '../logo.svg';
 import { navigate } from 'react-mini-router';
+import { getCookie } from '../cookies';
 import HelpView from './Help';
+import CookieWarning from './CookieWarning';
 
 /**
  * The NavBar contains the top AppBar as well as the navigation Drawer on
@@ -27,12 +29,11 @@ export default class NavBar extends React.Component {
         };
 
         this.helpChild = React.createRef();
+        this.warningChild = React.createRef();
     }
 
     toggleDrawer = () => this.setState({ open: !this.state.open });
     closeDrawer = () => this.setState({open: false});
-    ChangeView(page) { navigate(page); }
-
 
     onSuccess = (response) => {
         this.props.onSuccess(response);
@@ -43,8 +44,17 @@ export default class NavBar extends React.Component {
         console.log("Failed to Login");
     }
 
-    logout() {
-        this.ChangeView('/');
+    ChangeView(page) {
+        const consentValue = getCookie('TalliConsent');
+        if (page === "/vote" && consentValue === "") {
+            this.warningChild.current.handleOpen();
+        } else {
+           navigate(page);
+        }
+    }
+
+    logout(view) {
+        this.ChangeView(view);
         this.props.logout();
     }
 
@@ -52,7 +62,6 @@ export default class NavBar extends React.Component {
 
     render() {
         // List of buttons for the navigation drawer
-
         let loginStatus = !this.props.loggedIn ? (
             <GoogleLogin 
                 clientId="1061225539650-cp3lrdn3p1u49tsq320l648hcuvg8plb.apps.googleusercontent.com"
@@ -65,22 +74,12 @@ export default class NavBar extends React.Component {
                 onSuccess={this.onSuccess.bind(this)}
                 onFailure={this.onFailure.bind(this)} />
         ) : (
-            // Google logout not working after page refresh, gonna keep it here for now
-            // <GoogleLogout 
-            //     buttonText="Logout"
-            //     render={renderProps => (
-            //         <ListItem button key='Organizer Logout' onClick={renderProps.onClick}>
-            //             <ListItemIcon><OrganizerIcon /></ListItemIcon>
-            //             <ListItemText primary='Organizer Logout' />
-            //         </ListItem>
-            //     )}
-            //     onLogoutSuccess={this.logout.bind(this)} />
-            <ListItem button key='Organizer Logout' onClick={() => this.logout()}>
+            <ListItem button key='Organizer Logout' onClick={() => this.logout('/')}>
                 <ListItemIcon><OrganizerIcon /></ListItemIcon>
                 <ListItemText primary='Organizer Logout' />
             </ListItem>
         );
-        
+
         return (
             <div className="root">
                 <AppBar position="static" >
@@ -94,11 +93,11 @@ export default class NavBar extends React.Component {
                 <Drawer open={this.state.open} onClose={this.closeDrawer}>
                     <div tabIndex={0} role="button" onClick={this.closeDrawer}>
                         <div width="250">
-                            <ListItem button key='Home' onClick={() => this.ChangeView('/')}>
+                            <ListItem button key='Home' onClick={() => this.logout('/')}>
                                 <ListItemIcon><HomeIcon /></ListItemIcon>
                                 <ListItemText primary='Home' />
                             </ListItem>
-                            <ListItem button key='Vote' onClick={() => this.ChangeView('/vote')}>
+                            <ListItem button key='Vote' onClick={() => this.logout('/vote')}>
                                 <ListItemIcon><VoteIcon /></ListItemIcon>
                                 <ListItemText primary='Vote' />
                             </ListItem>
@@ -108,10 +107,15 @@ export default class NavBar extends React.Component {
                                 <ListItemIcon><HelpOutlineIcon /></ListItemIcon>
                                 <ListItemText primary='Help' />
                             </ListItem>
+                            <ListItem button key='Cookies' onClick={() => this.ChangeView('/cookies')}>
+                                <ListItemIcon><HelpOutlineIcon /></ListItemIcon>
+                                <ListItemText primary='Cookies' />
+                            </ListItem>
                         </div>
                     </div>
                 </Drawer>
                 <HelpView ref={this.helpChild} />
+                <CookieWarning ref={this.warningChild} />
             </div>
         );
     }

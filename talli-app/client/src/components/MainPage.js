@@ -4,20 +4,12 @@ import GoogleLogin from 'react-google-login';
 import { navigate } from 'react-mini-router';
 import './component_style/MainPage.css';
 import firebase from '../firebase.js';
-import { setCookie, getCookie } from '../cookies.js'
+import { setCookie, getCookie } from '../cookies';
 
-import openSocket from 'socket.io-client';
 import HelpView from './Help';
+import CookieConsent from './CookieConsent';
+import CookieWarning from './CookieWarning';
 
-const socket = openSocket('http://localhost:5000');
-var config = require('../config.json');
-
-// tried not to hardcode this but oh well
-let signInUrl = config.Global.signInUrl;
-
-socket.on('send_url', url => {
-    signInUrl = url;
-})
 
 /**
  * Main View, just contains buttons for navigating to organizer and voting
@@ -30,22 +22,30 @@ export default class MainPage extends React.Component {
     }
 
     GetCookies(page) {
-        var cookies_value = getCookie('UserID');
-        if (cookies_value === "") {
-            var userID = "" + Math.random().toString(36).substr(2, 9);
-            setCookie("UserID", userID, 30);
-            const itemsRef = firebase.database().ref('cookies');
-            itemsRef.child(userID).set(userID);
+        const cookiesValue = getCookie('UserID');
+        const consentValue = getCookie('TalliConsent');
+        if (consentValue === "") {
+            this.warningChild.current.handleOpen();
+        } else {
+            if (cookiesValue === "") {
+                const userID = "" + Math.random().toString(36).substr(2, 9);
+                setCookie("UserID", userID, 30);
+                const itemsRef = firebase.database().ref('cookies');
+                itemsRef.child(userID).set(userID);
+            }
+            navigate(page);
         }
-        navigate(page);
     }
+
     constructor(props) {
         super(props);
-        this.state = {
-            url: signInUrl
-        };
-        // this.sendLoginRequest = this.sendLoginRequest.bind(this);
         this.helpChild = React.createRef();
+        this.warningChild = React.createRef();
+    }
+
+    gaveConsent = () => {
+        const consentValue = getCookie('TalliConsent');
+        return (consentValue !== "");
     }
 
     render() {
@@ -53,6 +53,7 @@ export default class MainPage extends React.Component {
             <div className="content">
                 <br />
                 <HelpView ref={this.helpChild} />
+                <CookieWarning ref={this.warningChild} />
                 <Typography variant="h4" align="center" gutterBottom>Welcome to Talli!</Typography>
                 <Grid container justify="center">
                     <div className="buttons">
@@ -73,9 +74,18 @@ export default class MainPage extends React.Component {
                         </ListItem>
                     </div>
                 </Grid>
+                <div className="links">
+                    <Typography variant="body2" id="aboutLink" onClick={() => this.helpChild.current.handleOpen()}>
+                         <u>About Talli</u>
+                    </Typography>
+                </div>
                 {/* <a href={signInUrl}>Sign in w google new way</a> */}
                 <br />
-                <p align="center" onClick={() => this.helpChild.current.handleOpen()}>About Talli</p>
+                
+                {
+                    !this.gaveConsent() && <CookieConsent nav={this.ChangeView} />
+                }
+                
             </div>
         );
     }

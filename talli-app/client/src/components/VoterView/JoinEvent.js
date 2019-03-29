@@ -52,33 +52,36 @@ export default class JoinEvent extends React.Component {
                         if (this.state.organizerID && this.state.organizerID !== '') {
                             firebase.database().ref(`/organizer/${this.state.organizerID}/event/${allCookies.currentEvent}`).once('value').then(eventSnap => {
                                 const event = eventSnap.val();
-                                if (!event) return;
-                                this.setState({
-                                    eventName: event.eventData.name,
-                                    eventID: allCookies.currentEvent,
-                                }, () => {
-                                    const votingState = this.getVotingState(event['eventData']);
-                                    if (votingState === 'closed') {
-                                        this.rejoinClosedChild.current.handleOpen();
-                                        firebase.database().ref(`attendees/${cookie}/currentEvent`).set('');
-                                        return;
-                                    }
-                                    this.rejoinChild.current.handleOpen();
-                                });
+                                if (event) {
+                                    this.setState({
+                                        eventName: event.eventData.name,
+                                        eventID: allCookies.currentEvent,
+                                    }, () => {
+                                        const votingState = this.getVotingState(event['eventData']);
+                                        if (votingState === 'closed') {
+                                            this.rejoinClosedChild.current.handleOpen();
+                                            firebase.database().ref(`attendees/${cookie}/currentEvent`).set('');
+                                            return;
+                                        }
+                                        this.rejoinChild.current.handleOpen();
+                                    });
+                                }
                             });
                         }
                     });
                 });
+            } else if (this.props.scanID) {
+                this.setState({ eventID: this.props.scanID });
+                this.requestConfirm();
             }
         });
     }
 
     getVotingState(event) {
         const date = new Date().toISOString();
-        if ((event.endDate > date) && (event.startVote === 'none' || (event.startVote > date))) { // not open yet
+        if (event.startVote === 'none' || (event.startVote > date)) { // not open yet
             return 'before';
-        }
-        if ((event.startDate < date) && (event.endDate > date) && (event.endVote === 'none' || (event.endVote > date))) { // open
+        } else if (event.endVote === 'none' || (event.endVote > date)) { // open
             return 'open';
         }
         return 'closed';
@@ -100,6 +103,7 @@ export default class JoinEvent extends React.Component {
                         this.setState({ eventName: event.eventData.name }, () => {
                             // Checks whether an even has not started or has ended
                             const votingState = this.getVotingState(event.eventData);
+                            console.log(votingState);
                             if (votingState === 'before') {
                                 this.earlyJoinChild.current.handleOpen();
                                 return;
@@ -148,7 +152,14 @@ export default class JoinEvent extends React.Component {
     }
 
     handleText() {
-        if (this.state.idFieldValue === this.state.eventID && this.state.idFieldValue.length > 2) {
+        const cookie = getCookie('UserID');
+        let currentEventId = '';
+        firebase.database().ref(`attendees/${cookie}/currentEvent`).once('value').then(snapshot => {
+            currentEventId = snapshot.val();
+            console.log(currentEventId);
+        });
+        if (this.state.idFieldValue === this.state.eventID && this.state.idFieldValue.length > 2 && this.state.eventID === currentEventId) {
+            console.log("rejoined");
             this.handleRejoinEvent();
             return;
         }

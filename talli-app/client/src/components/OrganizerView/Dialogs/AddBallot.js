@@ -59,10 +59,10 @@ export default class AddVotes extends React.Component {
             }
         }
         if (!hasError && numOfEntries > 0) {
-            const itemRef = firebase.database().ref(`event/${this.props.event.id}/ballots/manual`);
+            const itemRef = firebase.database().ref(`event/${this.props.event.id}/ballots`);
             itemRef.once('value', (snapshot) => {
-                let nonDigitVoteSize = snapshot.child("count").val();
-                if (nonDigitVoteSize === "" || nonDigitVoteSize === null) {
+                let nonDigitVoteSize = snapshot.child('count').val();
+                if (nonDigitVoteSize === '' || nonDigitVoteSize === null) {
                     nonDigitVoteSize = 0;
                 }
                 nonDigitVoteSize += 1;

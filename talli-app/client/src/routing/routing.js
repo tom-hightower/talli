@@ -3,6 +3,7 @@ import createReactClass from 'create-react-class';
 import MainPage from '../components/MainPage';
 import Voter from '../components/Voter';
 import Organizer from '../components/Organizer';
+import CookieInfo from '../components/CookieInfo';
 
 var RouterMixin = require('react-mini-router').RouterMixin;
 
@@ -25,6 +26,7 @@ var RoutedApp = createReactClass({
         '/vote': 'vote',
         '/vote/:text': 'voteWithID',
         '/organizer': 'organizer',
+        '/cookies': 'cookies'
     },
 
     render: function () {
@@ -44,7 +46,7 @@ var RoutedApp = createReactClass({
     },
 
     voteWithID: function (text) {
-        return <Voter />;
+        return <Voter scanID={text} />;
     },
 
     organizer: function () {
@@ -53,6 +55,10 @@ var RoutedApp = createReactClass({
                 logout={this.logout}
                 user={this.props.user} />
         );
+    },
+
+    cookies: function () {
+        return <CookieInfo />;
     },
 
     notFound: function (path) {

@@ -1,13 +1,11 @@
 import React from 'react';
 import { Dialog, DialogTitle, DialogContent, DialogActions, Button, Slide } from '@material-ui/core';
-import firebase from '../../../firebase';
-import { getCookie } from '../../../cookies';
 
 function Transition(props) {
-    return (<Slide direction="up" {...props} />);
-  }
+    return <Slide direction="up" {...props} />;
+}
 
-export default class RejoinEvent extends React.Component {
+export default class ConfirmFinalize extends React.Component {
     state = {
         open: false,
     };
@@ -17,8 +15,6 @@ export default class RejoinEvent extends React.Component {
     };
 
     handleClose = () => {
-        const cookie = getCookie('UserID');
-        firebase.database().ref(`attendees/${cookie}/currentEvent`).set('');
         this.setState({ open: false });
     };
 
@@ -32,18 +28,19 @@ export default class RejoinEvent extends React.Component {
             <div>
                 <Dialog open={this.state.open} TransitionComponent={Transition} onClose={this.handleClose}>
                     <DialogTitle>
-                        Current Event
+                        Finalize Results
                     </DialogTitle>
                     <DialogContent>
-                        You are currently signed in to:
+                        Finalizing results will send all ballots (including manually entered and unsubmitted ballots) to the
+                        linked google sheet as well as close the event voting if it is currently open.
+                        If you only wanted to sync submitted entries, please cancel this dialog and choose the "Sync Entries"
+                        option.
                         <br />
-                        <b>{this.props.entryName}</b>
-                        <br />
-                        Would you like to rejoin?
+                        Are you sure you want to finalize results?
                     </DialogContent>
                     <DialogActions>
-                        <Button onClick={this.handleClose}>No</Button>
-                        <Button onClick={this.handleConfirm} color="primary">Yes</Button>
+                        <Button onClick={this.handleClose}>Go Back</Button>
+                        <Button onClick={this.handleConfirm} color="primary">Confirm</Button>
                     </DialogActions>
                 </Dialog>
             </div>

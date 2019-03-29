@@ -41,7 +41,10 @@ export default class Voter extends React.Component {
                 entryToAdd: addedEntry
             });
         } else {
-            this.setState({ curView: newView, entryToAdd: addedEntry });
+            this.setState({
+                curView: newView,
+                entryToAdd: addedEntry
+            });
         }
     }
 
@@ -79,6 +82,7 @@ export default class Voter extends React.Component {
                         voteViews={voteViews}
                         updateItemsHandler={this.updateItems}
                         handler={this.changeView}
+                        {...this.props}
                     />);
         }
     }

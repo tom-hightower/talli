@@ -1,0 +1,26 @@
+{
+  "name": "talli-app",
+  "version": "1.0.0",
+  "description": "SERVER - Portable voting system",
+  "repository": "github:tom-hightower/talli",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "server": "nodemon server.js"
+  },
+  "author": "Tom, Jermiah, Adrianna, Jiayuan, Nick",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.18.3",
+    "express": "^4.16.4",
+    "google-spreadsheet": "^2.0.7",
+    "googleapis": "^37.2.0",
+    "nodemon": "^1.18.10",
+    "npm": "^6.8.0",
+    "passport": "^0.4.0",
+    "socket.io": "^2.2.0"
+  },
+  "eslintConfig": {
+    "extends": "eslint-config-airbnb"
+  }
+}
