@@ -64,9 +64,10 @@ export default class SortContainer extends Component {
                 if (eventEntries && this.props.entryToAdd && !this.state.items.some(e => e.id === this.props.entryToAdd)) {
                     const entryId = this.props.entryToAdd;
                     itemList.push({
-                        name: eventEntries[this.props.entryToAdd].title,
-                        id: this.props.entryToAdd,
+                        name: eventEntries[entryId].title,
+                        id: entryId,
                         presenters: eventEntries[entryId].presenters,
+                        entry_dates: eventEntries[entryId].entry_dates,
                         showInfo: false,
                     });
                     this.updateDatabaseRankings(itemList);
@@ -137,6 +138,7 @@ export default class SortContainer extends Component {
         this.setState({
             items: oldItems
         });
+        console.log(oldItems[item]);
     }
 
     render() {
@@ -145,7 +147,15 @@ export default class SortContainer extends Component {
                 <div id='rankNumber'>{item + 1}</div>
                 <div id='rankTitle'>
                     {value.name}
-                    {value.showInfo ? (<div><b>Presenters:</b> {value.presenters}</div>) : ''}
+                    {
+                        value.showInfo ? 
+                        (
+                            <div id="expandedInfo">
+                                <b>By:</b> {value.presenters} <br />
+                                <b>Attendance:</b> {value.entry_dates}
+                            </div>
+                        ) : ''
+                    }
                 </div>
                 <DragHandle id='rankHandle' />
             </li>

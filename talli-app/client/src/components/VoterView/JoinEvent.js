@@ -209,6 +209,7 @@ export default class JoinEvent extends React.Component {
                             name: entry.title,
                             id: entry.id.toString(),
                             presenters: entry.presenters,
+                            entry_dates: entry.entry_dates,
                             showInfo: false,
                         });
                     }
