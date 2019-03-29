@@ -89,6 +89,7 @@ io.on('connection', function (socket) {
                                         sendError('Could not add row to weighted ranks sheet');
                                         return;
                                     }
+                                    io.emit('url_confirm');
                                 });
                             });
                         });

@@ -12,6 +12,8 @@ import AddBallot from './Dialogs/AddBallot';
 import '../component_style/ViewEvent.css';
 import ShowError from './Dialogs/ShowError';
 import ConfirmFinalize from './Dialogs/ConfirmFinalize';
+import CheckCircle from '@material-ui/icons/CheckCircle';
+import { relative } from 'path';
 
 const socket = openSocket('http://localhost:5000');
 
@@ -37,6 +39,7 @@ export default class ViewEvent extends React.Component {
                 sheetURL: 'Google Sheet URL',
                 entries: []
             },
+            urlConfirm: false,
         };
         this.exportChild = React.createRef();
         this.eventChild = React.createRef();
@@ -70,7 +73,8 @@ export default class ViewEvent extends React.Component {
                         endVote: eventBase['endVote'],
                         sheetURL: eventBase['sheetURL'],
                         entries: eventEntries
-                    }
+                    },
+                    urlConfirm: this.state.urlConfirm
                 });
             }
         });
@@ -78,6 +82,14 @@ export default class ViewEvent extends React.Component {
         socket.on('error', (data) => {
             console.log(data.error);
             this.handleError(data.error);
+        });
+
+        socket.on('url_confirm', () => {
+            this.setState({
+                view: this.state.view,
+                event: this.state.event,
+                urlConfirm: true,
+            });
         });
     }
 
@@ -279,19 +291,27 @@ export default class ViewEvent extends React.Component {
                                     <div>
                                         3. Grab the spreadsheet's URL and paste it here:
                                         <div className="main">
-                                            <TextField
-                                                id="standard-dense"
-                                                label="Spreadsheet URL"
-                                                margin="dense"
-                                                className="sheetURL"
-                                                value={this.state.event.sheetURL}
-                                                onKeyDown={this.keyPress}
-                                                onChange={this.handleURLChange}
-                                            />
-                                            <br />
+                                            <div className="urlField">
+                                                <TextField
+                                                    id="standard-dense"
+                                                    label="Spreadsheet URL"
+                                                    margin="dense"
+                                                    className="sheetURL"
+                                                    value={this.state.event.sheetURL}
+                                                    onKeyDown={this.keyPress}
+                                                    onChange={this.handleURLChange}
+                                                />
+                                                {
+                                                    this.state.urlConfirm &&
+                                                    <CheckCircle id="checkmark" color="primary" />
+                                                }
+                                            </div>
+                                            
+                                            {/* <br /> */}
                                             <Button variant="contained" size="small" color="default" onClick={this.handleSubmit}>
                                                 Submit
                                             </Button>
+                                            
                                         </div>
                                     </div>
                                 </div>
