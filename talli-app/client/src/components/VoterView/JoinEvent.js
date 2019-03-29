@@ -116,8 +116,8 @@ export default class JoinEvent extends React.Component {
                             // Checks whether the user has submitted for this event previously
                             const cookies = getCookie('UserID');
                             let check = false;
-                            firebase.database().ref(`attendees/${cookies}/pastEvents`).once('value').then(snap => {
-                                const pastEvents = snap.val();
+                            firebase.database().ref(`attendees/${cookies}/pastEvents`).once('value').then(pastSnap => {
+                                const pastEvents = pastSnap.val();
                                 for (let c in pastEvents) {
                                     if (c === this.state.eventID) {
                                         check = true;

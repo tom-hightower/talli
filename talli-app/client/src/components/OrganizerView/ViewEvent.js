@@ -282,7 +282,7 @@ export default class ViewEvent extends Component {
                                         </div>
                                         <div>
                                             3. Grab the spreadsheet&apos;s URL and paste it here:
-                                        <div className="main">
+                                            <div className="main">
                                                 <TextField
                                                     id="standard-dense"
                                                     label="Spreadsheet URL"
@@ -295,7 +295,7 @@ export default class ViewEvent extends Component {
                                                 <br />
                                                 <Button variant="contained" size="small" color="default" onClick={this.handleSubmit}>
                                                     Submit
-                                            </Button>
+                                                </Button>
                                             </div>
                                         </div>
                                     </div>
@@ -314,7 +314,7 @@ export default class ViewEvent extends Component {
                                         >
                                             <Button variant="contained" className="buttons weights" type="button" onClick={this.handleWeights}>
                                                 Apply Custom Weights
-                                        </Button>
+                                            </Button>
                                         </Tooltip>
                                         <Tooltip
                                             title="Updates linked google sheet with current list of entries. Its best to do this before the event starts!"
@@ -322,7 +322,7 @@ export default class ViewEvent extends Component {
                                         >
                                             <Button variant="contained" className="buttons" type="button" onClick={this.sendEntries}>
                                                 Sync entries
-                                        </Button>
+                                            </Button>
                                         </Tooltip>
                                         <br />
                                         <Tooltip
@@ -330,7 +330,7 @@ export default class ViewEvent extends Component {
                                         >
                                             <Button variant="contained" className="buttons" color="primary" type="button" onClick={this.finalizeConfirm}>
                                                 Finalize Results
-                                        </Button>
+                                            </Button>
                                         </Tooltip>
                                     </div>
                                 </div>
