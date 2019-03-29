@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Component } from 'react';
 import { Dialog, DialogTitle, DialogContent, Slide } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
 import '../../component_style/EntryImportInfo.css';
@@ -10,37 +10,44 @@ import '../../component_style/EntryImportInfo.css';
  */
 function Transition(props) {
     return <Slide direction="up" {...props} />;
-  }
+}
 
-export default class EntryImportInfo extends React.Component {
-    state = {
-        open: false,
-    };
+export default class EntryImportInfo extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            open: false,
+        };
+    }
 
     handleOpen = () => {
         this.setState({ open: true });
-    };
+    }
 
     handleClose = () => {
         this.setState({ open: false });
-    };
+    }
 
     render() {
         return (
             <div>
-                <Dialog open={this.state.open} TransitionComponent={Transition} onClose={this.handleClose}>
-                    <CloseIcon onClick={this.handleClose}/>
+                <Dialog
+                    open={this.state.open}
+                    TransitionComponent={Transition}
+                    onClose={this.handleClose}
+                >
+                    <CloseIcon onClick={this.handleClose} />
                     <DialogTitle>
                         Import Information
                     </DialogTitle>
                     <DialogContent>
-                        Accepted file type: .csv <br/><br/>
+                        Accepted file type: .csv <br /><br />
                         Accepted file format: 3 columns in the order of Entry Titles, Presenters, Date(s) Attending
-                        <br/><br/>
+                        <br /><br />
                         *Data is read assuming there is a header row, so the first row will be skipped.
-                        <br/><br/>
+                        <br /><br />
                         Example file:
-                        <table id='table'>
+                        <table id="table">
                             <tbody>
                                 <tr>
                                     <td>Entry Title</td>
