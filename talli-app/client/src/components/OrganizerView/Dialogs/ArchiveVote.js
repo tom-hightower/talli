@@ -24,7 +24,7 @@ export default class ArchiveVote extends React.Component {
                 <Dialog open={this.state.open} TransitionComponent={Transition} onClose={this.handleClose}>
                     <DialogTitle> Archive Vote Instruction</DialogTitle>
                     <DialogContent>
-                        <p >To archive a submission, mark the "archived" column with a Y.</ p>
+                        <p >To archive a submission, mark the "archived" column with a Y in spreadsheet.</ p>
                     </DialogContent>
                     <DialogActions>
                         <Button onClick={this.handleClose} color="primary">go back</Button>
