@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Component } from 'react';
 import { Typography, TextField, Button } from '@material-ui/core';
 import QrReader from 'react-qr-reader';
 import EntryConfirmation from './Dialogs/EntryConfirmation';
@@ -6,19 +6,24 @@ import firebase from '../../firebase';
 import '../component_style/Voter.css';
 import NotFound from './Dialogs/NotFound';
 import BlockJoin from './Dialogs/BlockJoin';
-var config = require('../../config.json');
+
+const config = require('../../config.json');
 
 /**
  * Entry Add
  */
-export default class AddEntryVote extends React.Component {
+export default class AddEntryVote extends Component {
     constructor(props) {
         super(props);
         /** ::STATE INFO::
          *  entryID:        Entry's UID, obtained either from QRcode or textfield
          *  idFieldValue:   The value currently in the textbox
          */
-        this.state = { entryID: '', idFieldValue: '', entryTitle: '' };
+        this.state = {
+            entryID: '',
+            idFieldValue: '',
+            entryTitle: ''
+        };
         this.handleScan = this.handleScan.bind(this);
         this.handleError = this.handleError.bind(this);
         this.handleText = this.handleText.bind(this);
@@ -41,7 +46,7 @@ export default class AddEntryVote extends React.Component {
         firebase.database().ref('organizer/').once('value').then((snapshot) => {
             const organizer = snapshot.val();
             const event = organizer[this.props.organizer].event[this.props.eventID];
-            let entry = event.entries[this.state.entryID];
+            const entry = event.entries[this.state.entryID];
             if (!entry) {
                 this.notFoundChild.current.handleOpen();
                 return;
@@ -54,7 +59,7 @@ export default class AddEntryVote extends React.Component {
 
     handleScan(data) {
         if (data && data.toLowerCase().includes(config.Global.entryQRPrefix)) {
-            var id = data.substring(data.indexOf(config.Global.entryQRPrefix) + 7).replace(/\W/g, '');
+            const id = data.substring(data.indexOf(config.Global.entryQRPrefix) + 7).replace(/\W/g, '');
             this.setState({ entryID: id });
             this.requestConfirm();
         }
@@ -76,7 +81,9 @@ export default class AddEntryVote extends React.Component {
         this.props.handler(this.props.voteViews.RANK);
     }
 
-    handleError(err) { }
+    handleError(err) {
+        console.log(err);
+    }
 
     keyPress(e) {
         if (e.key === 'Enter') {
@@ -87,11 +94,11 @@ export default class AddEntryVote extends React.Component {
     render() {
         return (
             <div>
-                <NotFound ref={this.notFoundChild} idType={'Entry'} id={this.state.entryID} />
+                <NotFound ref={this.notFoundChild} idType="Entry" id={this.state.entryID} />
                 <EntryConfirmation entryName={this.state.entryTitle} ref={this.confirmChild} handler={this.handleAddEntry} />
-                <BlockJoin entryName={this.state.entryTitle} idType={'Entry'} ref={this.blockChild} />
+                <BlockJoin entryName={this.state.entryTitle} idType="Entry" ref={this.blockChild} />
                 <QrReader delay={300} onScan={this.handleScan} onError={this.handleError} style={{ width: '80%', margin: '20px auto 0px' }} />
-                <Typography variant='h5' align='center' className="QRText">Scan QR Code or enter Entry ID:</Typography>
+                <Typography variant="h5" align="center" className="QRText">Scan QR Code or enter Entry ID:</Typography>
                 <div className="textField">
                     <TextField
                         id="outlined-dense"

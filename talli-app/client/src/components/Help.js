@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Component } from 'react';
 import { Dialog, DialogTitle, DialogContent, DialogActions, Button, Slide } from '@material-ui/core';
 
 function Transition(props) {
@@ -8,21 +8,24 @@ function Transition(props) {
 /**
  * Help view
  */
-export default class HelpView extends React.Component {
-    state = {
-        open: false,
-    };
+export default class HelpView extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            open: false,
+        };
+    }
 
     handleOpen = () => {
         this.setState({ open: true });
-    };
+    }
 
     handleClose = () => {
         this.setState({ open: false });
-    };
+    }
 
     render() {
-        return(
+        return (
             <div>
                 <Dialog open={this.state.open} TransitionComponent={Transition} onClose={this.handleClose}>
                     <DialogTitle>

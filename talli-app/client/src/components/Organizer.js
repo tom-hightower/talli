@@ -1,10 +1,10 @@
-import React from 'react';
+import React, { Component } from 'react';
+import { navigate } from 'react-mini-router';
+import { Button } from '@material-ui/core';
 import NewEvent from './OrganizerView/NewEventForm';
 import EventList from './OrganizerView/EventList';
 import AddEntry from './OrganizerView/AddEntryOrg';
 import ViewEvent from './OrganizerView/ViewEvent';
-import { navigate } from 'react-mini-router';
-import { Button } from '@material-ui/core';
 import './component_style/Organizer.css';
 
 const orgViews = {
@@ -12,16 +12,19 @@ const orgViews = {
     CREATE: 'NewEvent',
     ADD: 'AddEntry',
     VIEW: 'ViewEvent',
-}
+};
 
 /**
  * OrganizerView > Organizer
  * Container which all organizer view will be rendered in.
  */
-export default class Organizer extends React.Component {
+export default class Organizer extends Component {
     constructor(props) {
         super(props);
-        this.state = { curView: orgViews.MAIN, curEventID: '' };
+        this.state = {
+            curView: orgViews.MAIN,
+            curEventID: ''
+        };
         this.setView = this.setView.bind(this);
         this.setEvent = this.setEvent.bind(this);
     }
@@ -44,15 +47,15 @@ export default class Organizer extends React.Component {
     }
 
     getCurrView() {
-        switch(this.state.curView) {
+        switch (this.state.curView) {
             case orgViews.CREATE:
-                return( <NewEvent orgViews={orgViews} handler={this.setView} setEvent={this.setEvent} user={this.props.user} /> );
+                return (<NewEvent orgViews={orgViews} handler={this.setView} setEvent={this.setEvent} user={this.props.user} />);
             case orgViews.ADD:
-                return( <AddEntry orgViews={orgViews} handler={this.setView} curEvent={this.state.curEventID} user={this.props.user} /> );
+                return (<AddEntry orgViews={orgViews} handler={this.setView} curEvent={this.state.curEventID} user={this.props.user} />);
             case orgViews.VIEW:
-                return( <ViewEvent orgViews={orgViews} handler={this.setView} curEvent={this.state.curEventID} user={this.props.user} /> );
+                return (<ViewEvent orgViews={orgViews} handler={this.setView} curEvent={this.state.curEventID} user={this.props.user} />);
             default:
-                return( <EventList orgViews={orgViews} handler={this.setView} setEvent={this.setEvent} user={this.props.user} /> ); 
+                return (<EventList orgViews={orgViews} handler={this.setView} setEvent={this.setEvent} user={this.props.user} />);
         }
     }
 
@@ -69,6 +72,6 @@ export default class Organizer extends React.Component {
                 <Button variant="contained" color="secondary" className="buttons" onClick={this.logout.bind(this)}>Logout</Button>
                 <div>{this.getCurrView()}</div>
             </div>
-        )
+        );
     }
 }

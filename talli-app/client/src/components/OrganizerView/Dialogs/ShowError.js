@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Component } from 'react';
 import { Slide, Dialog, DialogTitle, DialogContent, DialogActions, Button } from '@material-ui/core';
 
 
@@ -8,12 +8,12 @@ function Transition(props) {
 }
 
 // maybe for future, have it load current weights into text fields
-export default class ShowError extends React.Component {
+export default class ShowError extends Component {
     constructor(props) {
         super(props);
         this.state = {
             open: false,
-            message: "",
+            message: '',
         };
     }
 
@@ -22,19 +22,23 @@ export default class ShowError extends React.Component {
             open: true,
             message: message,
         });
-    };
+    }
 
     handleClose = () => {
         this.setState({
             open: false,
-            message: "",
+            message: '',
         });
-    };
+    }
 
     render() {
         return !this.state.open ? null : (
             <div>
-                <Dialog open={this.state.open} TransitionComponent={Transition} onClose={this.handleClose}>
+                <Dialog
+                    open={this.state.open}
+                    TransitionComponent={Transition}
+                    onClose={this.handleClose}
+                >
                     <DialogTitle> Error </DialogTitle>
                     <DialogContent>
                         Error message received:
