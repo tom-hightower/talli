@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Component } from 'react';
 import { Dialog, DialogTitle, DialogContent, DialogActions, Button, Slide } from '@material-ui/core';
 
 function Transition(props) {
@@ -8,18 +8,21 @@ function Transition(props) {
 /**
  * Cookies warning
  */
-export default class CookieWarning extends React.Component {
-    state = {
-        open: false,
-    };
+export default class CookieWarning extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            open: false,
+        };
+    }
 
     handleOpen = () => {
         this.setState({ open: true });
-    };
+    }
 
     handleClose = () => {
         this.setState({ open: false });
-    };
+    }
 
     render() {
         return (

@@ -6,7 +6,7 @@ import { Typography, Button } from '@material-ui/core';
 import BellIcon from '@material-ui/icons/NotificationImportant';
 import openSocket from 'socket.io-client';
 import firebase from '../../firebase';
-import { getCookie } from '../../cookies.js';
+import { getCookie } from '../../cookies';
 import SubmitConfirm from './Dialogs/SubmitConfirm';
 import Countdown from './Countdown';
 import EventClosed from './Dialogs/EventClosed';
@@ -27,7 +27,7 @@ const SortableItem = SortableElement(({ value, item }) =>
 const SortableList = SortableContainer(({ items }) => {
     return (
         <ul>
-            {items.length !== 0 ? <div/> : <div>Tap the Plus to add an entry</div>}
+            {items.length !== 0 ? <div /> : <div>Tap the Plus to add an entry</div>}
             {items.map((value, index) => (
                 <SortableItem key={`item-${index}`} item={index} index={index} value={value.name} />
             ))}
@@ -86,14 +86,14 @@ export default class SortContainer extends Component {
                 }
                 this.setState({
                     event: {
-                        id: eventBase['id'],
-                        name: eventBase['name'],
-                        location: eventBase['location'],
-                        startDate: eventBase['startDate'],
-                        endDate: eventBase['endDate'],
-                        automate: eventBase['automate'],
-                        startVote: eventBase['startVote'],
-                        endVote: eventBase['endVote'],
+                        id: eventBase.id,
+                        name: eventBase.name,
+                        location: eventBase.location,
+                        startDate: eventBase.startDate,
+                        endDate: eventBase.endDate,
+                        automate: eventBase.automate,
+                        startVote: eventBase.startVote,
+                        endVote: eventBase.endVote,
                         entries: eventEntries
                     },
                     items: itemList,
@@ -127,7 +127,7 @@ export default class SortContainer extends Component {
     submitted() {
         const items = this.state.items;
         const organizerId = this.props.organizer;
-        let eventId = this.state.event.id;
+        const eventId = this.state.event.id;
         socket.emit('send_votes', {
             eventId,
             organizerId,
@@ -139,7 +139,7 @@ export default class SortContainer extends Component {
     countdownFinished() {
         const cookie = getCookie('UserID');
         const itemsRef = firebase.database().ref(`attendees/${cookie}`);
-        itemsRef.child("currentEvent").set('');
+        itemsRef.child('currentEvent').set('');
         itemsRef.child(`pastEvents/${this.props.eventID}/`).set(this.props.eventID);
         this.closedChild.current.handleOpen();
     }
@@ -149,41 +149,40 @@ export default class SortContainer extends Component {
             <div>
                 <EventClosed handler={this.submitted} ref={this.closedChild} eventName={this.state.event.name} />
                 <SubmitConfirm handler={this.submitted} ref={this.confirmChild} items={this.state.items} eventID={this.state.event.id} />
-                <Typography variant='h4' align='center' className="eventName" gutterBottom>{this.state.event.name}</Typography>
+                <Typography variant="h4" align="center" className="eventName" gutterBottom>{this.state.event.name}</Typography>
                 <div style={{ textAlign: 'center' }}>
-                    <AddCircleIcon className="AddEvent" id='addEntry' color='secondary' onClick={this.handleAddEvent} />
+                    <AddCircleIcon className="AddEvent" id="addEntry" color="secondary" onClick={this.handleAddEvent} />
                 </div>
                 <div>
                     <div className="SortContainer">
                         <SortableList
                             items={this.state.items}
                             onSortEnd={this.onSortEnd}
-                            lockAxis='y'
-                            useDragHandle={true}
-                            helperClass='sortHelp'
+                            lockAxis="y"
+                            useDragHandle
+                            helperClass="sortHelp"
                         />
                     </div>
                 </div>
 
                 {this.state.event.automate ? (
-                    <div className='SubmitDiv'>
-                        <BellIcon className='BellIcon' />
-                        <div className='SubmitText'>
+                    <div className="SubmitDiv">
+                        <BellIcon className="BellIcon" />
+                        <div className="SubmitText">
                             Voting will close in:
                                 <Countdown date={this.state.event.endVote} onFinished={this.countdownFinished} />
                         </div>
-                        <div className='buttonDiv'>
+                        <div className="buttonDiv">
                             <Button variant="contained" color="primary" onClick={this.submitConfirm}> Submit </Button>
                         </div>
                     </div>
                 ) : (
-                    <div className='CenterSubmitDiv'>
-                        <div className='CenterButtonDiv'>
+                    <div className="CenterSubmitDiv">
+                        <div className="CenterButtonDiv">
                             <Button variant="contained" color="primary" onClick={this.submitConfirm}> Submit </Button>
                         </div>
                     </div>
                 )}
-
             </div>
         );
     }

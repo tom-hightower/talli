@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Component } from 'react';
 import { Slide, Dialog, DialogTitle, DialogContent, DialogActions, Button, TextField, InputAdornment, FormControlLabel, Switch } from '@material-ui/core';
 import CalendarIcon from '@material-ui/icons/DateRange';
 import { MuiPickersUtilsProvider, DatePicker, DateTimePicker } from 'material-ui-pickers';
@@ -10,19 +10,22 @@ function Transition(props) {
     return <Slide direction="up" {...props} />;
 }
 
-export default class EditEvent extends React.Component {
-    state = {
-        open: false,
-        name: '',
-        id: '',
-        location: '',
-        startDate: '',
-        endDate: '',
-        automate: false,
-        startVote: '',
-        endVote: '',
-        confirmDelete: false,
-    };
+export default class EditEvent extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            open: false,
+            name: '',
+            id: '',
+            location: '',
+            startDate: '',
+            endDate: '',
+            automate: false,
+            startVote: '',
+            endVote: '',
+            confirmDelete: false,
+        };
+    }
 
     handleOpen = () => {
         this.setState({
@@ -36,11 +39,11 @@ export default class EditEvent extends React.Component {
             startVote: this.props.event.startVote,
             endVote: this.props.event.endVote,
         });
-    };
+    }
 
     handleClose = () => {
         this.setState({ open: false });
-    };
+    }
 
     handleSaveClose = () => {
         this.setState({ open: false });
@@ -207,16 +210,34 @@ export default class EditEvent extends React.Component {
                         )}
                         <br />
                         {!this.state.confirmDelete ? (
-                            <Button variant="contained" style={{ background: "#B00020", color: "#FFFFFF" }} onClick={() => { this.setState({ confirmDelete: true, }); }}>
+                            <Button
+                                variant="contained"
+                                style={{ background: "#B00020", color: "#FFFFFF" }}
+                                onClick={() => { this.setState({ confirmDelete: true, }); }}
+                            >
                                 Delete Event
                             </Button>
                         ) : (
-                            <>
-                                <p>Are you sure you want to delete this event? <br /> (this cannot be undone)</p>
-                                <Button className="button1" variant="contained" color="primary" onClick={() => this.handleDeleteEvent()}> Yes </Button>
-                                <Button className="button1" variant="contained" color="default" onClick={() => { this.setState({ confirmDelete: false, }); }}> No </Button>
-                            </>
-                        )}
+                                <>
+                                    <p>Are you sure you want to delete this event? <br /> (this cannot be undone)</p>
+                                    <Button
+                                        className="button1"
+                                        variant="contained"
+                                        color="primary"
+                                        onClick={() => this.handleDeleteEvent()}
+                                    >
+                                        Yes
+                                    </Button>
+                                    <Button
+                                        className="button1"
+                                        variant="contained"
+                                        color="default"
+                                        onClick={() => { this.setState({ confirmDelete: false, }); }}
+                                    >
+                                        No
+                                    </Button>
+                                </>
+                            )}
                     </DialogContent>
                     <DialogActions>
                         <Button onClick={this.handleClose} color="primary">Go Back</Button>

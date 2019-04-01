@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Component } from 'react';
 import 'date-fns';
 import DateFnsUtils from '@date-io/date-fns';
 import { MuiPickersUtilsProvider, DateTimePicker, DatePicker } from 'material-ui-pickers';
@@ -6,21 +6,24 @@ import { Typography, TextField, InputAdornment, Button, FormControlLabel, Switch
 import CalendarIcon from '@material-ui/icons/DateRange';
 import '../component_style/NewEventForm.css';
 import '../component_style/Organizer.css';
-import firebase from '../../firebase.js';
+import firebase from '../../firebase';
 
-export default class NewEventForm extends React.Component {
-    state = {
-        eventData: {
-            name: '',
-            id: '',
-            location: '',
-            startDate: new Date(),
-            endDate: new Date(),
-            automate: false,
-            sheetURL: "",
-            startVote: new Date(),
-            endVote: new Date(),
-        },
+export default class NewEventForm extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            eventData: {
+                name: '',
+                id: '',
+                location: '',
+                startDate: new Date(),
+                endDate: new Date(),
+                automate: false,
+                sheetURL: '',
+                startVote: new Date(),
+                endVote: new Date(),
+            },
+        };
     }
 
     // Sends form data to Firebase and navigates to the next page
@@ -99,10 +102,10 @@ export default class NewEventForm extends React.Component {
 
     render() {
         return (
-            <div className='newEventForm'>
-                <Typography variant='h4' align='center' gutterBottom>Create a new event</Typography>
-                <form className='eventForm' onSubmit={this.AddEntries}>
-                    <Typography variant='h6'>Event Details</Typography>
+            <div className="newEventForm">
+                <Typography variant="h4" align="center" gutterBottom>Create a new event</Typography>
+                <form className="eventForm" onSubmit={this.AddEntries}>
+                    <Typography variant="h6">Event Details</Typography>
                     <TextField
                         required
                         label="Event Name"

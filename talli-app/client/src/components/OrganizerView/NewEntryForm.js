@@ -1,15 +1,28 @@
-import React from 'react';
+import React, { Component } from 'react';
 import RemoveCircleOutlineIcon from '@material-ui/icons/RemoveCircleOutline';
-import '../component_style/Organizer.css';
 import { TextField } from '@material-ui/core';
+import '../component_style/Organizer.css';
 
-export default class NewEntryForm extends React.Component {
-    state = {
-        show: true,
-        title: this.props.currValue.title,
-        id: this.props.currValue.id,
-        presenters: this.props.currValue.presenters,
-        entry_dates: this.props.currValue.entry_dates,
+export default class NewEntryForm extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            show: true,
+            title: '',
+            id: '',
+            presenters: '',
+            entry_dates: ''
+        };
+    }
+
+    componentDidMount() {
+        this.setState({
+            show: true,
+            title: this.props.currValue.title,
+            id: this.props.currValue.id,
+            presenters: this.props.currValue.presenters,
+            entry_dates: this.props.currValue.entry_dates,
+        });
     }
 
     delEntry = () => {
@@ -26,13 +39,13 @@ export default class NewEntryForm extends React.Component {
         }, () => {
             this.props.updateEntry(this.state, this.props.index);
         });
-    };
+    }
 
     render() {
         if (this.state.show) {
             return (
                 <div className='addEntry'>
-                <br />
+                    <br />
                     <div>
                         <TextField
                             required
@@ -59,11 +72,10 @@ export default class NewEntryForm extends React.Component {
                             onChange={this.handleChange('entry_dates')}
                         />
                     </div>
-                    <RemoveCircleOutlineIcon color='primary' id='entryIcon' onClick={this.delEntry}/>
+                    <RemoveCircleOutlineIcon color='primary' id='entryIcon' onClick={this.delEntry} />
                 </div>
             );
-        } else {
-            return null;
         }
+        return null;
     }
 }

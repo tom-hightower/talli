@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Component } from 'react';
 import { Slide, Dialog, DialogTitle, DialogContent, Button } from '@material-ui/core';
 import AddCircleIcon from '@material-ui/icons/AddCircle';
 import firebase from '../../../firebase';
@@ -8,12 +8,15 @@ function Transition(props) {
     return <Slide direction="up" {...props} />;
 }
 
-export default class AddVotes extends React.Component {
-    state = {
-        open: false,
-        entries: [],
-        voteID: '',
-    };
+export default class AddVotes extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            open: false,
+            entries: [],
+            voteID: '',
+        };
+    }
 
     addEntry = () => {
         let rank = 0;
@@ -31,19 +34,6 @@ export default class AddVotes extends React.Component {
             rank,
         });
         this.setState({ entries: newEntries });
-    }
-
-    updateEntry(status, idx) {
-        let updateEntries = this.state.entries;
-        updateEntries[idx] = status;
-        if (!this.state.entries[idx].show) {
-            for (let i = idx + 1; i < this.state.entries.length; i++) {
-                if (updateEntries[i].show) {
-                    updateEntries[i].rank -= 1;
-                }
-            }
-        }
-        this.setState({ entries: updateEntries });
     }
 
     submitVote = () => {
@@ -85,15 +75,28 @@ export default class AddVotes extends React.Component {
         this.setState({
             open: true,
         });
-    };
+    }
 
     handleClose = () => {
         this.setState({ entries: [] });
         this.setState({ open: false });
-    };
+    }
+
+    updateEntry(status, idx) {
+        const updateEntries = this.state.entries;
+        updateEntries[idx] = status;
+        if (!this.state.entries[idx].show) {
+            for (let i = idx + 1; i < this.state.entries.length; i++) {
+                if (updateEntries[i].show) {
+                    updateEntries[i].rank -= 1;
+                }
+            }
+        }
+        this.setState({ entries: updateEntries });
+    }
 
     render() {
-        let { entries } = this.state;
+        const { entries } = this.state;
         return (
             <div>
                 <Dialog open={this.state.open} TransitionComponent={Transition} onClose={this.handleClose}>
@@ -105,14 +108,14 @@ export default class AddVotes extends React.Component {
                             {
                                 entries.map((val, idx) => {
                                     return (
-                                        <div key={idx}>
+                                        <div key={val.id}>
                                             <AddBallotEntry event={this.props.event} googleId={this.props.googleId} entriesInVote={entries} updateEntry={(status, index) => this.updateEntry(status, index)} index={idx} />
                                         </div>
                                     );
                                 })
                             }
                             <br />
-                            <AddCircleIcon color='primary' id='entryIcon' onClick={this.addEntry} />
+                            <AddCircleIcon color="primary" id="entryIcon" onClick={this.addEntry} />
                             <br />
                             <br />
                             <Button
@@ -123,8 +126,8 @@ export default class AddVotes extends React.Component {
                             >
                                 Cancel
                             </Button>
-                            {"  "}
-                            <Button type="submit" variant="contained" color="primary" className='buttons'>Submit</Button>
+                            {'  '}
+                            <Button type="submit" variant="contained" color="primary" className="buttons">Submit</Button>
                         </form>
                     </DialogContent>
                 </Dialog>
