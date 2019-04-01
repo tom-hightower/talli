@@ -22,25 +22,6 @@ const socket = openSocket(
 );
 const DragHandle = SortableHandle(() => <span><SliderIcon className="Sliders" /></span>);
 
-const SortableItem = SortableElement(({ value, item }) => (
-    <li className="rankings">
-        <div id='rankNumber'>{item + 1}</div>
-        <div id='rankTitle'>{value}</div>
-        <DragHandle id='rankHandle' />
-    </li>
-));
-
-const SortableList = SortableContainer(({ items }) => {
-    return (
-        <ul>
-            {items.length !== 0 ? <div /> : <div>Tap the Plus to add an entry</div>}
-            {items.map((value, index) => (
-                <SortableItem key={`item-${index}`} item={index} index={index} value={value.name} />
-            ))}
-        </ul>
-    );
-});
-
 export default class SortContainer extends Component {
     constructor(props) {
         super(props);
@@ -87,7 +68,14 @@ export default class SortContainer extends Component {
                 const eventEntries = events[this.props.eventID].entries;
                 const itemList = this.state.items;
                 if (eventEntries && this.props.entryToAdd && !this.state.items.some(e => e.id === this.props.entryToAdd)) {
-                    itemList.push({ name: eventEntries[this.props.entryToAdd].title, id: this.props.entryToAdd });
+                    const entryId = this.props.entryToAdd;
+                    itemList.push({
+                        name: eventEntries[entryId].title,
+                        id: entryId,
+                        presenters: eventEntries[entryId].presenters,
+                        entry_dates: eventEntries[entryId].entry_dates,
+                        showInfo: false,
+                    });
                     this.updateDatabaseRankings(itemList);
                 }
                 this.setState({
@@ -150,46 +138,89 @@ export default class SortContainer extends Component {
         this.closedChild.current.handleOpen();
     }
 
+    toggleShowInfo = (item) => {
+        const oldItems = this.state.items;
+        oldItems[item].showInfo = !oldItems[item].showInfo;
+        this.setState({
+            items: oldItems
+        });
+        console.log(oldItems[item]);
+    }
+
     render() {
+        const SortableItem = SortableElement(({ value, item }) => (
+            <li className="rankings" onClick={() => this.toggleShowInfo(item)}>
+                <div id='rankNumber'>{item + 1}</div>
+                <div id='rankTitle'>
+                    {value.name}
+                    {
+                        value.showInfo ?
+                            (
+                                <div id="expandedInfo">
+                                    <b>By:</b> {value.presenters} <br />
+                                    <b>Attendance:</b> {value.entry_dates}
+                                </div>
+                            ) : ''
+                    }
+                </div>
+                <DragHandle id='rankHandle' />
+            </li>
+        ));
+
+        const SortableList = SortableContainer(({ items }) => {
+            return (
+                <ul>
+                    {items.length !== 0 ? <div /> : <div>Tap the Plus to add an entry</div>}
+                    {items.map((value, index) => (
+                        <SortableItem
+                            key={`item-${index}`}
+                            item={index}
+                            index={index}
+                            value={value}
+                        />
+                    ))}
+                </ul>
+            );
+        });
+
         return (
             <div>
                 <EventClosed handler={this.submitted} ref={this.closedChild} eventName={this.state.event.name} />
                 <SubmitConfirm handler={this.submitted} ref={this.confirmChild} items={this.state.items} eventID={this.state.event.id} />
-                <Typography variant='h4' align='center' className="eventName" gutterBottom>{this.state.event.name}</Typography>
+                <Typography variant="h4" align="center" className="eventName" gutterBottom>{this.state.event.name}</Typography>
                 <div style={{ textAlign: 'center' }}>
-                    <AddCircleIcon className="AddEvent" id='addEntry' color='secondary' onClick={this.handleAddEvent} />
+                    <AddCircleIcon className="AddEvent" id="addEntry" color="secondary" onClick={this.handleAddEvent} />
                 </div>
                 <div>
                     <div className="SortContainer">
                         <SortableList
                             items={this.state.items}
                             onSortEnd={this.onSortEnd}
-                            lockAxis='y'
+                            lockAxis="y"
                             useDragHandle
-                            helperClass='sortHelp'
+                            helperClass="sortHelp"
                         />
                     </div>
                 </div>
 
                 {this.state.event.automate ? (
-                    <div className='SubmitDiv'>
-                        <BellIcon className='BellIcon' />
-                        <div className='SubmitText'>
+                    <div className="SubmitDiv">
+                        <BellIcon className="BellIcon" />
+                        <div className="SubmitText">
                             Voting will close in:
                                 <Countdown date={this.state.event.endVote} onFinished={this.countdownFinished} />
                         </div>
-                        <div className='buttonDiv'>
+                        <div className="buttonDiv">
                             <Button variant="contained" color="primary" onClick={this.submitConfirm}> Submit </Button>
                         </div>
                     </div>
                 ) : (
-                        <div className='CenterSubmitDiv'>
-                            <div className='CenterButtonDiv'>
+                        <div className="CenterSubmitDiv">
+                            <div className="CenterButtonDiv">
                                 <Button variant="contained" color="primary" onClick={this.submitConfirm}> Submit </Button>
                             </div>
                         </div>
                     )}
-
             </div>
         );
     }

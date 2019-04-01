@@ -116,8 +116,8 @@ export default class JoinEvent extends React.Component {
                             // Checks whether the user has submitted for this event previously
                             const cookies = getCookie('UserID');
                             let check = false;
-                            firebase.database().ref(`attendees/${cookies}/pastEvents`).once('value').then(snapshot => {
-                                const pastEvents = snapshot.val();
+                            firebase.database().ref(`attendees/${cookies}/pastEvents`).once('value').then(pastSnap => {
+                                const pastEvents = pastSnap.val();
                                 for (let c in pastEvents) {
                                     if (c === this.state.eventID) {
                                         check = true;
@@ -141,11 +141,19 @@ export default class JoinEvent extends React.Component {
 
     handleScan(data) {
         if (data && data.toLowerCase().includes((`${config.Global.hostURL}/vote/`).toLowerCase())) {
-            const id = data.substring(data.indexOf("/vote/") + 6).replace(/\W/g, '');
-            if (this.state.eventID === id) {
-                this.handleRejoinEvent();
-                return;
-            }
+            const id = data.substring(data.indexOf('/vote/') + 6).replace(/\W/g, '');
+            const cookie = getCookie('UserID');
+            firebase.database().ref(`event/${id}`).once('value').then(snapshot => {
+                const event = snapshot.val();
+                if (id === this.state.eventID || this.hasRankings(event, cookie)) {
+                    this.setState({
+                        organizerID: event.organizer,
+                        eventID: id,
+                    }, () => {
+                        this.handleRejoinEvent();
+                    });
+                }
+            });
             this.setState({ eventID: id });
             this.requestConfirm();
         }
@@ -153,24 +161,33 @@ export default class JoinEvent extends React.Component {
 
     handleText() {
         const cookie = getCookie('UserID');
-        let currentEventId = '';
-        firebase.database().ref(`attendees/${cookie}/currentEvent`).once('value').then(snapshot => {
-            currentEventId = snapshot.val();
-            console.log(currentEventId);
+        firebase.database().ref(`/`).once('value').then(snapshot => {
+            const root = snapshot.val();
+            const currentEventId = root.attendees[cookie].currentEvent;
+            const event = root.event[this.state.idFieldValue];
+            if (this.state.idFieldValue === currentEventId || this.hasRankings(event, cookie)) {
+                this.setState({
+                    organizerID: event.organizer,
+                }, () => {
+                    this.handleRejoinEvent();
+                });
+            }
         });
-        if (this.state.idFieldValue === this.state.eventID && this.state.idFieldValue.length > 2 && this.state.eventID === currentEventId) {
-            console.log("rejoined");
-            this.handleRejoinEvent();
-            return;
-        }
         this.setState({ eventID: this.state.idFieldValue });
         if (this.state.idFieldValue.length > 2) {
             this.requestConfirm();
         }
     }
 
+    hasRankings(event, cookie) {
+        if (event && event.attendees && event.attendees[cookie]) {
+            return true;
+        }
+        return false;
+    }
+
     handleRejoinEvent() {
-        const cookie = getCookie("UserID");
+        const cookie = getCookie('UserID');
         firebase.database().ref(`event/${this.state.eventID}/attendees/${cookie}/rankings/`).once("value").then(rankSnap => {
             const rankings = rankSnap.val();
             const items = [];
@@ -188,7 +205,13 @@ export default class JoinEvent extends React.Component {
                 for (let i = 0; i < items.length; i++) {
                     const entry = event.entries[items[i]];
                     if (entry) {
-                        itemList.push({ name: entry.title, id: entry.id.toString() });
+                        itemList.push({
+                            name: entry.title,
+                            id: entry.id.toString(),
+                            presenters: entry.presenters,
+                            entry_dates: entry.entry_dates,
+                            showInfo: false,
+                        });
                     }
                 }
                 this.props.updateItemsHandler(itemList);
@@ -202,11 +225,13 @@ export default class JoinEvent extends React.Component {
     handleJoinEvent() {
         const cookie = getCookie('UserID');
         const itemsRef = firebase.database().ref(`attendees/${cookie}`);
-        itemsRef.child("currentEvent").set(this.state.eventID);
+        itemsRef.child('currentEvent').set(this.state.eventID);
         this.props.handler(this.props.voteViews.RANK, this.state.eventID, this.state.organizerID);
     }
 
-    handleError(err) { }
+    handleError(err) {
+        console.log(err);
+    }
 
     keyPress(e) {
         if (e.key === 'Enter') {
@@ -218,14 +243,14 @@ export default class JoinEvent extends React.Component {
         return (
             <div>
                 <RejoinEvent entryName={this.state.eventName} ref={this.rejoinChild} handler={this.handleRejoinEvent} />
-                <NotFound ref={this.notFoundChild} idType='Event' id={this.state.eventID} />
+                <NotFound ref={this.notFoundChild} idType="Event" id={this.state.eventID} />
                 <EntryConfirmation entryName={this.state.eventName} ref={this.confirmChild} handler={this.handleJoinEvent} />
-                <BlockJoin entryName={this.state.eventName} idType='Event' ref={this.blockChild} />
+                <BlockJoin entryName={this.state.eventName} idType="Event" ref={this.blockChild} />
                 <EarlyJoin eventName={this.state.eventName} ref={this.earlyJoinChild} />
                 <ClosedJoin eventName={this.state.eventName} ref={this.closedJoinChild} />
                 <RejoinClosed eventName={this.state.eventName} ref={this.rejoinClosedChild} />
                 <QrReader delay={300} onScan={this.handleScan} onError={this.handleError} style={{ width: '80%', margin: '20px auto 0px' }} />
-                <Typography variant='h5' align='center' className='QRText'>Scan QR Code or enter Event ID:</Typography>
+                <Typography variant="h5" align="center" className="QRText">Scan QR Code or enter Event ID:</Typography>
                 <div className="textField">
                     <TextField
                         id="outlined-dense"

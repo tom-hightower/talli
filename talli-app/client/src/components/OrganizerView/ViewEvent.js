@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Component } from 'react';
 import { Typography, Button, TextField, Tooltip } from '@material-ui/core';
 import openSocket from 'socket.io-client';
 import firebase from '../../firebase';
@@ -27,7 +27,7 @@ const socket = openSocket(
  * Allows organizers to view the details of an event
  * that they have already created.
  */
-export default class ViewEvent extends React.Component {
+export default class ViewEvent extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -132,7 +132,7 @@ export default class ViewEvent extends React.Component {
     }
 
     goBack = () => {
-        if (this.state.view === 'main' || this.state.view === "results") {
+        if (this.state.view === 'main' || this.state.view === 'results') {
             this.props.handler(this.props.orgViews.MAIN);
         } else if (this.state.view === 'entries') {
             this.setState({
@@ -144,13 +144,13 @@ export default class ViewEvent extends React.Component {
 
     viewResults = () => {
         this.setState({
-            view: "results"
+            view: 'results'
         });
     }
 
     manageEvent = () => {
         this.setState({
-            view: "main"
+            view: 'main'
         });
     }
 
@@ -213,7 +213,7 @@ export default class ViewEvent extends React.Component {
                             <EditVoting ref={this.votingChild} event={this.state.event} googleId={this.props.user.googleId} />
                             <EditWeights ref={this.weightsChild} event={this.state.event} googleId={this.props.user.googleId} />
                             <ShowError ref={this.errorChild} event={this.state.event} googleId={this.props.googleID} />
-                            <Typography variant="h3" align='center' gutterBottom>{this.state.event.name}</Typography>
+                            <Typography variant="h3" align="center" gutterBottom>{this.state.event.name}</Typography>
                         </div>
                     )
                 }
@@ -288,7 +288,7 @@ export default class ViewEvent extends React.Component {
                                             </div>
                                         </div>
                                         <div>
-                                            3. Grab the spreadsheet's URL and paste it here:
+                                            3. Grab the spreadsheet&apos;s URL and paste it here:
                                             <div className="main">
                                                 <TextField
                                                     id="standard-dense"
@@ -316,7 +316,9 @@ export default class ViewEvent extends React.Component {
                                     <br />
                                     <div>
                                         <Typography variant="h5">Results Controls:</Typography>
-                                        <Tooltip title="Adjust the weights applied to first, second, and third place votes">
+                                        <Tooltip
+                                            title="Adjust the weights applied to first, second, and third place votes"
+                                        >
                                             <Button variant="contained" className="buttons weights" type="button" onClick={this.handleWeights}>
                                                 Apply Custom Weights
                                             </Button>
@@ -330,7 +332,9 @@ export default class ViewEvent extends React.Component {
                                             </Button>
                                         </Tooltip>
                                         <br />
-                                        <Tooltip title="Updates linked google sheet with all voting ballots submitted or manually entered">
+                                        <Tooltip
+                                            title="Updates linked google sheet with all voting ballots submitted or manually entered"
+                                        >
                                             <Button variant="contained" className="buttons" color="primary" type="button" onClick={this.finalizeConfirm}>
                                                 Finalize Results
                                             </Button>

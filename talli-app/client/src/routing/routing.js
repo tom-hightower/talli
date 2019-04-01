@@ -5,16 +5,16 @@ import Voter from '../components/Voter';
 import Organizer from '../components/Organizer';
 import CookieInfo from '../components/CookieInfo';
 
-var RouterMixin = require('react-mini-router').RouterMixin;
+const RouterMixin = require('react-mini-router').RouterMixin;
 
 /**
  * RoutedApp handles routing between each of the main views as well
  * as error handling when a non-existant page is queried
  */
-var RoutedApp = createReactClass({
+const RoutedApp = createReactClass({
 
-    getInitialState: function() {
-        return {loggedIn: this.props.loggedIn};
+    getInitialState() {
+        return { loggedIn: this.props.loggedIn };
     },
 
     mixins: [RouterMixin],
@@ -29,47 +29,49 @@ var RoutedApp = createReactClass({
         '/cookies': 'cookies'
     },
 
-    render: function () {
+    render() {
         return this.renderCurrentRoute();
     },
 
-    home: function () {
+    home() {
         return (
-            <MainPage 
+            <MainPage
                 loggedIn={this.props.loggedIn}
-                onSuccess={this.onSuccess} />
+                onSuccess={this.onSuccess}
+            />
         );
     },
 
-    vote: function () {
+    vote() {
         return <Voter />;
     },
 
-    voteWithID: function (text) {
+    voteWithID(text) {
         return <Voter scanID={text} />;
     },
 
-    organizer: function () {
+    organizer() {
         return (
             <Organizer
                 logout={this.logout}
-                user={this.props.user} />
+                user={this.props.user}
+            />
         );
     },
 
-    cookies: function () {
+    cookies() {
         return <CookieInfo />;
     },
 
-    notFound: function (path) {
+    notFound(path) {
         return <div className="not-found">Page Not Found: {path}</div>;
     },
 
-    onSuccess: function(response) {
+    onSuccess(response) {
         this.props.onSuccess(response);
     },
 
-    logout: function() {
+    logout() {
         this.props.logout();
     }
 });

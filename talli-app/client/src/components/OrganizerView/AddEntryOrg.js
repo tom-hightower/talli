@@ -1,25 +1,23 @@
-import React from 'react';
+import React, { Component } from 'react';
 import { Typography, Button, Divider } from '@material-ui/core';
 import AddCircleIcon from '@material-ui/icons/AddCircle';
 import NewEntryForm from './NewEntryForm';
 import EntryImportInfo from './Dialogs/EntryImportInfo';
 import '../component_style/Organizer.css';
-import firebase from '../../firebase.js'
+import firebase from '../../firebase';
 
 /**
  * OrganizerView > AddEntryOrg
  * Allows organizers to add entries to their event
  * after setting up the event details (NewEventForm).
  */
-export default class AddEntryOrg extends React.Component {
+export default class AddEntryOrg extends Component {
     constructor(props) {
         super(props);
-
         this.state = {
             entries: [],
-            alert: ""
+            alert: ''
         };
-
         this.infoPopup = React.createRef();
     }
 
@@ -34,15 +32,21 @@ export default class AddEntryOrg extends React.Component {
             title: '',
             id: '',
             presenters: '',
-            entry_dates: ''
+            entryDates: ''
         });
-        this.setState({ entries: newEntries, alert: this.state.alert });
+        this.setState({
+            entries: newEntries,
+            alert: this.state.alert
+        });
     }
 
     updateEntry(status, idx) {
-        let updateEntries = this.state.entries;
+        const updateEntries = this.state.entries;
         updateEntries[idx] = status;
-        this.setState({ entries: updateEntries, alert: this.state.alert });
+        this.setState({
+            entries: updateEntries,
+            alert: this.state.alert
+        });
     }
 
     cancelAddition = () => {
@@ -53,12 +57,11 @@ export default class AddEntryOrg extends React.Component {
         // DATABASE:
         // add the entries with shown = true in this.state.entries
         // to the current event
-        let googleId = this.props.user.googleId;
-
-        let eventID = this.props.curEvent;
+        const googleId = this.props.user.googleId;
+        const eventID = this.props.curEvent;
         const base = 1000 + Math.floor((Math.random() * 8000) + 1);
         for (let i = 0; i < this.state.entries.length; i++) {
-            let item = this.state.entries[i];
+            const item = this.state.entries[i];
             if (item.show) {
                 item.id = base + i;
                 const itemsRef = firebase.database().ref(`organizer/${googleId}/event/${eventID}/entries`);
@@ -77,28 +80,31 @@ export default class AddEntryOrg extends React.Component {
                 const contents = r.result;
                 a = r.result;
                 const lines = contents.split(/[\r\n]+/g);
-                let tempEnt = [];
-                let line, line_title, line_pres, line_date;
+                const tempEnt = [];
+                let line;
+                let lineTitle;
+                let linePres;
+                let lineDate;
                 for (let i = 1; i < lines.length; i++) {
                     line = lines[i].split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
                     if (line.length !== 3 && line.length !== 0) {
-                        a = "File format is incorrect. Please see \"Import Requirements\" for correct formatting.";
+                        a = 'File format is incorrect. Please see "Import Requirements" for correct formatting.';
                         this.setState({ entries: this.state.entries, alert: a });
                         return;
                     }
-                    line_title = line[0];
-                    line_pres = line[1];
-                    line_date = line[2];
-                    if (line_title && line_pres && line_date) {
+                    lineTitle = line[0];
+                    linePres = line[1];
+                    lineDate = line[2];
+                    if (lineTitle && linePres && lineDate) {
                         tempEnt.push({
                             show: true,
-                            title: line_title,
+                            title: lineTitle,
                             id: '',
-                            presenters: line_pres,
-                            entry_dates: line_date,
+                            presenters: linePres,
+                            entryDates: lineDate,
                         });
                     } else {
-                        a = "Some required data is missing. Please see \"Import Requirements\" for correct formatting.";
+                        a = 'Some required data is missing. Please see "Import Requirements" for correct formatting.';
                         this.setState({ entries: this.state.entries, alert: a });
                         return;
                     }
@@ -112,39 +118,39 @@ export default class AddEntryOrg extends React.Component {
             };
             r.readAsText(f);
         } else {
-            this.setState({ alert: "Unable to read file." });
+            this.setState({ alert: 'Unable to read file.' });
         }
     }
 
     render() {
-        let { entries } = this.state;
+        const { entries } = this.state;
         return (
-            <div className='addEntryForm'>
+            <div className="addEntryForm">
                 <EntryImportInfo ref={this.infoPopup} />
-                <Typography variant='h4' align='center' gutterBottom>Add Entries</Typography>
-                <Button variant="contained" component="label" className='buttons' name='import_entries'>
+                <Typography variant="h4" align="center" gutterBottom>Add Entries</Typography>
+                <Button variant="contained" component="label" className="buttons" name="import_entries">
                     Import Entries
-                    <input type="file" accept=".csv" style={{ display: "none" }} onChange={e => this.readCSV(e)} />
+                    <input type="file" accept=".csv" style={{ display: 'none' }} onChange={e => this.readCSV(e)} />
                 </Button>
                 <br /><br />
-                <Typography variant='subtitle1' align='center'>{this.state.alert}</Typography>
-                <Button variant="text" className='buttons' onClick={this.openInfo} >Click here for import requirements.</Button>
+                <Typography variant="subtitle1" align="center">{this.state.alert}</Typography>
+                <Button variant="text" className="buttons" onClick={this.openInfo} >Click here for import requirements.</Button>
                 <Divider variant="middle" />
                 <form className="entryForm" onSubmit={() => this.submitEntries()}>
                     {
                         entries.map((val, idx) => {
                             return (
-                                <div key={idx}>
+                                <div key={val.id}>
                                     <NewEntryForm
                                         currValue={val}
                                         updateEntry={(status, index) => this.updateEntry(status, index)}
                                         index={idx}
                                     />
                                 </div>
-                            )
+                            );
                         })
                     }
-                    <AddCircleIcon color='primary' id='entryIcon' onClick={this.addEntry} />
+                    <AddCircleIcon color="primary" id="entryIcon" onClick={this.addEntry} />
                     <br />
                     <Button
                         variant="contained"
@@ -154,7 +160,7 @@ export default class AddEntryOrg extends React.Component {
                     >
                         Cancel
                     </Button>
-                    <Button type="submit" variant="contained" color="primary" className='buttons'>Done</Button>
+                    <Button type="submit" variant="contained" color="primary" className="buttons">Done</Button>
                 </form>
             </div>
         );

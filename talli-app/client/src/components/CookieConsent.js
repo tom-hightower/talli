@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Component } from 'react';
 import { Button, Card, CardActions, CardContent, Slide } from '@material-ui/core';
 import { setCookie, getCookie } from '../cookies';
 import './component_style/CookieConsent.css';
@@ -8,15 +8,18 @@ import './component_style/CookieConsent.css';
  * It is rendered on the MainPage, and will not
  * allow users to vote as attendees until they accept the cookies.
  */
-export default class CookieConsent extends React.Component {
-    state = {
-        open: true,
+export default class CookieConsent extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            open: true,
+        };
     }
 
     handleClose = () => {
         const consentValue = getCookie('TalliConsent');
-        if (consentValue === "") {
-            setCookie("TalliConsent", true, 30);
+        if (consentValue === '') {
+            setCookie('TalliConsent', true, 30);
         }
         this.setState({ open: false });
     }
@@ -32,7 +35,7 @@ export default class CookieConsent extends React.Component {
                     <Card className="cookieConsent" elevation={16}>
                         <CardContent id="cc_content">
                             This website uses&nbsp;
-                            <span id="link" onClick={() => this.goToLink()}><u>cookies</u></span> 
+                            <span id="link" onClick={() => this.goToLink()}><u>cookies</u></span>
                             &nbsp;to ensure you get the best experience on our website.
                         </CardContent>
                         <CardActions id="cc_confirm">

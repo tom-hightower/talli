@@ -1,7 +1,7 @@
-import React from 'react';
+import React, { Component } from 'react';
 import { Slide, Dialog, DialogTitle, DialogContent, DialogActions, Button, FormControlLabel, Switch } from '@material-ui/core';
 import qr from 'qr-image';
-import jsPDF from 'jspdf';
+import JsPDF from 'jspdf';
 
 const config = require('../../../config.json');
 
@@ -9,12 +9,15 @@ function Transition(props) {
     return <Slide direction="up" {...props} />;
 }
 
-export default class ExportOrgData extends React.Component {
-    state = {
-        open: false,
-        exportEntry: true,
-        exportEvent: true
-    };
+export default class ExportOrgData extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            open: false,
+            exportEntry: true,
+            exportEvent: true
+        };
+    }
 
     toggleEntryExport = () => {
         this.setState({
@@ -30,79 +33,85 @@ export default class ExportOrgData extends React.Component {
 
     handleOpen = () => {
         this.setState({ open: true });
-    };
+    }
 
     handleClose = () => {
         this.setState({ open: false });
-    };
+    }
 
     generatePDF = () => {
         if (this.state.exportEntry || this.state.exportEvent) {
             // set up document
-            var doc = new jsPDF("portrait", "mm", "letter");
-            var title, qr_code;
-            var contents = '';
+            const doc = new JsPDF('portrait', 'mm', 'letter');
+            let title = '';
+            let qrCode;
+            let contents = '';
 
             if (this.state.exportEvent) {
                 // add event qr code
-                contents = "Event";
-                title = "Event ID: " + this.props.event.id;
-                qr_code = qr.imageSync((config.Global.hostURL + "/vote/") + this.props.event.id);
-                doc.addImage(qr_code, 'PNG', 58, 20, 100, 100); // (image, type, x, y, w, h)
-                doc.text(this.props.event.name, 108, 20, "center"); // (string, x, y, align)
-                doc.text(title, 108, 125, "center");
+                contents = 'Event';
+                title = `Event ID: ${this.props.event.id}`;
+                qrCode = qr.imageSync(`${config.Global.hostURL}/vote/${this.props.event.id}`);
+                doc.addImage(qrCode, 'PNG', 58, 20, 100, 100); // (image, type, x, y, w, h)
+                doc.text(this.props.event.name, 108, 20, 'center'); // (string, x, y, align)
+                doc.text(title, 108, 125, 'center');
             }
 
             if (this.state.exportEntry) {
                 // add entry qr codes
-                contents = contents + "Entries";
-                var entry;
-                for (var entryID in this.props.event.entries) {
+                contents += 'Entries';
+                let entry;
+                for (let entryID in this.props.event.entries) {
                     entry = this.props.event.entries[entryID];
                     doc.addPage();
-                    title = "Entry ID: " + entry['id'];
-                    qr_code = qr.imageSync(config.Global.entryQRPrefix + String(entry['id']));
-                    doc.addImage(qr_code, 'PNG', 58, 20, 100, 100);
-                    doc.text(entry['title'], 108, 20, "center");
-                    doc.text(title, 108, 125, "center");
+                    title = `Entry ID: ${entry.id}`;
+                    qrCode = qr.imageSync(config.Global.entryQRPrefix + String(entry.id));
+                    doc.addImage(qrCode, 'PNG', 58, 20, 100, 100);
+                    doc.text(entry.title, 108, 20, 'center');
+                    doc.text(title, 108, 125, 'center');
                 }
             }
             // save document to local machine
-            var nameNoSpaces = this.props.event.name.replace(/\s+/g, '');
-            doc.save(nameNoSpaces + contents + 'QRCodes.pdf');
+            const nameNoSpaces = this.props.event.name.replace(/\s+/g, '');
+            doc.save(`${nameNoSpaces}${contents}QRCodes.pdf`);
         }
     }
 
     render() {
         return (
             <div>
-                <Dialog open={this.state.open} TransitionComponent={Transition} onClose={this.handleClose}>
+                <Dialog
+                    open={this.state.open}
+                    TransitionComponent={Transition}
+                    onClose={this.handleClose}
+                >
                     <DialogTitle> Export </DialogTitle>
                     <DialogContent>
                         <FormControlLabel
-                            control={
+                            control={(
                                 <Switch
                                     checked={this.state.exportEvent}
                                     onChange={() => this.toggleEventExport()}
                                     value={this.state.exportEvent}
                                     color="primary"
                                 />
-                            }
+                            )}
                             label="Export Event QR"
                             labelPlacement="start"
-                        /> <br/>
+                        /> <br />
                         <FormControlLabel
-                            control={
+                            control={(
                                 <Switch
                                     checked={this.state.exportEntry}
                                     onChange={() => this.toggleEntryExport()}
                                     value={this.state.exportEntry}
                                     color="primary"
                                 />
-                            }
+                            )}
                             label="Export Entry QR"
                             labelPlacement="start"
-                        /><br/><br/>
+                        />
+                        <br /><br />
                         <Button variant="contained" onClick={this.generatePDF}>Export QR to PDF</Button>
                     </DialogContent>
                     <DialogActions>

@@ -1,22 +1,25 @@
-import React from 'react';
+import React, { Component } from 'react';
 import { Dialog, DialogTitle, DialogContent, DialogActions, Button, Slide } from '@material-ui/core';
 
 function Transition(props) {
     return <Slide direction="up" {...props} />;
 }
 
-export default class BlockJoin extends React.Component {
-    state = {
-        open: false,
-    };
+export default class BlockJoin extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            open: false,
+        };
+    }
 
     handleOpen = () => {
         this.setState({ open: true });
-    };
+    }
 
     handleClose = () => {
         this.setState({ open: false });
-    };
+    }
 
     render() {
         return (
