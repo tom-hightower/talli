@@ -1,35 +1,38 @@
-import React from 'react';
+import React, { Component } from 'react';
 import { Slide, Dialog, DialogTitle, DialogContent, DialogActions, Button, TextField } from '@material-ui/core';
-import firebase from '../../../firebase.js';
+import firebase from '../../../firebase';
 
 function Transition(props) {
     return <Slide direction="up" {...props} />;
 }
 
-export default class EditEntries extends React.Component {
-    state = {
-        open: false,
-        title: '',
-        id: '',
-        presenters: '',
-        entry_dates: ''
-    };
+export default class EditEntries extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            open: false,
+            title: '',
+            id: '',
+            presenters: '',
+            entry_dates: ''
+        };
+    }
 
     handleOpen = (entryID) => {
-        this.setState({ 
-            open: true, 
-            title: this.props.event.entries[entryID]['title'],
+        this.setState({
+            open: true,
+            title: this.props.event.entries[entryID].title,
             id: entryID,
-            presenters: this.props.event.entries[entryID]['presenters'],
-            entry_dates: this.props.event.entries[entryID]['entry_dates']
+            presenters: this.props.event.entries[entryID].presenters,
+            entry_dates: this.props.event.entries[entryID].entry_dates
         });
-    };
+    }
 
     handleDelete = () => {
         this.setState({ open: false });
-        const itemsRef = firebase.database().ref('organizer/' + this.props.googleId +
-                                                 '/event/' + this.props.event.id + 
-                                                 '/entries/' + this.state.id);
+        const itemsRef = firebase.database().ref(
+            `organizer/${this.props.googleId}/event/${this.props.event.id}/entries/${this.state.id}`
+        );
         itemsRef.remove();
     }
 
@@ -39,9 +42,9 @@ export default class EditEntries extends React.Component {
 
     handleSaveClose = () => {
         this.setState({ open: false });
-        const itemsRef = firebase.database().ref('organizer/' + this.props.googleId +
-                                                 '/event/' + this.props.event.id + 
-                                                 '/entries/' + this.state.id);
+        const itemsRef = firebase.database().ref(
+            `organizer/${this.props.googleId}/event/${this.props.event.id}/entries/${this.state.id}`
+        );
         itemsRef.child('title').set(this.state.title);
         itemsRef.child('presenters').set(this.state.presenters);
         itemsRef.child('entry_dates').set(this.state.entry_dates);
@@ -92,7 +95,7 @@ export default class EditEntries extends React.Component {
                             onChange={this.handleChange('entry_dates')}
                         />
                     </DialogContent>
-                    <DialogActions>    
+                    <DialogActions>
                         <Button onClick={this.handleDelete}>Delete</Button>
                         <Button onClick={this.handleClose}>Cancel</Button>
                         <Button onClick={this.handleSaveClose} color="primary">Save</Button>

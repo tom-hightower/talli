@@ -1,27 +1,30 @@
-import React from 'react';
+import React, { Component } from 'react';
 import { Slide, Dialog, DialogTitle, DialogContent, DialogActions, Button, TextField } from '@material-ui/core';
-import firebase from '../../../firebase.js';
+import firebase from '../../../firebase';
 
 function Transition(props) {
     return <Slide direction="up" {...props} />;
 }
 
-export default class AddEntries extends React.Component {
-    state = {
-        open: false,
-        title: '',
-        presenters: '',
-        entry_dates: ''
-    };
+export default class AddEntries extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            open: false,
+            title: '',
+            presenters: '',
+            entry_dates: ''
+        };
+    }
 
     handleOpen = () => {
-        this.setState({ 
-            open: true, 
+        this.setState({
+            open: true,
         });
-    };
+    }
 
     handleClose = () => {
-        this.setState({ 
+        this.setState({
             open: false,
             title: '',
             presenters: '',
@@ -41,9 +44,9 @@ export default class AddEntries extends React.Component {
             tempId = base;
         }
         // save new entry to database
-        let itemsRef = firebase.database().ref('organizer/' + this.props.googleId +
-                                               '/event/' + this.props.event.id + 
-                                               '/entries/' + tempId);
+        const itemsRef = firebase.database().ref(
+            `organizer/${this.props.googleId}/event/${this.props.event.id}/entries/${tempId}`
+        );
         itemsRef.child('title').set(this.state.title);
         itemsRef.child('id').set(tempId);
         itemsRef.child('presenters').set(this.state.presenters);
@@ -90,7 +93,7 @@ export default class AddEntries extends React.Component {
                             onChange={this.handleChange('entry_dates')}
                         />
                     </DialogContent>
-                    <DialogActions>    
+                    <DialogActions>
                         <Button onClick={this.handleClose}>Cancel</Button>
                         <Button onClick={this.handleSaveClose} color="primary">Add</Button>
                     </DialogActions>

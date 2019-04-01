@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Component } from 'react';
 import { Typography, Button, TextField, Tooltip } from '@material-ui/core';
 import openSocket from 'socket.io-client';
 import firebase from '../../firebase';
@@ -22,7 +22,7 @@ const socket = openSocket('http://localhost:5000');
  * Allows organizers to view the details of an event
  * that they have already created.
  */
-export default class ViewEvent extends React.Component {
+export default class ViewEvent extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -55,7 +55,7 @@ export default class ViewEvent extends React.Component {
 
     componentDidMount() {
         const googleId = this.props.user.googleId;
-        var query = firebase.database().ref(`organizer/${googleId}/event`);
+        const query = firebase.database().ref(`organizer/${googleId}/event`);
         query.on('value', (snapshot) => {
             const events = snapshot.val();
             if (events && events[this.props.curEvent]) {
@@ -64,15 +64,15 @@ export default class ViewEvent extends React.Component {
                 this.setState({
                     view: this.state.view,
                     event: {
-                        id: eventBase['id'],
-                        name: eventBase['name'],
-                        location: eventBase['location'],
-                        startDate: eventBase['startDate'],
-                        endDate: eventBase['endDate'],
-                        automate: eventBase['automate'],
-                        startVote: eventBase['startVote'],
-                        endVote: eventBase['endVote'],
-                        sheetURL: eventBase['sheetURL'],
+                        id: eventBase.id,
+                        name: eventBase.name,
+                        location: eventBase.location,
+                        startDate: eventBase.startDate,
+                        endDate: eventBase.endDate,
+                        automate: eventBase.automate,
+                        startVote: eventBase.startVote,
+                        endVote: eventBase.endVote,
+                        sheetURL: eventBase.sheetURL,
                         entries: eventEntries
                     }
                 });
@@ -137,7 +137,7 @@ export default class ViewEvent extends React.Component {
     }
 
     goBack = () => {
-        if (this.state.view === 'main' || this.state.view === "results") {
+        if (this.state.view === 'main' || this.state.view === 'results') {
             this.props.handler(this.props.orgViews.MAIN);
         } else if (this.state.view === 'entries') {
             this.setState({
@@ -149,13 +149,13 @@ export default class ViewEvent extends React.Component {
 
     viewResults = () => {
         this.setState({
-            view: "results"
+            view: 'results'
         });
     }
 
     manageEvent = () => {
         this.setState({
-            view: "main"
+            view: 'main'
         });
     }
 
@@ -207,6 +207,7 @@ export default class ViewEvent extends React.Component {
         return (
             <div className="main">
                 {
+<<<<<<< HEAD
                     this.props.user != null &&
                     <div>
                         <ExportOrgData ref={this.exportChild} event={this.state.event} />
@@ -222,129 +223,152 @@ export default class ViewEvent extends React.Component {
                         <ShowError ref={this.errorChild} event={this.state.event} googleId={this.props.googleID} />
                         <Typography variant="h3" align='center' gutterBottom>{this.state.event.name}</Typography>
                     </div>
+=======
+                    this.props.user != null && (
+                        <div>
+                            <ExportOrgData ref={this.exportChild} event={this.state.event} />
+                            <EditEntries ref={this.entryChild} event={this.state.event} googleId={this.props.user.googleId} />
+                            <ConfirmFinalize ref={this.finalizeChild} handler={this.finalizeResults} />
+                            <AddEntries ref={this.addChild} event={this.state.event} googleId={this.props.user.googleId} />
+                            <EditEvent ref={this.eventChild} event={this.state.event} googleId={this.props.user.googleId} handler={this.props.handler} orgViews={this.props.orgViews} />
+                            <AddBallot ref={this.addVoteChild} event={this.state.event} googleId={this.props.user.googleId} />
+                            <EditVoting ref={this.votingChild} event={this.state.event} googleId={this.props.user.googleId} />
+                            <EditWeights ref={this.weightsChild} event={this.state.event} googleId={this.props.user.googleId} />
+                            <ShowError ref={this.errorChild} event={this.state.event} googleId={this.props.googleID} />
+                            <Typography variant="h3" align="center" gutterBottom>{this.state.event.name}</Typography>
+                        </div>
+                    )
+>>>>>>> 7da236bc0fc4421ebadcdc5fda73bf358e061556
                 }
                 {
-                    this.state.view === 'main' &&
-                    <div>
-                        <div className="options">
-                            <Button className="button1" variant="contained" color="primary" onClick={this.manageEvent}>Manage Event</Button>
-                            <Button className="button1" variant="contained" onClick={this.viewResults}>View Results</Button>
-                        </div>
-                        <div className="box">
-                            <Button className="listButtons" onClick={this.handleExport}>Export Event & Entry QR Codes</Button>
-                            <Button className="listButtons" onClick={this.handleOpenEntries}>View/Add/Edit Entries</Button>
-                            <Button className="listButtons" onClick={this.handleEventEdit}>View/Edit Event Details</Button>
-                            <Button className="listButtons" onClick={this.handleOpenCloseVoting}>Open/Close Voting</Button>
-                        </div>
-                    </div>
-                }
-                {
-                    this.state.view === 'entries' && this.state.event.entries !== undefined &&
-                    <div>
-                        <div className="options">
-                            <Button className="button1" variant="contained" color="primary" onClick={this.manageEvent}>Manage Event</Button>
-                            <Button className="button1" variant="contained" onClick={this.viewResults}>View Results</Button>
-                        </div>
-                        <div className="box">
-                            {
-                                Object.values(this.state.event.entries).map((entry, index) => (
-                                    <Button key={index} className="listButtons" onClick={() => this.handleEntryEdit(entry.id)}>
-                                        {entry.title} by {entry.presenters}
-                                    </Button>
-                                ))
-                            }
-                            <Button className="listButtons" color="primary" onClick={this.handleAddEntry}>Add New Entry</Button>
-                        </div>
-                    </div>
-                }
-                {
-                    this.state.view === 'entries' && this.state.event.entries === undefined &&
-                    <div>
-                        <div className="options">
-                            <Button className="button1" variant="contained" color="primary" onClick={this.manageEvent}>Manage Event</Button>
-                            <Button className="button1" variant="contained" onClick={this.viewResults}>View Results</Button>
-                        </div>
-                        <div className="box">
-                            <Button className="listButtons" color="primary" onClick={this.handleAddEntry}>Add New Entry</Button>
-                        </div>
-                    </div>
-                }
-                {
-                    this.state.view === "results" &&
-                    <div className="viewResults">
-                        <div className="options">
-                            <Button className="button1" variant="contained" onClick={this.manageEvent}>Manage Event</Button>
-                            <Button className="button1" variant="contained" color="primary" onClick={this.viewResults}>View Results</Button>
-                        </div>
-                        <br />
-                        <div className="saveItems">
-                            <div className="sheetsExport">
-                                <Typography variant="h5">Set up Google Sheets to export results:</Typography>
-                                <br />
-                                <div className="instructions">
-                                    <div>1. Create a Google Sheet in your desired location</div>
-                                    <div>
-                                        2. Share the spreadsheet with editing rights with:
-                                        <br />
-                                        <div className="main">
-                                            <b>talli-455@talli-229017.iam.gserviceaccount.com</b>
-                                        </div>
-                                    </div>
-                                    <div>
-                                        3. Grab the spreadsheet's URL and paste it here:
-                                        <div className="main">
-                                            <TextField
-                                                id="standard-dense"
-                                                label="Spreadsheet URL"
-                                                margin="dense"
-                                                className="sheetURL"
-                                                value={this.state.event.sheetURL}
-                                                onKeyDown={this.keyPress}
-                                                onChange={this.handleURLChange}
-                                            />
-                                            <br />
-                                            <Button variant="contained" size="small" color="default" onClick={this.handleSubmit}>
-                                                Submit
-                                            </Button>
-                                        </div>
-                                    </div>
-                                </div>
+                    this.state.view === 'main' && (
+                        <div>
+                            <div className="options">
+                                <Button className="button1" variant="contained" color="primary" onClick={this.manageEvent}>Manage Event</Button>
+                                <Button className="button1" variant="contained" onClick={this.viewResults}>View Results</Button>
                             </div>
-                            <div className="manualBallots">
-                                <Typography variant="h5">Vote(s) Management:</Typography>
-                                <br />
-                                <div className="addVoteBox">
-                                    <Button className="listButtons" onClick={this.handleAddVote}>Add Paper Ballot(s)</Button>
-                                    <Button className="listButtons" onClick={this.handleDeleteVote}>Delet Vote(s) Instruction</Button>
-                                    <Button className="listButtons" onClick={this.handleArchiveVote}>Archive Vote(s) Instruction</Button>
-                                </div>
-                                <br />
-                                <div>
-                                    <Typography variant="h5">Results Controls:</Typography>
-                                    <Tooltip
-                                        title="Adjust the weights applied to first, second, and third place votes">
-                                        <Button variant="contained" className="buttons weights" type="button" onClick={this.handleWeights}>
-                                            Apply Custom Weights
+                            <div className="box">
+                                <Button className="listButtons" onClick={this.handleExport}>Export Event & Entry QR Codes</Button>
+                                <Button className="listButtons" onClick={this.handleOpenEntries}>View/Add/Edit Entries</Button>
+                                <Button className="listButtons" onClick={this.handleEventEdit}>View/Edit Event Details</Button>
+                                <Button className="listButtons" onClick={this.handleOpenCloseVoting}>Open/Close Voting</Button>
+                            </div>
+                        </div>
+                    )
+                }
+                {
+                    this.state.view === 'entries' && this.state.event.entries !== undefined && (
+                        <div>
+                            <div className="options">
+                                <Button className="button1" variant="contained" color="primary" onClick={this.manageEvent}>Manage Event</Button>
+                                <Button className="button1" variant="contained" onClick={this.viewResults}>View Results</Button>
+                            </div>
+                            <div className="box">
+                                {
+                                    Object.values(this.state.event.entries).map((entry, index) => (
+                                        <Button key={index} className="listButtons" onClick={() => this.handleEntryEdit(entry.id)}>
+                                            {entry.title} by {entry.presenters}
                                         </Button>
-                                    </Tooltip>
-                                    <Tooltip
-                                        title="Updates linked google sheet with current list of entries. Its best to do this before the event starts!"
-                                        placement="bottom">
-                                        <Button variant="contained" className="buttons" type="button" onClick={this.sendEntries}>
-                                            Sync entries
-                                        </Button>
-                                    </Tooltip>
+                                    ))
+                                }
+                                <Button className="listButtons" color="primary" onClick={this.handleAddEntry}>Add New Entry</Button>
+                            </div>
+                        </div>
+                    )
+                }
+                {
+                    this.state.view === 'entries' && this.state.event.entries === undefined && (
+                        <div>
+                            <div className="options">
+                                <Button className="button1" variant="contained" color="primary" onClick={this.manageEvent}>Manage Event</Button>
+                                <Button className="button1" variant="contained" onClick={this.viewResults}>View Results</Button>
+                            </div>
+                            <div className="box">
+                                <Button className="listButtons" color="primary" onClick={this.handleAddEntry}>Add New Entry</Button>
+                            </div>
+                        </div>
+                    )
+                }
+                {
+                    this.state.view === "results" && (
+                        <div className="viewResults">
+                            <div className="options">
+                                <Button className="button1" variant="contained" onClick={this.manageEvent}>Manage Event</Button>
+                                <Button className="button1" variant="contained" color="primary" onClick={this.viewResults}>View Results</Button>
+                            </div>
+                            <br />
+                            <div className="saveItems">
+                                <div className="sheetsExport">
+                                    <Typography variant="h5">Set up Google Sheets to export results:</Typography>
                                     <br />
-                                    <Tooltip
-                                        title="Updates linked google sheet with all voting ballots submitted or manually entered">
-                                        <Button variant="contained" className="buttons" color="primary" type="button" onClick={this.finalizeConfirm}>
-                                            Finalize Results
-                                        </Button>
-                                    </Tooltip>
+                                    <div className="instructions">
+                                        <div>1. Create a Google Sheet in your desired location</div>
+                                        <div>
+                                            2. Share the spreadsheet with editing rights with:
+                                        <br />
+                                            <div className="main">
+                                                <b>talli-455@talli-229017.iam.gserviceaccount.com</b>
+                                            </div>
+                                        </div>
+                                        <div>
+                                            3. Grab the spreadsheet&apos;s URL and paste it here:
+                                            <div className="main">
+                                                <TextField
+                                                    id="standard-dense"
+                                                    label="Spreadsheet URL"
+                                                    margin="dense"
+                                                    className="sheetURL"
+                                                    value={this.state.event.sheetURL}
+                                                    onKeyDown={this.keyPress}
+                                                    onChange={this.handleURLChange}
+                                                />
+                                                <br />
+                                                <Button variant="contained" size="small" color="default" onClick={this.handleSubmit}>
+                                                    Submit
+                                                </Button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className="manualBallots">
+                                    <Typography variant="h5">Add paper ballot(s) manually into system:</Typography>
+                                    <br />
+                                    <div className="addVoteBox">
+                                        <Button className="listButtons" onClick={this.handleAddVote}>Add Vote</Button>
+                                        <Button className="listButtons" onClick={this.handleDeleteVote}>Delet Vote(s) Instruction</Button>
+                                        <Button className="listButtons" onClick={this.handleArchiveVote}>Archive Vote(s) Instruction</Button>
+                                    </div>
+                                    <br />
+                                    <div>
+                                        <Typography variant="h5">Results Controls:</Typography>
+                                        <Tooltip
+                                            title="Adjust the weights applied to first, second, and third place votes"
+                                        >
+                                            <Button variant="contained" className="buttons weights" type="button" onClick={this.handleWeights}>
+                                                Apply Custom Weights
+                                            </Button>
+                                        </Tooltip>
+                                        <Tooltip
+                                            title="Updates linked google sheet with current list of entries. Its best to do this before the event starts!"
+                                            placement="bottom"
+                                        >
+                                            <Button variant="contained" className="buttons" type="button" onClick={this.sendEntries}>
+                                                Sync entries
+                                            </Button>
+                                        </Tooltip>
+                                        <br />
+                                        <Tooltip
+                                            title="Updates linked google sheet with all voting ballots submitted or manually entered"
+                                        >
+                                            <Button variant="contained" className="buttons" color="primary" type="button" onClick={this.finalizeConfirm}>
+                                                Finalize Results
+                                            </Button>
+                                        </Tooltip>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    )
                 }
                 <br />
                 <Button
