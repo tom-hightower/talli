@@ -207,23 +207,6 @@ export default class ViewEvent extends Component {
         return (
             <div className="main">
                 {
-<<<<<<< HEAD
-                    this.props.user != null &&
-                    <div>
-                        <ExportOrgData ref={this.exportChild} event={this.state.event} />
-                        <EditEntries ref={this.entryChild} event={this.state.event} googleId={this.props.user.googleId} />
-                        <ConfirmFinalize ref={this.finalizeChild} handler={this.finalizeResults} />
-                        <AddEntries ref={this.addChild} event={this.state.event} googleId={this.props.user.googleId} />
-                        <EditEvent ref={this.eventChild} event={this.state.event} googleId={this.props.user.googleId} handler={this.props.handler} orgViews={this.props.orgViews} />
-                        <AddBallot ref={this.addVoteChild} event={this.state.event} googleId={this.props.user.googleId} />
-                        <ArchiveVote ref={this.archiveVoteChild} event={this.state.event} googleId={this.props.user.googleId} />
-                        <DeleteVote ref={this.deleteVoteChild} event={this.state.event} googleId={this.props.user.googleId} />
-                        <EditVoting ref={this.votingChild} event={this.state.event} googleId={this.props.user.googleId} />
-                        <EditWeights ref={this.weightsChild} event={this.state.event} googleId={this.props.user.googleId} />
-                        <ShowError ref={this.errorChild} event={this.state.event} googleId={this.props.googleID} />
-                        <Typography variant="h3" align='center' gutterBottom>{this.state.event.name}</Typography>
-                    </div>
-=======
                     this.props.user != null && (
                         <div>
                             <ExportOrgData ref={this.exportChild} event={this.state.event} />
@@ -232,13 +215,14 @@ export default class ViewEvent extends Component {
                             <AddEntries ref={this.addChild} event={this.state.event} googleId={this.props.user.googleId} />
                             <EditEvent ref={this.eventChild} event={this.state.event} googleId={this.props.user.googleId} handler={this.props.handler} orgViews={this.props.orgViews} />
                             <AddBallot ref={this.addVoteChild} event={this.state.event} googleId={this.props.user.googleId} />
+                            <ArchiveVote ref={this.archiveVoteChild} event={this.state.event} googleId={this.props.user.googleId} />
+                            <DeleteVote ref={this.deleteVoteChild} event={this.state.event} googleId={this.props.user.googleId} />
                             <EditVoting ref={this.votingChild} event={this.state.event} googleId={this.props.user.googleId} />
                             <EditWeights ref={this.weightsChild} event={this.state.event} googleId={this.props.user.googleId} />
                             <ShowError ref={this.errorChild} event={this.state.event} googleId={this.props.googleID} />
                             <Typography variant="h3" align="center" gutterBottom>{this.state.event.name}</Typography>
                         </div>
                     )
->>>>>>> 7da236bc0fc4421ebadcdc5fda73bf358e061556
                 }
                 {
                     this.state.view === 'main' && (
