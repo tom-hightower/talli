@@ -64,6 +64,10 @@ li.rankings {
     width: 10%;
 }
 
+#expandedInfo {
+    text-align: left;
+}
+
 .Sliders {
     float: right;
     color: #AAA;
