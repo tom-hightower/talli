@@ -46,7 +46,7 @@
 .addVoteBox {
     border: 2px solid #03a9f4;
     margin: auto;
-    width: 90%;
+    width: 100%;
     font-size: 150%;
     text-align: left;
     padding: 0 1px 0 1px;
@@ -64,6 +64,10 @@
     margin: 10px !important;
 }
 
+#buttons {
+    margin: 10px;
+}
+
 .listButtons {
     display: flex;
     width: 100%;
@@ -78,6 +82,15 @@
     border: 2px solid #03a9f4;
     text-align: left;
     font-size: 105%;
+    width: 99.5%;
+    padding: 1px;
+}
+
+.statistics {
+    border: 2px solid #03a9f4;
+    text-align: left;
+    font-size: 105%;
+    width: 99.5%;
     padding: 1px;
 }
 
@@ -88,6 +101,10 @@
 }
 
 .instructions > * {
+    padding: 1%;
+}
+
+.statistics > * {
     padding: 1%;
 }
 
@@ -110,7 +127,12 @@
 .sheetsExport {
     width: 100%;
     min-width: 200px;
-    margin-bottom: 25px;
+    margin-bottom: 20px;
+}
+
+.bottomMenu {
+    display: flex;
+    width: 100%;
 }
 
 @media only screen and (min-width: 768px) {
@@ -124,5 +146,6 @@
 
     .sheetsExport {
         width: 50%;
+        margin-bottom: 0px;
     }
 }

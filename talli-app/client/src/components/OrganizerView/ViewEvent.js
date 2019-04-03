@@ -80,8 +80,16 @@ export default class ViewEvent extends Component {
                         sheetURL: eventBase.sheetURL,
                         entries: eventEntries
                     },
-                    urlConfirm: this.state.urlConfirm
+                    urlConfirm: this.state.urlConfirm,
+                    totalBallots: 0,
+                    totalSubmitted: 0,
+                    topThree: {
+                        first: '',
+                        second: '',
+                        third: ''
+                    }
                 }, () => {
+                    this.refreshStats();
                     socket.emit('send_url', {
                         url: this.state.event.sheetURL,
                         googleId: this.props.user.googleId,
@@ -224,6 +232,57 @@ export default class ViewEvent extends Component {
         });
     }
 
+    refreshStats = () => {
+        firebase.database().ref(`event/${this.state.event.id}/`).once('value').then(snap => {
+            const event = snap.val();
+            if (event.attendees) {
+                const totalBallots = Object.keys(event.attendees).length;
+                let totalSubmitted = 0;
+                let topVotes = {};
+                let sortVotes = [];
+                for (let user in event.attendees) {
+                    if (event.attendees[user].submitted) {
+                        totalSubmitted += 1;
+                    }
+                    for (let entry in event.attendees[user].rankings) {
+                        if (!topVotes[entry]) {
+                            topVotes[entry] = 0;
+                        }
+                        switch (event.attendees[user].rankings[entry]) {
+                            case 1:
+                                topVotes[entry] += 3;
+                                break;
+                            case 2:
+                                topVotes[entry] += 2;
+                                break;
+                            case 3:
+                                topVotes[entry] += 1;
+                                break;
+                            default:
+                                break;
+                        }
+                    }
+                }
+                for (let ballot in topVotes) {
+                    sortVotes.push([ballot, topVotes[ballot]]);
+                }
+                sortVotes.sort((a,b) => {
+                    return b[1] - a[1];
+                });
+                const topThree = {
+                    first: this.state.event.entries[sortVotes[0][0]] ? this.state.event.entries[sortVotes[0][0]].title : '',
+                    second: this.state.event.entries[sortVotes[1][0]] ? this.state.event.entries[sortVotes[1][0]].title : '',
+                    third: this.state.event.entries[sortVotes[2][0]] ? this.state.event.entries[sortVotes[2][0]].title : '',
+                };
+                this.setState({
+                    totalBallots,
+                    totalSubmitted,
+                    topThree
+                });
+            }
+        });
+    }
+
     render() {
         return (
             <div className="main">
@@ -302,7 +361,7 @@ export default class ViewEvent extends Component {
                             <br />
                             <div className="saveItems">
                                 <div className="sheetsExport">
-                                    <Typography variant="h5">Set up Google Sheets to export results:</Typography>
+                                    <Typography variant="h5">Set Up Your Results:</Typography>
                                     <br />
                                     <div className="instructions">
                                         <div>1. Create a Google Sheet in your desired location</div>
@@ -336,41 +395,52 @@ export default class ViewEvent extends Component {
                                                     Submit
                                                 </Button>
                                             </div>
-                                            
+
                                             {/* <br /> */}
-                                            
+
                                         </div>
                                     </div>
                                 </div>
                                 <div className="manualBallots">
-                                    <Typography variant="h5">Add paper ballot(s) manually into system:</Typography>
+                                    <Typography variant="h5">Voting Statistics</Typography>
                                     <br />
-                                    <div className="addVoteBox">
-                                        <Button className="listButtons" onClick={this.handleAddVote}>Add Vote</Button>
+                                    <div className="statistics">
+                                        <div>Total Ballots: {this.state.totalBallots}</div>
+                                        <div>Submitted Ballots: {this.state.totalSubmitted}</div>
+                                        <div>
+                                            Current Top 3:
+                                            <br />
+                                            <pre>&#9;First: {this.state.topThree.first}</pre>
+                                            <pre>&#9;Second: {this.state.topThree.second}</pre>
+                                            <pre>&#9;Third: {this.state.topThree.third}</pre>
+                                        </div>
+                                        <Button variant="contained" size="small" color="default" onClick={this.refreshStats}>
+                                            Refresh Statistics
+                                        </Button>
                                     </div>
-                                    <br />
-                                    <div>
-                                        <Typography variant="h5">Results Controls:</Typography>
-                                        <Tooltip
-                                            title="Adjust the weights applied to first, second, and third place votes"
-                                        >
-                                            <Button variant="contained" className="buttons weights" type="button" onClick={this.handleWeights}>
-                                                Apply Custom Weights
-                                            </Button>
-                                        </Tooltip>
+                                </div>
+                                <div className="bottomMenu">
+                                    <div className="addVoteBox">
                                         <Tooltip
                                             title="Updates linked google sheet with current list of entries. Its best to do this before the event starts!"
                                             placement="bottom"
                                         >
-                                            <Button variant="contained" className="buttons" type="button" onClick={this.sendEntries}>
+                                            <Button className="listButtons" onClick={this.sendEntries}>
                                                 Sync entries
                                             </Button>
                                         </Tooltip>
-                                        <br />
+                                        <Button className="listButtons" onClick={this.handleAddVote}>Add Vote</Button>
+                                    </div>
+                                    <div className="addVoteBox">
+                                        <Tooltip
+                                            title="Adjust the weights applied to first, second, and third place votes"
+                                        >
+                                            <Button className="listButtons" onClick={this.handleWeights}>Apply Custom Weights</Button>
+                                        </Tooltip>
                                         <Tooltip
                                             title="Updates linked google sheet with all voting ballots submitted or manually entered"
                                         >
-                                            <Button variant="contained" className="buttons" color="primary" type="button" onClick={this.finalizeConfirm}>
+                                            <Button className="listButtons" onClick={this.finalizeConfirm}>
                                                 Finalize Results
                                             </Button>
                                         </Tooltip>

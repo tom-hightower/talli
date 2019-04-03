@@ -188,7 +188,7 @@ export default class JoinEvent extends React.Component {
 
     handleRejoinEvent() {
         const cookie = getCookie('UserID');
-        firebase.database().ref(`event/${this.state.eventID}/attendees/${cookie}/rankings/`).once("value").then(rankSnap => {
+        firebase.database().ref(`event/${this.state.eventID}/attendees/${cookie}/rankings/`).once('value').then(rankSnap => {
             const rankings = rankSnap.val();
             const items = [];
             if (rankings) {
