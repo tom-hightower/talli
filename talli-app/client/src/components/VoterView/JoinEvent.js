@@ -145,7 +145,7 @@ export default class JoinEvent extends React.Component {
     }
 
     handleScan(data) {
-        if (data && data.toLowerCase().includes((`${config.Global.hostURL}/vote/`).toLowerCase())) {
+        if (!this.dialogOpen() && data && data.toLowerCase().includes((`${config.Global.hostURL}/vote/`).toLowerCase())) {
             const id = data.substring(data.indexOf('/vote/') + 6).replace(/\W/g, '');
             this.setState({ eventID: id });
             this.requestConfirm();
@@ -224,6 +224,16 @@ export default class JoinEvent extends React.Component {
         if (e.key === 'Enter') {
             this.handleText();
         }
+    }
+
+    dialogOpen = () => {
+        if (this.rejoinChild.current.state.open || this.notFoundChild.current.state.open
+            || this.confirmChild.current.state.open || this.blockChild.current.state.open
+            || this.earlyJoinChild.current.state.open || this.closedJoinChild.current.state.open
+            || this.rejoinClosedChild.current.state.open) {
+            return true;
+        }
+        return false;
     }
 
     render() {
