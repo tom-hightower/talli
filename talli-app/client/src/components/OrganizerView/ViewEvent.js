@@ -75,6 +75,12 @@ export default class ViewEvent extends React.Component {
                         entries: eventEntries
                     },
                     urlConfirm: this.state.urlConfirm
+                }, () => {
+                    socket.emit('send_url', {
+                        url: this.state.event.sheetURL,
+                        googleId: this.props.user.googleId,
+                        eventId: this.state.event.id,
+                    });
                 });
             }
         });
@@ -129,7 +135,16 @@ export default class ViewEvent extends React.Component {
     }
 
     handleError = (message) => {
-        this.errorChild.current.handleOpen(message);
+        if (this.state.view === "results") {
+            this.errorChild.current.handleOpen(message);
+        }
+        if (message === "Could not get sheet information" || message === "Error with sheet authentication") {
+            this.setState({
+                view: this.state.view,
+                event: this.state.event,
+                urlConfirm: false,
+            });
+        }
     }
 
     handleAddVote = () => {

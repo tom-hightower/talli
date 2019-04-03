@@ -67,10 +67,12 @@ io.on('connection', function (socket) {
                         sendError('Could not get sheet information');
                         return;
                     }
-                    const sheet = info.worksheets[0];
-                    sheet.setTitle('all votes');
-                    sheet.setHeaderRow(['submission_num', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'ten']);
+                    io.emit('url_confirm');
                     if (info.worksheets.length < 2) {
+                        const sheet = info.worksheets[0];
+                        sheet.setTitle('all votes');
+                        sheet.setHeaderRow(['submission_num', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'ten']);
+                        
                         doc.addWorksheet({
                             title: 'weighted rankings'
                         }, (err3, sheet2) => {
@@ -89,7 +91,6 @@ io.on('connection', function (socket) {
                                         sendError('Could not add row to weighted ranks sheet');
                                         return;
                                     }
-                                    io.emit('url_confirm');
                                 });
                             });
                         });
