@@ -3,7 +3,6 @@ import React, { Component } from 'react';
 export default class Countdown extends Component {
     constructor(props) {
         super(props);
-
         this.state = {
             days: 0,
             hours: 0,

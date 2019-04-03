@@ -1,39 +1,48 @@
-import React from 'react';
-import firebase from '../../../firebase.js';
+import React, { Component } from 'react';
 import { Slide, Dialog, DialogTitle, DialogContent, DialogActions, Button } from '@material-ui/core';
+import firebase from '../../../firebase';
 
 function Transition(props) {
     return <Slide direction="up" {...props} />;
 }
 
-export default class EditVoting extends React.Component {
-    state = {
-        open: false,
-    };
+export default class EditVoting extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            open: false,
+        };
+    }
 
     handleOpen = () => {
         this.setState({ open: true });
-    };
+    }
 
     handleClose = () => {
         this.setState({ open: false });
-    };
+    }
 
     openVoting = () => {
-        const itemsRef = firebase.database().ref(`organizer/${this.props.googleId}/event/${this.props.event.id}/eventData/`);
+        const itemsRef = firebase.database().ref(
+            `organizer/${this.props.googleId}/event/${this.props.event.id}/eventData/`
+        );
         itemsRef.child('startVote').set(new Date().toISOString());
         itemsRef.child('endVote').set('none');
         this.handleClose();
     }
 
     closeVoting = () => {
-        const itemsRef = firebase.database().ref(`organizer/${this.props.googleId}/event/${this.props.event.id}/eventData/`);
+        const itemsRef = firebase.database().ref(
+            `organizer/${this.props.googleId}/event/${this.props.event.id}/eventData/`
+        );
         itemsRef.child('endVote').set(new Date().toISOString());
         this.handleClose();
     }
 
     reopenVoting = () => {
-        const itemsRef = firebase.database().ref(`organizer/${this.props.googleId}/event/${this.props.event.id}/eventData/`);
+        const itemsRef = firebase.database().ref(
+            `organizer/${this.props.googleId}/event/${this.props.event.id}/eventData/`
+        );
         itemsRef.child('startVote').set(new Date().toISOString());
         itemsRef.child('endVote').set('none');
         this.handleClose();

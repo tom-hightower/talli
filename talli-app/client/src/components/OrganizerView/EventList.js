@@ -1,17 +1,20 @@
-import React from 'react';
+import React, { Component } from 'react';
 import { Typography, Grid, Button } from '@material-ui/core';
 import AddCircleIcon from '@material-ui/icons/AddCircle';
 import '../component_style/Organizer.css';
-import firebase from '../../firebase.js';
+import firebase from '../../firebase';
 
 /**
  * OrganizerView > EventList
  * Organizer landing page which shows them all
  * of their events and the option to add a new one.
  */
-export default class EventList extends React.Component {
-    state = {
-        events: []
+export default class EventList extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            events: []
+        };
     }
 
     componentDidMount() {
@@ -55,7 +58,6 @@ export default class EventList extends React.Component {
 
     AddEvent() {
         this.props.handler(this.props.orgViews.CREATE);
-        /* unimplemented */
     }
 
     viewEvent(id) {
@@ -66,13 +68,20 @@ export default class EventList extends React.Component {
     render() {
         return (
             <div>
-                <Typography variant='h4' align='center' gutterBottom>{sessionStorage.getItem('name')}'s Events</Typography>
-                <Grid container className='organizerEvents'>
-                    <Grid item className='eventContainer' id='addEvent'>
-                        <AddCircleIcon color='primary' id='addCircleIcon' onClick={() => this.AddEvent()} />
+                <Typography variant="h4" align="center" gutterBottom>{sessionStorage.getItem('name')}&apos;s Events</Typography>
+                <Grid container className="organizerEvents">
+                    <Grid item className="eventContainer" id="addEvent">
+                        <AddCircleIcon color="primary" id="addCircleIcon" onClick={() => this.AddEvent()} />
                     </Grid>
                     {this.state.events.map((event, index) => (
-                        <Button className="eventContainer" variant="contained" color="primary" id="openEvent" onClick={() => this.viewEvent(event.id)} key={index}>
+                        <Button
+                            className="eventContainer"
+                            variant="contained"
+                            color="primary"
+                            id="openEvent"
+                            onClick={() => this.viewEvent(event.id)}
+                            key={index}
+                        >
                             {event.name}
                             <br />
                             {this.parseDate(event.startDate)} - {this.parseDate(event.endDate)}

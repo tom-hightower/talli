@@ -1,9 +1,9 @@
-import React from 'react';
+import React, { Component } from 'react';
 import { Typography, Button, ListItem, Grid } from '@material-ui/core';
 import GoogleLogin from 'react-google-login';
 import { navigate } from 'react-mini-router';
 import './component_style/MainPage.css';
-import firebase from '../firebase.js';
+import firebase from '../firebase';
 import { setCookie, getCookie } from '../cookies';
 
 import HelpView from './Help';
@@ -14,22 +14,23 @@ import CookieWarning from './CookieWarning';
 /**
  * Main View, just contains buttons for navigating to organizer and voting
  * views.
- * TODO: Clean up the button styling a bit
  */
-export default class MainPage extends React.Component {
-    ChangeView(page) {
-        navigate(page);
+export default class MainPage extends Component {
+    constructor(props) {
+        super(props);
+        this.helpChild = React.createRef();
+        this.warningChild = React.createRef();
     }
 
     GetCookies(page) {
         const cookiesValue = getCookie('UserID');
         const consentValue = getCookie('TalliConsent');
-        if (consentValue === "") {
+        if (consentValue === '') {
             this.warningChild.current.handleOpen();
         } else {
-            if (cookiesValue === "") {
-                const userID = "" + Math.random().toString(36).substr(2, 9);
-                setCookie("UserID", userID, 30);
+            if (cookiesValue === '') {
+                const userID = `${Math.random().toString(36).substr(2, 9)}`;
+                setCookie('UserID', userID, 30);
                 const itemsRef = firebase.database().ref('cookies');
                 itemsRef.child(userID).set(userID);
             }
@@ -37,15 +38,22 @@ export default class MainPage extends React.Component {
         }
     }
 
-    constructor(props) {
-        super(props);
-        this.helpChild = React.createRef();
-        this.warningChild = React.createRef();
+    onSuccess(response) {
+        this.props.onSuccess(response);
+        this.ChangeView('/organizer');
+    }
+    
+    onFailure() {
+        console.log('Login failed');
     }
 
     gaveConsent = () => {
         const consentValue = getCookie('TalliConsent');
-        return (consentValue !== "");
+        return (consentValue !== '');
+    }
+
+    ChangeView(page) {
+        navigate(page);
     }
 
     render() {
@@ -76,26 +84,15 @@ export default class MainPage extends React.Component {
                 </Grid>
                 <div className="links">
                     <Typography variant="body2" id="aboutLink" onClick={() => this.helpChild.current.handleOpen()}>
-                         <u>About Talli</u>
+                        <u>About Talli</u>
                     </Typography>
                 </div>
                 {/* <a href={signInUrl}>Sign in w google new way</a> */}
                 <br />
-                
                 {
                     !this.gaveConsent() && <CookieConsent nav={this.ChangeView} />
                 }
-                
             </div>
         );
-    }
-
-    onSuccess(response) {
-        this.props.onSuccess(response);
-        this.ChangeView('/organizer');
-    }
-
-    onFailure() {
-        console.log("Login failed");
     }
 }

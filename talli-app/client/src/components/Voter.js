@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Component } from 'react';
 import Ranking from './VoterView/RankingContainer';
 import AddEntry from './VoterView/AddEntryVote';
 import JoinEvent from './VoterView/JoinEvent';
@@ -9,12 +9,12 @@ const voteViews = {
     ADD: 'AddEntry',
     RANK: 'Ranking',
     SUBMITTED: 'Submitted',
-}
+};
 
 /**
  * Voting view
  */
-export default class Voter extends React.Component {
+export default class Voter extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -58,7 +58,8 @@ export default class Voter extends React.Component {
                         organizer={this.state.organizerID}
                         handler={this.changeView}
                         rankItems={this.state.rankingItems}
-                    />);
+                    />
+                );
             case voteViews.RANK:
                 return (
                     <Ranking
@@ -69,13 +70,15 @@ export default class Voter extends React.Component {
                         rankItems={this.state.rankingItems}
                         updateItemsHandler={this.updateItems}
                         handler={this.changeView}
-                    />);
+                    />
+                );
             case voteViews.SUBMITTED:
                 return (
                     <Submitted
                         voteViews={voteViews}
                         handler={this.changeView}
-                    />);
+                    />
+                );
             default:
                 return (
                     <JoinEvent
@@ -83,7 +86,8 @@ export default class Voter extends React.Component {
                         updateItemsHandler={this.updateItems}
                         handler={this.changeView}
                         {...this.props}
-                    />);
+                    />
+                );
         }
     }
 }

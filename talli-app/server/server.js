@@ -1,35 +1,37 @@
-const firebase = require('../client/src/firebase');
-
 const express = require('express');
 const bodyParser = require('body-parser');
 const GoogleSpreadsheet = require('google-spreadsheet');
 const async = require('async');
 
 const app = express();
-const port = 5000;
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
 const http = require('http').Server(app);
 const io = require('socket.io')(http);
-const creds = require('./client_secret.json');
+const secretConfig = require('../client/src/secret.config.json');
+const config = require('../client/src/config.json');
+const firebase = require('../client/src/firebase');
 
-const num_2_str = {
-    1: "one",
-    2: "two",
-    3: "three",
-    4: "four",
-    5: "five",
-    6: "six",
-    7: "seven",
-    8: "eight",
-    9: "nine",
-    10: "ten"
+
+const creds = secretConfig.ClientSecret;
+
+const numToStr = {
+    1: 'one',
+    2: 'two',
+    3: 'three',
+    4: 'four',
+    5: 'five',
+    6: 'six',
+    7: 'seven',
+    8: 'eight',
+    9: 'nine',
+    10: 'ten'
 };
 
 process.on('uncaughtException', (err) => {
-    if (err.message !== "Callback was already called.") {
+    if (err.message !== 'Callback was already called.') {
         io.emit('error', {
             error: err.message
         });
@@ -38,7 +40,6 @@ process.on('uncaughtException', (err) => {
 
 // might need to store their rankings in the DB on disconnect
 io.on('connection', function (socket) {
-
     const sendError = (message) => {
         io.emit('error', {
             error: message
@@ -102,67 +103,63 @@ io.on('connection', function (socket) {
 
     const sendEntries = (data) => {
         const { eventId, googleId, entries } = data;
-        
+
         const query = firebase.database().ref(`organizer/${googleId}/event/${eventId}/eventData/sheetURL`);
 
         query.on('value', (snapshot) => {
-            let url = snapshot.val();
-            let id = url.split('/')[5];
-            let doc = new GoogleSpreadsheet(id);
+            const url = snapshot.val();
+            const id = url.split('/')[5];
+            const doc = new GoogleSpreadsheet(id);
+            const response = {};
 
-            let response = {};
             const tasks = [
                 function auth(cb) {
                     doc.useServiceAccountAuth(creds, (err) => {
                         if (err) {
                             return cb(err);
-                        } else {
-                            response.doc = doc;
-                            return cb(null, doc);
                         }
+                        response.doc = doc;
+                        return cb(null, doc);
                     });
                 },
                 function getSheetInfo(cb) {
                     response.doc.getInfo((err, info) => {
                         if (err) {
                             return cb(err);
-                        } else {
-                            response.info = info;
-                            return cb(null, info);
                         }
+                        response.info = info;
+                        return cb(null, info);
                     });
                 },
                 function getSheetRows(cb) {
                     response.info.worksheets[1].getRows((err, rows) => {
                         if (err) {
                             return cb(err);
-                        } else {
-                            response.rows = rows;
-                            return cb(null, rows);
                         }
+                        response.rows = rows;
+                        return cb(null, rows);
                     });
                 },
                 function addSheetRows(cb) {
-                    let rows = response.rows;
+                    const rows = response.rows;
                     const existing = [];
                     for (let i = 0; i < rows.length; i++) {
                         existing.push(rows[i].rank);
                     }
                     for (let entry in entries) {
                         if (!existing.includes(entries[entry].title)) {
-                            let row = {
+                            const row = {
                                 RANK: entries[entry].title,
                                 FIRST: 0,
                                 SECOND: 0,
                                 THIRD: 0,
                                 TOTAL: 0,
                             };
-                            response.info.worksheets[1].addRow(row, (err, row) => {
+                            response.info.worksheets[1].addRow(row, (err, cbRow) => {
                                 if (err) {
                                     return cb(err);
-                                } else {
-                                    return cb(null, row);
                                 }
+                                return cb(null, cbRow);
                             });
                         }
                     }
@@ -172,7 +169,7 @@ io.on('connection', function (socket) {
                         if (err) {
                             return cb(err);
                         }
-                        let sheet = info.worksheets[1];
+                        const sheet = info.worksheets[1];
                         sheet.getRows((err1, rows) => {
                             if (err1) {
                                 return cb(err);
@@ -187,7 +184,7 @@ io.on('connection', function (socket) {
                                 curr.save();
                             }
                             response.rows = rows;
-                        })
+                        });
                     });
                 }
             ];
@@ -206,8 +203,8 @@ io.on('connection', function (socket) {
         const query = firebase.database().ref(`organizer/${googleId}/event/${eventId}/eventData/sheetURL`);
 
         query.on('value', (snapshot) => {
-            let url = snapshot.val();
-            let id = url.split('/')[5];
+            const url = snapshot.val();
+            const id = url.split('/')[5];
             const doc = new GoogleSpreadsheet(id);
 
             doc.useServiceAccountAuth(creds, (err) => {
@@ -238,21 +235,21 @@ io.on('connection', function (socket) {
 
     const sendVotes = (data) => {
         const { votes, eventId, organizerId } = data;
-        let final_votes = {};
-        let top3 = [];
+        const finalVotes = {};
+        const top3 = [];
 
         for (let i = 0; i < votes.length; i++) {
             if (i < 3) {
                 top3.push(votes[i].id);
             }
-            final_votes[num_2_str[i + 1]] = votes[i].name;
+            finalVotes[numToStr[i + 1]] = votes[i].name;
         }
 
         const query = firebase.database().ref(`organizer/${organizerId}/event/${eventId}/eventData/sheetURL`);
         query.on('value', (snapshot) => {
             const url = snapshot.val();
             const id = url.split('/')[5];
-            let doc = new GoogleSpreadsheet(id);
+            const doc = new GoogleSpreadsheet(id);
 
             doc.useServiceAccountAuth(creds, (err) => {
                 if (err) {
@@ -264,14 +261,14 @@ io.on('connection', function (socket) {
                         sendError('Could not get info about sheets document');
                         return;
                     }
-                    let sheet = info.worksheets[0];
+                    const sheet = info.worksheets[0];
                     sheet.getRows((err3, rows) => {
                         if (err3) {
                             sendError('Could not access votes sheet');
                             return;
                         }
-                        final_votes.submission_num = rows.length + 1;
-                        sheet.addRow(final_votes, (err4) => {
+                        finalVotes.submission_num = rows.length + 1;
+                        sheet.addRow(finalVotes, (err4) => {
                             if (err4) {
                                 sendError('Could not add rows to votes sheet');
                                 return;
@@ -330,8 +327,8 @@ io.on('connection', function (socket) {
                             sendError('Could not get information from weighted ranks sheet');
                             return;
                         }
-                        let votes_sheet = info.worksheets[0];
-                        votes_sheet.getRows((err3, rows) => {
+                        const votesSheet = info.worksheets[0];
+                        votesSheet.getRows((err3, rows) => {
                             if (err3) {
                                 sendError('Could not get rows from all votes sheet');
                                 return;
@@ -341,24 +338,24 @@ io.on('connection', function (socket) {
                                 if (ballots[i]) {
                                     curr = rows[i];
                                     for (let n = 1; n <= 10; n++) {
-                                        curr[num_2_str[n]] = '';
+                                        curr[numToStr[n]] = '';
                                     }
-                                    curr["submission_num"] = i+1;
+                                    curr.submission_num = i + 1;
                                     for (let item in ballots[i]) {
-                                        curr[num_2_str[ballots[i][item]]] = item;
+                                        curr[numToStr[ballots[i][item]]] = item;
                                     }
                                     curr.save();
                                 }
                             }
                             for (let r = rows.length; r < ballots.length; r++) {
                                 for (let n = 1; n <= 10; n++) {
-                                    curr[num_2_str[n]] = '';
+                                    curr[numToStr[n]] = '';
                                 }
-                                curr["submission_num"] = i+1;
+                                curr.submission_num = r + 1;
                                 for (let item in ballots[r]) {
-                                    curr[num_2_str[ballots[r][item]]] = item;
+                                    curr[numToStr[ballots[r][item]]] = item;
                                 }
-                                votes_sheet.addRow(curr, (err5) => {
+                                votesSheet.addRow(curr, (err5) => {
                                     if (err5) {
                                         sendError('Could not add row to all votes sheet');
                                         return;
@@ -398,4 +395,4 @@ io.on('connection', function (socket) {
     });
 });
 
-io.listen(port);
+io.listen(config.Global.serverPort);
