@@ -4,16 +4,18 @@ const GoogleSpreadsheet = require('google-spreadsheet');
 const async = require('async');
 
 const app = express();
-const port = 5000;
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
 const http = require('http').Server(app);
 const io = require('socket.io')(http);
-
+const secretConfig = require('../client/src/secret.config.json');
+const config = require('../client/src/config.json');
 const firebase = require('../client/src/firebase');
-const creds = require('./client_secret.json');
+
+
+const creds = secretConfig.ClientSecret;
 
 const numToStr = {
     1: 'one',
@@ -391,4 +393,4 @@ io.on('connection', function (socket) {
     });
 });
 
-io.listen(port);
+io.listen(config.Global.serverPort);

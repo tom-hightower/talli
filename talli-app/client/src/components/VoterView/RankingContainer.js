@@ -12,8 +12,14 @@ import Countdown from './Countdown';
 import EventClosed from './Dialogs/EventClosed';
 import '../component_style/RankingContainer.css';
 
-const socket = openSocket('http://localhost:5000');
+const config = require('../../config.json');
 
+const socket = openSocket(
+    (config.Global.devMode ?
+        `http://localhost:${config.Global.serverPort}` :
+        `${(config.Global.sslEnabled ? "https" : "http")}://${config.Global.hostURL}:${config.Global.serverPort}`
+    )
+);
 const DragHandle = SortableHandle(() => <span><SliderIcon className="Sliders" /></span>);
 
 export default class SortContainer extends Component {

@@ -9,11 +9,18 @@ import EditVoting from './Dialogs/EditVoting';
 import AddEntries from './Dialogs/AddEntries';
 import EditWeights from './Dialogs/EditWeights';
 import AddBallot from './Dialogs/AddBallot';
-import '../component_style/ViewEvent.css';
 import ShowError from './Dialogs/ShowError';
 import ConfirmFinalize from './Dialogs/ConfirmFinalize';
+import '../component_style/ViewEvent.css';
 
-const socket = openSocket('http://localhost:5000');
+const config = require('../../config.json');
+
+const socket = openSocket(
+    (config.Global.devMode ?
+        `http://localhost:${config.Global.serverPort}` :
+        `${(config.Global.sslEnabled ? "https" : "http")}://${config.Global.hostURL}:${config.Global.serverPort}`
+    )
+);
 
 /**
  * OrganizerView > ViewEvent
