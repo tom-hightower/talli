@@ -153,13 +153,11 @@ export default class JoinEvent extends React.Component {
     }
 
     handleText() {
-        if (this.state.idFieldValue.length > 2) {
-            this.setState({
-                eventID: this.state.idFieldValue
-            }, () => {
-                this.requestConfirm();
-            });
-        }
+        this.setState({
+            eventID: this.state.idFieldValue
+        }, () => {
+            this.requestConfirm();
+        });
     }
 
     hasRankings(eventId) {
