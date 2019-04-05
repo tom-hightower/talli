@@ -31,7 +31,7 @@ export default class MainPage extends Component {
             if (cookiesValue === '') {
                 const userID = `${Math.random().toString(36).substr(2, 9)}`;
                 setCookie('UserID', userID, 30);
-                const itemsRef = firebase.database().ref('cookies');
+                const itemsRef = firebase.database().ref('attendees');
                 itemsRef.child(userID).set(userID);
             }
             navigate(page);
