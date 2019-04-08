@@ -11,7 +11,7 @@ export default class AddVoteEntryForm extends Component {
             show: true,
             id: '',
             title: '',
-            rank: this.props.entriesInVote[this.props.index].rank,
+            rank: '',
             entries: [],
             duplicate: false,
             valid: false,
@@ -25,6 +25,11 @@ export default class AddVoteEntryForm extends Component {
             const { entries } = entriesRef;
             this.setState({
                 entries,
+                rank: this.props.entriesInVote[this.props.index].rank,
+                id: this.props.entriesInVote[this.props.index].id,
+                title: this.props.entriesInVote[this.props.index].title,
+                valid: this.props.entriesInVote[this.props.index].valid,
+                duplicate: this.props.entriesInVote[this.props.index].duplicate,
             });
         });
     }
@@ -37,39 +42,26 @@ export default class AddVoteEntryForm extends Component {
         });
     }
 
-    handleChange = name => event => {
-        this.setState({ rank: this.props.entriesInVote[this.props.index].rank });
-        let title = '';
-        const entry = this.state.entries[event.target.value];
-        if (entry) {
-            title = entry.title;
-        }
-        if (title !== '') {
-            this.setState({
-                [name]: event.target.value,
-                title,
-                valid: true,
-            }, () => {
-                this.props.updateEntry(this.state, this.props.index);
-            });
-        } else {
-            this.setState({
-                [name]: event.target.value,
-                title: '',
-                valid: false,
-            }, () => {
-                this.props.updateEntry(this.state, this.props.index);
-            });
-        }
-        this.setState({ duplicate: false });
-        for (let i = 0; i < this.props.entriesInVote.length; i++) {
-            const item = this.props.entriesInVote[i];
-            if (item.show && i !== this.props.index) {
-                if (item.id === event.target.value) {
-                    this.setState({ duplicate: true });
-                }
+
+    handleIdChange = event => {
+        this.setState({
+            rank: this.props.entriesInVote[this.props.index].rank,
+            id: event.target.value
+        }, () => {
+            let title = '';
+            const entry = this.state.entries[this.state.id];
+            if (entry) {
+                title = entry.title;
             }
-        }
+            this.setState({
+                title,
+                valid: title !== '',
+            }, () => {
+                if (this.state.valid) {
+                    this.props.updateEntry(this.state, this.props.index);
+                }
+            });
+        });
     }
 
     render() {
@@ -80,12 +72,12 @@ export default class AddVoteEntryForm extends Component {
                     <label className="rankingLabel" id={this.props.index}>{this.props.entriesInVote[this.props.index].rank}.</label>
                     <div>
                         <TextField
-                            required="true"
+                            required
                             label="Entry ID"
                             margin="dense"
                             className="entryFormText"
-                            value={this.state.idAndTitle}
-                            onChange={this.handleChange('id')}
+                            value={this.state.id}
+                            onChange={this.handleIdChange}
                         />
                         <TextField
                             disabled
@@ -106,12 +98,12 @@ export default class AddVoteEntryForm extends Component {
                     <div>
                         <TextField
                             error
-                            required="true"
+                            required
                             label="Entry ID"
                             margin="dense"
                             className="entryFormText"
-                            value={this.state.idAndTitle}
-                            onChange={this.handleChange('id')}
+                            value={this.state.id}
+                            onChange={this.handleIdChange}
                         />
                         <TextField
                             disabled
@@ -132,12 +124,12 @@ export default class AddVoteEntryForm extends Component {
                     <div>
                         <TextField
                             error
-                            required="true"
+                            required
                             label="Entry ID"
                             margin="dense"
                             className="entryFormText"
-                            value={this.state.idAndTitle}
-                            onChange={this.handleChange('id')}
+                            value={this.state.id}
+                            onChange={this.handleIdChange}
                         />
                         <TextField
                             disabled

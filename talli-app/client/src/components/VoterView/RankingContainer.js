@@ -144,7 +144,6 @@ export default class SortContainer extends Component {
         this.setState({
             items: oldItems
         });
-        console.log(oldItems[item]);
     }
 
     render() {
@@ -203,7 +202,7 @@ export default class SortContainer extends Component {
                     </div>
                 </div>
 
-                {this.state.event.automate ? (
+                {(this.state.event.endVote !== 'none') ? (
                     <div className="SubmitDiv">
                         <BellIcon className="BellIcon" />
                         <div className="SubmitText">
