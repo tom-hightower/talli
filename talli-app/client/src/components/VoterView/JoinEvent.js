@@ -103,7 +103,6 @@ export default class JoinEvent extends React.Component {
                         this.setState({ eventName: event.eventData.name }, () => {
                             // Checks whether an even has not started or has ended
                             const votingState = this.getVotingState(event.eventData);
-                            console.log(votingState);
                             if (votingState === 'before') {
                                 this.earlyJoinChild.current.handleOpen();
                                 return;

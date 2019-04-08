@@ -144,7 +144,6 @@ export default class SortContainer extends Component {
         this.setState({
             items: oldItems
         });
-        console.log(oldItems[item]);
     }
 
     render() {
