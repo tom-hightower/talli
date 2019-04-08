@@ -64,7 +64,8 @@ export default class ExportOrgData extends Component {
             if (this.state.exportEntry) {
                 // add entry qr codes
                 contents += 'Entries';
-                let entry, entryTitle;
+                let entry;
+                let entryTitle;
                 let offset = 0;
                 for (let entryID in this.props.event.entries) {
                     entry = this.props.event.entries[entryID];
