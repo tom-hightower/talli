@@ -429,11 +429,20 @@ export default class ViewEvent extends Component {
                                         </Tooltip>
                                     </div>
                                     <div className="resultsOption">
+                                        <Tooltip
+                                            title="Adjust the weights applied to first, second, and third place votes"
+                                        >
+                                            <Button className="listButtons" onClick={this.handleWeights}>Apply Custom Weights</Button>
+                                        </Tooltip>
+                                    </div>  
+                                    <div className="resultsOption">
                                         <Tooltip 
                                             title="Manually add a ballot to the results."
                                             placement="bottom"
                                         >
-                                            <Button className="listButtons" onClick={this.handleAddVote}>Add Vote</Button>
+                                            <Button className="listButtons" onClick={this.handleAddVote}>
+                                                Add Vote
+                                            </Button>
                                         </Tooltip>
                                     </div>
                                     <div className="resultsOption">
@@ -445,13 +454,7 @@ export default class ViewEvent extends Component {
                                             </Button>
                                         </Tooltip>
                                     </div>
-                                    <div className="resultsOption">
-                                        <Tooltip
-                                            title="Adjust the weights applied to first, second, and third place votes"
-                                        >
-                                            <Button className="listButtons" onClick={this.handleWeights}>Apply Custom Weights</Button>
-                                        </Tooltip>
-                                    </div>  
+                                    
                                 </div>
                             </div>
                         </div>
