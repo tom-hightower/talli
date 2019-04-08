@@ -52,23 +52,31 @@ export default class ExportOrgData extends Component {
                 contents = 'Event';
                 title = `Event ID: ${this.props.event.id}`;
                 qrCode = qr.imageSync(`${config.Global.hostURL}/vote/${this.props.event.id}`);
-                doc.addImage(qrCode, 'PNG', 58, 20, 100, 100); // (image, type, x, y, w, h)
-                doc.text(this.props.event.name, 108, 20, 'center'); // (string, x, y, align)
-                doc.text(title, 108, 125, 'center');
+                doc.addImage(qrCode, 'PNG', 18, 40, 180, 180); // (image, type, x, y, w, h)
+                doc.text(this.props.event.name, 108, 40, 'center'); // (string, x, y, align)
+                doc.text(title, 108, 225, 'center');
+                doc.setFontType("bold");
+                doc.text("Join the voting at tallivote.com!", 108, 20, 'center');
+                doc.setFontType("regular");
+                doc.setFont("helvetica");
             }
 
             if (this.state.exportEntry) {
                 // add entry qr codes
                 contents += 'Entries';
                 let entry;
+                let entryTitle;
+                let offset = 0;
                 for (let entryID in this.props.event.entries) {
                     entry = this.props.event.entries[entryID];
-                    doc.addPage();
+                    if (offset === 0) { doc.addPage(); }
                     title = `Entry ID: ${entry.id}`;
+                    entryTitle = doc.splitTextToSize(entry.title, 180);
                     qrCode = qr.imageSync(config.Global.entryQRPrefix + String(entry.id));
-                    doc.addImage(qrCode, 'PNG', 58, 20, 100, 100);
-                    doc.text(entry.title, 108, 20, 'center');
-                    doc.text(title, 108, 125, 'center');
+                    doc.addImage(qrCode, 'PNG', 58, 20 + offset, 100, 100); // QR code
+                    doc.text(entryTitle, 108, 20 + offset, 'center'); // entry title
+                    doc.text(title, 108, 118 + offset, 'center'); // entry id
+                    offset = (offset === 0) ? 140 : 0;
                 }
             }
             // save document to local machine

@@ -114,9 +114,9 @@ export default class JoinEvent extends React.Component {
                             }
                             // Checks whether the user has submitted for this event previously
                             const cookies = getCookie('UserID');
-                            let check = false;
                             firebase.database().ref(`attendees/${cookies}/pastEvents`).once('value').then(pastSnap => {
                                 const pastEvents = pastSnap.val();
+                                let check = false;
                                 for (let c in pastEvents) {
                                     if (c === this.state.eventID) {
                                         check = true;
@@ -125,7 +125,13 @@ export default class JoinEvent extends React.Component {
                                     }
                                 }
                                 if (!check) {
-                                    this.confirmChild.current.handleOpen();
+                                    this.hasRankings(this.state.eventID).then((shouldRejoin) => {
+                                        if (shouldRejoin) {
+                                            this.rejoinChild.current.handleOpen();
+                                        } else {
+                                            this.confirmChild.current.handleOpen();
+                                        }
+                                    });
                                 }
                             });
                         });
@@ -139,50 +145,30 @@ export default class JoinEvent extends React.Component {
     }
 
     handleScan(data) {
-        if (data && data.toLowerCase().includes((`${config.Global.hostURL}/vote/`).toLowerCase())) {
+        if (!this.dialogOpen() && data && data.toLowerCase().includes((`${config.Global.hostURL}/vote/`).toLowerCase())) {
             const id = data.substring(data.indexOf('/vote/') + 6).replace(/\W/g, '');
-            const cookie = getCookie('UserID');
-            firebase.database().ref(`event/${id}`).once('value').then(snapshot => {
-                const event = snapshot.val();
-                if (id === this.state.eventID || this.hasRankings(event, cookie)) {
-                    this.setState({
-                        organizerID: event.organizer,
-                        eventID: id,
-                    }, () => {
-                        this.handleRejoinEvent();
-                    });
-                }
-            });
             this.setState({ eventID: id });
             this.requestConfirm();
         }
     }
 
     handleText() {
-        const cookie = getCookie('UserID');
-        firebase.database().ref(`/`).once('value').then(snapshot => {
-            const root = snapshot.val();
-            const currentEventId = root.attendees[cookie].currentEvent;
-            const event = root.event[this.state.idFieldValue];
-            if (this.state.idFieldValue === currentEventId || this.hasRankings(event, cookie)) {
-                this.setState({
-                    organizerID: event.organizer,
-                }, () => {
-                    this.handleRejoinEvent();
-                });
-            }
-        });
-        this.setState({ eventID: this.state.idFieldValue });
-        if (this.state.idFieldValue.length > 2) {
+        this.setState({
+            eventID: this.state.idFieldValue
+        }, () => {
             this.requestConfirm();
-        }
+        });
     }
 
-    hasRankings(event, cookie) {
-        if (event && event.attendees && event.attendees[cookie]) {
-            return true;
-        }
-        return false;
+    hasRankings(eventId) {
+        const cookie = getCookie('UserID');
+        return firebase.database().ref(`/event/${eventId}`).once('value').then(snap => {
+            const event = snap.val();
+            if (event && event.attendees && event.attendees[cookie]) {
+                return true;
+            }
+            return false;
+        });
     }
 
     handleRejoinEvent() {
@@ -236,6 +222,16 @@ export default class JoinEvent extends React.Component {
         if (e.key === 'Enter') {
             this.handleText();
         }
+    }
+
+    dialogOpen = () => {
+        if (this.rejoinChild.current.state.open || this.notFoundChild.current.state.open
+            || this.confirmChild.current.state.open || this.blockChild.current.state.open
+            || this.earlyJoinChild.current.state.open || this.closedJoinChild.current.state.open
+            || this.rejoinClosedChild.current.state.open) {
+            return true;
+        }
+        return false;
     }
 
     render() {
