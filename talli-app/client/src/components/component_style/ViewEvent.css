@@ -1,3 +1,4 @@
+/*Main Items*/
 .main {
     text-align: center;
 }
@@ -11,6 +12,22 @@
     margin-bottom: 40px;
 }
 
+/*containers for view results boxes*/
+
+.saveItems {
+    display: flex;
+    margin: auto;
+    margin: 0 12% 0 12%;
+    flex-wrap: wrap;
+}
+
+.sheetsExport {
+    width: 100%;
+    min-width: 200px;
+    display: flex;
+}
+
+/*Sheet Set Up Box*/
 .weights {
     margin-right: 20px !important;
 }
@@ -43,21 +60,44 @@
     background-color: #EEE;
 }
 
-.addVoteBox {
-    border: 2px solid #03a9f4;
-    margin: auto;
-    width: 100%;
-    font-size: 150%;
-    text-align: left;
-    padding: 0 1px 0 1px;
+.sheetURL {
+    min-width: 100px;
+    width: 60%;
 }
 
-.addVoteBox > * {
+.instructions {
+    border: 2px solid #03a9f4;
+    text-align: left;
+    font-size: 105%;
+    width: 50%;
+    /*padding: 1px;*/
+}
+
+/*Bottom Menu Box*/
+
+.bottomMenu {
+    border: 2px solid #03a9f4;
+    width: 100%;
+    font-size: 150%;
+    padding: 0 1px 0 1px;
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.bottomMenu > * {
     cursor: pointer;
 }
 
-.addVoteBox > *:nth-child(odd) {
+.bottomMenu > *:nth-child(1) {
     background-color: #EEE;
+}
+
+.bottomMenu > *:nth-child(4) {
+    background-color: #EEE;
+}
+
+.resultsOption {
+    flex: 1 0 50%;
 }
 
 .button1 {
@@ -73,25 +113,21 @@
     width: 100%;
 }
 
-.sheetURL {
-    min-width: 100px;
-    width: 60%;
-}
-
-.instructions {
-    border: 2px solid #03a9f4;
-    text-align: left;
-    font-size: 105%;
-    width: 99.5%;
-    padding: 1px;
+#itemTitle {
+    text-align: center;
 }
 
 .statistics {
     border: 2px solid #03a9f4;
     text-align: left;
     font-size: 105%;
-    width: 99.5%;
-    padding: 1px;
+    width: 50%;
+    display: flex;
+    flex-direction: column; 
+}
+
+#top3 {
+    margin-left: 8%;
 }
 
 .note {
@@ -108,44 +144,27 @@
     padding: 1%;
 }
 
-/* .instructions > *:nth-child(odd) {
-    background-color: #EEE;
-} */
-
-.saveItems {
-    display: flex;
-    margin: auto;
-    width: 100%;
-    flex-wrap: wrap;
+.refreshButton {
+    justify-content: center;
+    align-self: center;
 }
 
-.manualBallots {
-    width: 100%;
-    min-width: 200px;
-}
+@media only screen and (max-width: 768px) {
 
-.sheetsExport {
-    width: 100%;
-    min-width: 200px;
-    margin-bottom: 20px;
-}
-
-.bottomMenu {
-    display: flex;
-    width: 100%;
-}
-
-@media only screen and (min-width: 768px) {
-    .saveItems {
-        width: 80%;
+    .instructions {
+        width: 100%
     }
 
-    .manualBallots {
-        width: 50%;
+    .statistics {
+        width: 100%;
+    }
+
+    .bottomMenu {
+        width: 100%;
     }
 
     .sheetsExport {
-        width: 50%;
-        margin-bottom: 0px;
+        flex-direction: column;
+        width: 99.2%;
     }
 }

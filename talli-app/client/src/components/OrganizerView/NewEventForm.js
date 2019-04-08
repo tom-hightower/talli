@@ -22,6 +22,11 @@ export default class NewEventForm extends Component {
                 sheetURL: '',
                 startVote: new Date(),
                 endVote: new Date(),
+                weights: {
+                    first: 3,
+                    second: 2,
+                    third: 1
+                }
             },
         };
     }

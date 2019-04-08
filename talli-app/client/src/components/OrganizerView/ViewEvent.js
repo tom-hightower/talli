@@ -270,9 +270,9 @@ export default class ViewEvent extends Component {
                     return b[1] - a[1];
                 });
                 const topThree = {
-                    first: this.state.event.entries[sortVotes[0][0]] ? this.state.event.entries[sortVotes[0][0]].title : '',
-                    second: this.state.event.entries[sortVotes[1][0]] ? this.state.event.entries[sortVotes[1][0]].title : '',
-                    third: this.state.event.entries[sortVotes[2][0]] ? this.state.event.entries[sortVotes[2][0]].title : '',
+                    first: this.state.event.entries[sortVotes[0]] ? this.state.event.entries[sortVotes[0][0]].title : '',
+                    second: this.state.event.entries[sortVotes[1]] ? this.state.event.entries[sortVotes[1][0]].title : '',
+                    third: this.state.event.entries[sortVotes[2]] ? this.state.event.entries[sortVotes[2][0]].title : '',
                 };
                 this.setState({
                     totalBallots,
@@ -361,9 +361,8 @@ export default class ViewEvent extends Component {
                             <br />
                             <div className="saveItems">
                                 <div className="sheetsExport">
-                                    <Typography variant="h5">Set Up Your Results:</Typography>
-                                    <br />
                                     <div className="instructions">
+                                        <Typography id="itemTitle" variant="h5">Set Up Your Results</Typography>
                                         <div>1. Create a Google Sheet in your desired location</div>
                                         <div>
                                             2. Share the spreadsheet with editing rights with:
@@ -395,48 +394,49 @@ export default class ViewEvent extends Component {
                                                     Submit
                                                 </Button>
                                             </div>
-
-                                            {/* <br /> */}
-
                                         </div>
                                     </div>
-                                </div>
-                                <div className="manualBallots">
-                                    <Typography variant="h5">Voting Statistics</Typography>
-                                    <br />
+                             
+                               
                                     <div className="statistics">
+                                        <Typography id="itemTitle" variant="h5">Voting Statistics</Typography>
                                         <div>Total Ballots: {this.state.totalBallots}</div>
                                         <div>Submitted Ballots: {this.state.totalSubmitted}</div>
                                         <div>
                                             Current Top 3:
-                                            <br />
-                                            <pre>&#9;First: {this.state.topThree.first}</pre>
-                                            <pre>&#9;Second: {this.state.topThree.second}</pre>
-                                            <pre>&#9;Third: {this.state.topThree.third}</pre>
+                                            <div id="top3">
+                                                <div>1. {this.state.topThree.first}</div>
+                                                <div>2. {this.state.topThree.second}</div>
+                                                <div>3. {this.state.topThree.third}</div>
+                                            </div>
                                         </div>
+                                        <div className="refreshButton">
                                         <Button variant="contained" size="small" color="default" onClick={this.refreshStats}>
                                             Refresh Statistics
                                         </Button>
+                                        </div>
                                     </div>
                                 </div>
                                 <div className="bottomMenu">
-                                    <div className="addVoteBox">
-                                        <Tooltip
-                                            title="Updates linked google sheet with current list of entries. Its best to do this before the event starts!"
+                                    <div className="resultsOption">
+                                        <Tooltip 
+                                            title="Updates linked google sheet with current list of entries. It's best to do this before the event starts!"
                                             placement="bottom"
                                         >
                                             <Button className="listButtons" onClick={this.sendEntries}>
                                                 Sync entries
                                             </Button>
                                         </Tooltip>
-                                        <Button className="listButtons" onClick={this.handleAddVote}>Add Vote</Button>
                                     </div>
-                                    <div className="addVoteBox">
-                                        <Tooltip
-                                            title="Adjust the weights applied to first, second, and third place votes"
+                                    <div className="resultsOption">
+                                        <Tooltip 
+                                            title="Manually add a ballot to the results."
+                                            placement="bottom"
                                         >
-                                            <Button className="listButtons" onClick={this.handleWeights}>Apply Custom Weights</Button>
+                                            <Button className="listButtons" onClick={this.handleAddVote}>Add Vote</Button>
                                         </Tooltip>
+                                    </div>
+                                    <div className="resultsOption">
                                         <Tooltip
                                             title="Updates linked google sheet with all voting ballots submitted or manually entered"
                                         >
@@ -445,6 +445,13 @@ export default class ViewEvent extends Component {
                                             </Button>
                                         </Tooltip>
                                     </div>
+                                    <div className="resultsOption">
+                                        <Tooltip
+                                            title="Adjust the weights applied to first, second, and third place votes"
+                                        >
+                                            <Button className="listButtons" onClick={this.handleWeights}>Apply Custom Weights</Button>
+                                        </Tooltip>
+                                    </div>  
                                 </div>
                             </div>
                         </div>

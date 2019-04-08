@@ -202,6 +202,13 @@ io.on('connection', function (socket) {
         const { weights, eventId, googleId } = data;
         const query = firebase.database().ref(`organizer/${googleId}/event/${eventId}/eventData/sheetURL`);
 
+        const eventData = firebase.database().ref(`organizer/${googleId}/event/${eventId}/eventData`);
+        eventData.child('weights').set({
+            first: weights[0],
+            second: weights[1],
+            third: weights[2],
+        });
+
         query.on('value', (snapshot) => {
             const url = snapshot.val();
             const id = url.split('/')[5];
