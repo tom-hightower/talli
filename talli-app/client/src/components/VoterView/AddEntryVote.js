@@ -58,8 +58,12 @@ export default class AddEntryVote extends Component {
     }
 
     handleScan(data) {
-        if (data && data.toLowerCase().includes(config.Global.entryQRPrefix)) {
-            const id = data.substring(data.indexOf(config.Global.entryQRPrefix) + 7).replace(/\W/g, '');
+        if (data
+            && data.toLowerCase().includes((`${config.Global.hostURL}/vote/`).toLowerCase())
+            && data.indexOf('/', data.indexOf('/vote/') + 6) !== -1
+        ) {
+            const entrySlash = data.indexOf('/', data.indexOf('/vote/') + 6);
+            const id = data.substring(entrySlash).replace(/\W/g, '');
             this.setState({ entryID: id });
             this.requestConfirm();
         }
