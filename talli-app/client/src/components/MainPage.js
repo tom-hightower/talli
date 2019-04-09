@@ -2,13 +2,12 @@ import React, { Component } from 'react';
 import { Typography, Button, ListItem, Grid } from '@material-ui/core';
 import GoogleLogin from 'react-google-login';
 import { navigate } from 'react-mini-router';
-import './component_style/MainPage.css';
 import firebase from '../firebase';
 import { setCookie, getCookie } from '../cookies';
-
 import HelpView from './Help';
 import CookieConsent from './CookieConsent';
 import CookieWarning from './CookieWarning';
+import './component_style/MainPage.css';
 
 
 /**
@@ -22,10 +21,17 @@ export default class MainPage extends Component {
         this.warningChild = React.createRef();
     }
 
+    /**
+     * Checks for UserID cookie, checks for cookie consent, and navigates
+     * to the passed page.
+     * If the TalliConsent cookie does not exist, a warning dialog is opened
+     * If the UserID cookie does not exist, a new one is generated and saved
+     * 
+     * @param {String} page - the url extension to navigate to after cookies are checked
+     */
     GetCookies(page) {
         const cookiesValue = getCookie('UserID');
-        const consentValue = getCookie('TalliConsent');
-        if (consentValue === '') {
+        if (!this.gaveConsent()) {
             this.warningChild.current.handleOpen();
         } else {
             if (cookiesValue === '') {
@@ -34,7 +40,7 @@ export default class MainPage extends Component {
                 const itemsRef = firebase.database().ref('attendees');
                 itemsRef.child(userID).set(userID);
             }
-            navigate(page);
+            this.ChangeView(page);
         }
     }
 
@@ -42,16 +48,25 @@ export default class MainPage extends Component {
         this.props.onSuccess(response);
         this.ChangeView('/organizer');
     }
-    
+
     onFailure() {
         console.log('Login failed');
     }
 
+    /**
+     * Returns whether or not the user has given consent to use cookies by
+     * checking for a TalliConsent cookie
+     */
     gaveConsent = () => {
         const consentValue = getCookie('TalliConsent');
         return (consentValue !== '');
     }
 
+    /**
+     * Navigates to the specified page through the router
+     * 
+     * @param {String} page - the url extension to navigate to
+     */
     ChangeView(page) {
         navigate(page);
     }
@@ -66,19 +81,32 @@ export default class MainPage extends Component {
                 <Grid container justify="center">
                     <div className="buttons">
                         <ListItem>
-                            <Button variant="contained" color="secondary" className="buttons" onClick={() => this.GetCookies('/vote')}>Vote as an Event Attendee</Button>
+                            <Button
+                                variant="contained"
+                                color="secondary"
+                                className="buttons"
+                                onClick={() => this.GetCookies('/vote')}
+                            >
+                                Vote as an Event Attendee
+                            </Button>
                         </ListItem>
 
                         <ListItem>
                             <GoogleLogin
                                 clientId="1061225539650-cp3lrdn3p1u49tsq320l648hcuvg8plb.apps.googleusercontent.com"
                                 render={renderProps => (
-                                    <Button variant="contained" color="primary" className="buttons" onClick={renderProps.onClick}>Login as an Event Organizer</Button>
+                                    <Button
+                                        variant="contained"
+                                        color="primary"
+                                        className="buttons"
+                                        onClick={renderProps.onClick}
+                                    >
+                                        Login as an Event Organizer
+                                    </Button>
                                 )}
                                 onSuccess={this.onSuccess.bind(this)}
-                                onFailure={this.onFailure.bind(this)} />
-                            {/* Nick messing around with other login possibilities */}
-                            {/* <Button variant="contained" color="primary" className="buttons" onClick={() => this.sendLoginRequest()}>Organizer Login</Button> */}
+                                onFailure={this.onFailure.bind(this)}
+                            />
                         </ListItem>
                     </div>
                 </Grid>
@@ -87,7 +115,6 @@ export default class MainPage extends Component {
                         <u>About Talli</u>
                     </Typography>
                 </div>
-                {/* <a href={signInUrl}>Sign in w google new way</a> */}
                 <br />
                 {
                     !this.gaveConsent() && <CookieConsent nav={this.ChangeView} />
