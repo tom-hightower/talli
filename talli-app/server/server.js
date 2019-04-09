@@ -68,10 +68,12 @@ io.on('connection', function (socket) {
                         sendError('Could not get sheet information');
                         return;
                     }
-                    const sheet = info.worksheets[0];
-                    sheet.setTitle('all votes');
-                    sheet.setHeaderRow(['submission_num', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'ten']);
+                    io.emit('url_confirm');
                     if (info.worksheets.length < 2) {
+                        const sheet = info.worksheets[0];
+                        sheet.setTitle('all votes');
+                        sheet.setHeaderRow(['submission_num', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'ten']);
+                        
                         doc.addWorksheet({
                             title: 'weighted rankings'
                         }, (err3, sheet2) => {
@@ -199,6 +201,13 @@ io.on('connection', function (socket) {
     const sendWeights = (data) => {
         const { weights, eventId, googleId } = data;
         const query = firebase.database().ref(`organizer/${googleId}/event/${eventId}/eventData/sheetURL`);
+
+        const eventData = firebase.database().ref(`organizer/${googleId}/event/${eventId}/eventData`);
+        eventData.child('weights').set({
+            first: weights[0],
+            second: weights[1],
+            third: weights[2],
+        });
 
         query.on('value', (snapshot) => {
             const url = snapshot.val();

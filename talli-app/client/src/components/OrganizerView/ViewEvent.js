@@ -11,6 +11,7 @@ import EditWeights from './Dialogs/EditWeights';
 import AddBallot from './Dialogs/AddBallot';
 import ShowError from './Dialogs/ShowError';
 import ConfirmFinalize from './Dialogs/ConfirmFinalize';
+import CheckCircle from '@material-ui/icons/CheckCircle';
 import '../component_style/ViewEvent.css';
 
 const config = require('../../config.json');
@@ -44,6 +45,7 @@ export default class ViewEvent extends Component {
                 sheetURL: 'Google Sheet URL',
                 entries: []
             },
+            urlConfirm: false,
         };
         this.exportChild = React.createRef();
         this.eventChild = React.createRef();
@@ -77,7 +79,22 @@ export default class ViewEvent extends Component {
                         endVote: eventBase.endVote,
                         sheetURL: eventBase.sheetURL,
                         entries: eventEntries
+                    },
+                    urlConfirm: this.state.urlConfirm,
+                    totalBallots: 0,
+                    totalSubmitted: 0,
+                    topThree: {
+                        first: '',
+                        second: '',
+                        third: ''
                     }
+                }, () => {
+                    this.refreshStats();
+                    socket.emit('send_url', {
+                        url: this.state.event.sheetURL,
+                        googleId: this.props.user.googleId,
+                        eventId: this.state.event.id,
+                    });
                 });
             }
         });
@@ -85,6 +102,14 @@ export default class ViewEvent extends Component {
         socket.on('error', (data) => {
             console.log(data.error);
             this.handleError(data.error);
+        });
+
+        socket.on('url_confirm', () => {
+            this.setState({
+                view: this.state.view,
+                event: this.state.event,
+                urlConfirm: true,
+            });
         });
     }
 
@@ -124,7 +149,16 @@ export default class ViewEvent extends Component {
     }
 
     handleError = (message) => {
-        this.errorChild.current.handleOpen(message);
+        if (this.state.view === "results") {
+            this.errorChild.current.handleOpen(message);
+        }
+        if (message === "Could not get sheet information" || message === "Error with sheet authentication") {
+            this.setState({
+                view: this.state.view,
+                event: this.state.event,
+                urlConfirm: false,
+            });
+        }
     }
 
     handleAddVote = () => {
@@ -195,6 +229,57 @@ export default class ViewEvent extends Component {
             googleId: this.props.user.googleId,
             eventId: this.state.event.id,
             entries: this.state.event.entries
+        });
+    }
+
+    refreshStats = () => {
+        firebase.database().ref(`event/${this.state.event.id}/`).once('value').then(snap => {
+            const event = snap.val();
+            if (event.attendees) {
+                const totalBallots = Object.keys(event.attendees).length;
+                let totalSubmitted = 0;
+                let topVotes = {};
+                let sortVotes = [];
+                for (let user in event.attendees) {
+                    if (event.attendees[user].submitted) {
+                        totalSubmitted += 1;
+                    }
+                    for (let entry in event.attendees[user].rankings) {
+                        if (!topVotes[entry]) {
+                            topVotes[entry] = 0;
+                        }
+                        switch (event.attendees[user].rankings[entry]) {
+                            case 1:
+                                topVotes[entry] += 3;
+                                break;
+                            case 2:
+                                topVotes[entry] += 2;
+                                break;
+                            case 3:
+                                topVotes[entry] += 1;
+                                break;
+                            default:
+                                break;
+                        }
+                    }
+                }
+                for (let ballot in topVotes) {
+                    sortVotes.push([ballot, topVotes[ballot]]);
+                }
+                sortVotes.sort((a,b) => {
+                    return b[1] - a[1];
+                });
+                const topThree = {
+                    first: this.state.event.entries[sortVotes[0][0]] ? this.state.event.entries[sortVotes[0][0]].title : '',
+                    second: this.state.event.entries[sortVotes[1][0]] ? this.state.event.entries[sortVotes[1][0]].title : '',
+                    third: this.state.event.entries[sortVotes[2][0]] ? this.state.event.entries[sortVotes[2][0]].title : '',
+                };
+                this.setState({
+                    totalBallots,
+                    totalSubmitted,
+                    topThree
+                });
+            }
         });
     }
 
@@ -276,9 +361,8 @@ export default class ViewEvent extends Component {
                             <br />
                             <div className="saveItems">
                                 <div className="sheetsExport">
-                                    <Typography variant="h5">Set up Google Sheets to export results:</Typography>
-                                    <br />
                                     <div className="instructions">
+                                        <Typography id="itemTitle" variant="h5">Set Up Your Results</Typography>
                                         <div>1. Create a Google Sheet in your desired location</div>
                                         <div>
                                             2. Share the spreadsheet with editing rights with:
@@ -290,56 +374,87 @@ export default class ViewEvent extends Component {
                                         <div>
                                             3. Grab the spreadsheet&apos;s URL and paste it here:
                                             <div className="main">
-                                                <TextField
-                                                    id="standard-dense"
-                                                    label="Spreadsheet URL"
-                                                    margin="dense"
-                                                    className="sheetURL"
-                                                    value={this.state.event.sheetURL}
-                                                    onKeyDown={this.keyPress}
-                                                    onChange={this.handleURLChange}
-                                                />
-                                                <br />
+                                                <div className="urlField">
+                                                    <TextField
+                                                        id="standard-dense"
+                                                        label="Spreadsheet URL"
+                                                        margin="dense"
+                                                        className="sheetURL"
+                                                        value={this.state.event.sheetURL}
+                                                        onKeyDown={this.keyPress}
+                                                        onChange={this.handleURLChange}
+                                                    />
+                                                    {
+                                                        this.state.urlConfirm &&
+                                                        <CheckCircle id="checkmark" color="primary" />
+                                                    }
+                                                    <br />
+                                                </div>
                                                 <Button variant="contained" size="small" color="default" onClick={this.handleSubmit}>
                                                     Submit
                                                 </Button>
                                             </div>
                                         </div>
                                     </div>
-                                </div>
-                                <div className="manualBallots">
-                                    <Typography variant="h5">Add paper ballot(s) manually into system:</Typography>
-                                    <br />
-                                    <div className="addVoteBox">
-                                        <Button className="listButtons" onClick={this.handleAddVote}>Add Vote</Button>
+                             
+                               
+                                    <div className="statistics">
+                                        <Typography id="itemTitle" variant="h5">Voting Statistics</Typography>
+                                        <div>Total Ballots: {this.state.totalBallots}</div>
+                                        <div>Submitted Ballots: {this.state.totalSubmitted}</div>
+                                        <div>
+                                            Current Top 3:
+                                            <div id="top3">
+                                                <div>1. {this.state.topThree.first}</div>
+                                                <div>2. {this.state.topThree.second}</div>
+                                                <div>3. {this.state.topThree.third}</div>
+                                            </div>
+                                        </div>
+                                        <div className="refreshButton">
+                                        <Button variant="contained" size="small" color="default" onClick={this.refreshStats}>
+                                            Refresh Statistics
+                                        </Button>
+                                        </div>
                                     </div>
-                                    <br />
-                                    <div>
-                                        <Typography variant="h5">Results Controls:</Typography>
-                                        <Tooltip
-                                            title="Adjust the weights applied to first, second, and third place votes"
-                                        >
-                                            <Button variant="contained" className="buttons weights" type="button" onClick={this.handleWeights}>
-                                                Apply Custom Weights
-                                            </Button>
-                                        </Tooltip>
-                                        <Tooltip
-                                            title="Updates linked google sheet with current list of entries. Its best to do this before the event starts!"
+                                </div>
+                                <div className="bottomMenu">
+                                    <div className="resultsOption">
+                                        <Tooltip 
+                                            title="Updates linked google sheet with current list of entries. It's best to do this before the event starts!"
                                             placement="bottom"
                                         >
-                                            <Button variant="contained" className="buttons" type="button" onClick={this.sendEntries}>
+                                            <Button className="listButtons" onClick={this.sendEntries}>
                                                 Sync entries
                                             </Button>
                                         </Tooltip>
-                                        <br />
+                                    </div>
+                                    <div className="resultsOption">
+                                        <Tooltip
+                                            title="Adjust the weights applied to first, second, and third place votes"
+                                        >
+                                            <Button className="listButtons" onClick={this.handleWeights}>Apply Custom Weights</Button>
+                                        </Tooltip>
+                                    </div>  
+                                    <div className="resultsOption">
+                                        <Tooltip 
+                                            title="Manually add a ballot to the results."
+                                            placement="bottom"
+                                        >
+                                            <Button className="listButtons" onClick={this.handleAddVote}>
+                                                Add Vote
+                                            </Button>
+                                        </Tooltip>
+                                    </div>
+                                    <div className="resultsOption">
                                         <Tooltip
                                             title="Updates linked google sheet with all voting ballots submitted or manually entered"
                                         >
-                                            <Button variant="contained" className="buttons" color="primary" type="button" onClick={this.finalizeConfirm}>
+                                            <Button className="listButtons" onClick={this.finalizeConfirm}>
                                                 Finalize Results
                                             </Button>
                                         </Tooltip>
                                     </div>
+                                    
                                 </div>
                             </div>
                         </div>
