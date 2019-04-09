@@ -32,6 +32,7 @@ export default class SubmitConfirm extends Component {
         const itemsRef = firebase.database().ref(`attendees/${cookie}`);
         itemsRef.child('currentEvent').set('');
         itemsRef.child(`pastEvents/${this.props.eventID}/`).set(this.props.eventID);
+        firebase.database().ref(`event/${this.props.eventID}/attendees/${cookie}`).child('submitted').set(true);
         this.props.handler();
     }
 

@@ -36,7 +36,8 @@ export default class AddVotes extends Component {
         this.setState({ entries: newEntries });
     }
 
-    submitVote = () => {
+    submitVote = event => {
+        event.preventDefault();
         let hasError = false;
         let numOfEntries = 0;
         for (let i = 0; i < this.state.entries.length; i++) {
@@ -85,7 +86,13 @@ export default class AddVotes extends Component {
     updateEntry(status, idx) {
         const updateEntries = this.state.entries;
         updateEntries[idx] = status;
-        if (!this.state.entries[idx].show) {
+        for (let i = 0; i < updateEntries.length; i++) {
+            const item = updateEntries[i];
+            if (item.show && i !== idx) {
+                updateEntries[idx].duplicate = item.id === updateEntries[idx].id;
+            }
+        }
+        if (!updateEntries[idx].show) {
             for (let i = idx + 1; i < this.state.entries.length; i++) {
                 if (updateEntries[i].show) {
                     updateEntries[i].rank -= 1;
@@ -109,7 +116,13 @@ export default class AddVotes extends Component {
                                 entries.map((val, idx) => {
                                     return (
                                         <div key={val.id}>
-                                            <AddBallotEntry event={this.props.event} googleId={this.props.googleId} entriesInVote={entries} updateEntry={(status, index) => this.updateEntry(status, index)} index={idx} />
+                                            <AddBallotEntry
+                                                event={this.props.event}
+                                                googleId={this.props.googleId}
+                                                entriesInVote={entries}
+                                                updateEntry={(status, index) => this.updateEntry(status, index)}
+                                                index={idx}
+                                            />
                                         </div>
                                     );
                                 })
