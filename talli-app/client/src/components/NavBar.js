@@ -33,7 +33,7 @@ export default class NavBar extends Component {
     }
 
     toggleDrawer = () => this.setState({ open: !this.state.open });
-    
+
     closeDrawer = () => this.setState({ open: false });
 
     onSuccess = (response) => {
@@ -84,7 +84,7 @@ export default class NavBar extends Component {
 
         return (
             <div className="root">
-                <AppBar position="static" >
+                <AppBar position="static">
                     <Toolbar>
                         <IconButton className="menuButton" color="inherit" aria-label="Menu" onClick={this.toggleDrawer}>
                             <MenuIcon />

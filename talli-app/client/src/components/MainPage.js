@@ -42,7 +42,7 @@ export default class MainPage extends Component {
         this.props.onSuccess(response);
         this.ChangeView('/organizer');
     }
-    
+
     onFailure() {
         console.log('Login failed');
     }
@@ -76,7 +76,8 @@ export default class MainPage extends Component {
                                     <Button variant="contained" color="primary" className="buttons" onClick={renderProps.onClick}>Login as an Event Organizer</Button>
                                 )}
                                 onSuccess={this.onSuccess.bind(this)}
-                                onFailure={this.onFailure.bind(this)} />
+                                onFailure={this.onFailure.bind(this)}
+                            />
                             {/* Nick messing around with other login possibilities */}
                             {/* <Button variant="contained" color="primary" className="buttons" onClick={() => this.sendLoginRequest()}>Organizer Login</Button> */}
                         </ListItem>

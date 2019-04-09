@@ -1,8 +1,6 @@
 import React, { Component } from 'react';
 import { Slide, Dialog, DialogTitle, DialogContent, DialogActions, Button } from '@material-ui/core';
 
-
-
 function Transition(props) {
     return <Slide direction="up" {...props} />;
 }
@@ -20,7 +18,7 @@ export default class ShowError extends Component {
     handleOpen = (message) => {
         this.setState({
             open: true,
-            message: message,
+            message,
         });
     }
 

@@ -52,7 +52,7 @@ const RoutedApp = createReactClass({
     },
 
     joinWithEntry(event, entry) {
-        return <Voter scanID={event} scanEntry={entry}/>;
+        return <Voter scanID={event} scanEntry={entry} />;
     },
 
     organizer() {
