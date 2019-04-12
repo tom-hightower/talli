@@ -18,37 +18,39 @@ export default class EventList extends Component {
     }
 
     componentDidMount() {
-        const googleId = this.props.user.googleId;
-        const query = firebase.database().ref(`organizer/${googleId}/event`);
-        const allEvents = [];
-        query.on('value', (snapshot) => {
-            const events = snapshot.val();
-            for (let event in events) {
-                const refPrefix = `${event}/eventData`;
-                const id = snapshot.child(`${refPrefix}/id`).val();
-                const name = snapshot.child(`${refPrefix}/name`).val();
-                const location = snapshot.child(`${refPrefix}/location`).val();
-                const startDate = snapshot.child(`${refPrefix}/startDate`).val();
-                const endDate = snapshot.child(`${refPrefix}/endDate`).val();
-                const automate = snapshot.child(`${refPrefix}/automate`).val();
-                const startVote = snapshot.child(`${refPrefix}/startVote`).val();
-                const endVote = snapshot.child(`${refPrefix}/endVote`).val();
+        if (this.props.user) {
+            const googleId = this.props.user.googleId;
+            const query = firebase.database().ref(`organizer/${googleId}/event`);
+            const allEvents = [];
+            query.on('value', (snapshot) => {
+                const events = snapshot.val();
+                for (let event in events) {
+                    const refPrefix = `${event}/eventData`;
+                    const id = snapshot.child(`${refPrefix}/id`).val();
+                    const name = snapshot.child(`${refPrefix}/name`).val();
+                    const location = snapshot.child(`${refPrefix}/location`).val();
+                    const startDate = snapshot.child(`${refPrefix}/startDate`).val();
+                    const endDate = snapshot.child(`${refPrefix}/endDate`).val();
+                    const automate = snapshot.child(`${refPrefix}/automate`).val();
+                    const startVote = snapshot.child(`${refPrefix}/startVote`).val();
+                    const endVote = snapshot.child(`${refPrefix}/endVote`).val();
 
-                allEvents.push({
-                    id,
-                    name,
-                    location,
-                    startDate,
-                    endDate,
-                    automate,
-                    startVote,
-                    endVote
+                    allEvents.push({
+                        id,
+                        name,
+                        location,
+                        startDate,
+                        endDate,
+                        automate,
+                        startVote,
+                        endVote
+                    });
+                }
+                this.setState({
+                    events: allEvents
                 });
-            }
-            this.setState({
-                events: allEvents
             });
-        });
+        }
     }
 
     parseDate(isoDate) {

@@ -52,7 +52,7 @@ export default class JoinEvent extends React.Component {
         firebase.database().ref('/').once('value').then(snapshot => {
             const root = snapshot.val();
             const allCookies = root.attendees[cookie];
-            let entryToAdd = 'na';
+            let entryToAdd = '';
             if (allCookies && allCookies.currentEvent) {
                 const orgID = root.event[allCookies.currentEvent];
                 this.setState({ organizerID: (orgID ? orgID.organizer : '') }, () => {
@@ -167,7 +167,7 @@ export default class JoinEvent extends React.Component {
             } else {
                 id = data.substring(data.indexOf('/vote/') + 6).replace(/\W/g, '');
             }
-            const entryToAdd = this.props.scanEntry ? this.props.scanEntry : 'na';
+            const entryToAdd = this.props.scanEntry ? this.props.scanEntry : '';
             this.setState({
                 eventID: id,
                 entryToAdd,
@@ -219,6 +219,7 @@ export default class JoinEvent extends React.Component {
                             id: entry.id.toString(),
                             presenters: entry.presenters,
                             entry_dates: entry.entry_dates,
+                            info_url: entry.info_url,
                             showInfo: false,
                         });
                     }
