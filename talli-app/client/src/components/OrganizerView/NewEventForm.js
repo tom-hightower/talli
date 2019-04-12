@@ -173,18 +173,18 @@ export default class NewEventForm extends Component {
                     </MuiPickersUtilsProvider>
                     <br /> <br />
                     <FormControlLabel
-                        control={
+                        control={(
                             <Switch
                                 checked={this.state.eventData.automate}
                                 onChange={() => this.toggleAutomation()}
                                 value={this.state.eventData.automate}
                                 color="primary"
                             />
-                        }
+                        )}
                         label="Automate Voting Time Period?"
                         labelPlacement="start"
                     />
-                    {this.state.eventData.automate &&
+                    {this.state.eventData.automate && (
                         <div>
                             <MuiPickersUtilsProvider utils={DateFnsUtils}>
                                 <Typography className="votePeriodText">Start Voting:</Typography>
@@ -217,7 +217,7 @@ export default class NewEventForm extends Component {
                                 />
                             </MuiPickersUtilsProvider>
                         </div>
-                    }
+                    )}
                     <br /> <br />
                     <Button
                         variant="contained"

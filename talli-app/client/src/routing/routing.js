@@ -25,6 +25,7 @@ const RoutedApp = createReactClass({
         '/': 'home',
         '/vote': 'vote',
         '/vote/:text': 'voteWithID',
+        '/vote/:event/:entry': 'joinWithEntry',
         '/organizer': 'organizer',
         '/cookies': 'cookies'
     },
@@ -48,6 +49,10 @@ const RoutedApp = createReactClass({
 
     voteWithID(text) {
         return <Voter scanID={text} />;
+    },
+
+    joinWithEntry(event, entry) {
+        return <Voter scanID={event} scanEntry={entry} />;
     },
 
     organizer() {

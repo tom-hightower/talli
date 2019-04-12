@@ -73,7 +73,7 @@ io.on('connection', function (socket) {
                         const sheet = info.worksheets[0];
                         sheet.setTitle('all votes');
                         sheet.setHeaderRow(['submission_num', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'ten']);
-                        
+
                         doc.addWorksheet({
                             title: 'weighted rankings'
                         }, (err3, sheet2) => {

@@ -18,7 +18,6 @@ export default class EventList extends Component {
     }
 
     componentDidMount() {
-        console.log('mounted')
         const googleId = this.props.user.googleId;
         const query = firebase.database().ref(`organizer/${googleId}/event`);
         const allEvents = [];
