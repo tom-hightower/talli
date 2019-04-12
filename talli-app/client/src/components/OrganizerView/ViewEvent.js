@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Typography, Button, TextField, Tooltip } from '@material-ui/core';
 import openSocket from 'socket.io-client';
+import CheckCircle from '@material-ui/icons/CheckCircle';
 import firebase from '../../firebase';
 import ExportOrgData from './Dialogs/ExportOrgData';
 import EditEntries from './Dialogs/EditEntries';
@@ -11,7 +12,6 @@ import EditWeights from './Dialogs/EditWeights';
 import AddBallot from './Dialogs/AddBallot';
 import ShowError from './Dialogs/ShowError';
 import ConfirmFinalize from './Dialogs/ConfirmFinalize';
-import CheckCircle from '@material-ui/icons/CheckCircle';
 import '../component_style/ViewEvent.css';
 
 const config = require('../../config.json');
@@ -238,8 +238,8 @@ export default class ViewEvent extends Component {
             if (event.attendees) {
                 const totalBallots = Object.keys(event.attendees).length;
                 let totalSubmitted = 0;
-                let topVotes = {};
-                let sortVotes = [];
+                const topVotes = {};
+                const sortVotes = [];
                 for (let user in event.attendees) {
                     if (event.attendees[user].submitted) {
                         totalSubmitted += 1;
@@ -266,9 +266,7 @@ export default class ViewEvent extends Component {
                 for (let ballot in topVotes) {
                     sortVotes.push([ballot, topVotes[ballot]]);
                 }
-                sortVotes.sort((a,b) => {
-                    return b[1] - a[1];
-                });
+                sortVotes.sort((a, b) => b[1] - a[1]);
                 const topThree = {
                     first: this.state.event.entries[sortVotes[0][0]] ? this.state.event.entries[sortVotes[0][0]].title : '',
                     second: this.state.event.entries[sortVotes[1][0]] ? this.state.event.entries[sortVotes[1][0]].title : '',
@@ -396,8 +394,8 @@ export default class ViewEvent extends Component {
                                             </div>
                                         </div>
                                     </div>
-                             
-                               
+
+
                                     <div className="statistics">
                                         <Typography id="itemTitle" variant="h5">Voting Statistics</Typography>
                                         <div>Total Ballots: {this.state.totalBallots}</div>
@@ -411,15 +409,15 @@ export default class ViewEvent extends Component {
                                             </div>
                                         </div>
                                         <div className="refreshButton">
-                                        <Button variant="contained" size="small" color="default" onClick={this.refreshStats}>
-                                            Refresh Statistics
+                                            <Button variant="contained" size="small" color="default" onClick={this.refreshStats}>
+                                                Refresh Statistics
                                         </Button>
                                         </div>
                                     </div>
                                 </div>
                                 <div className="bottomMenu">
                                     <div className="resultsOption">
-                                        <Tooltip 
+                                        <Tooltip
                                             title="Updates linked google sheet with current list of entries. It's best to do this before the event starts!"
                                             placement="bottom"
                                         >
@@ -434,9 +432,9 @@ export default class ViewEvent extends Component {
                                         >
                                             <Button className="listButtons" onClick={this.handleWeights}>Apply Custom Weights</Button>
                                         </Tooltip>
-                                    </div>  
+                                    </div>
                                     <div className="resultsOption">
-                                        <Tooltip 
+                                        <Tooltip
                                             title="Manually add a ballot to the results."
                                             placement="bottom"
                                         >
@@ -454,7 +452,7 @@ export default class ViewEvent extends Component {
                                             </Button>
                                         </Tooltip>
                                     </div>
-                                    
+
                                 </div>
                             </div>
                         </div>

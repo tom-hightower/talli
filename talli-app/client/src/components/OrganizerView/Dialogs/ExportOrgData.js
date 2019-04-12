@@ -72,7 +72,7 @@ export default class ExportOrgData extends Component {
                     if (offset === 0) { doc.addPage(); }
                     title = `Entry ID: ${entry.id}`;
                     entryTitle = doc.splitTextToSize(entry.title, 180);
-                    qrCode = qr.imageSync(config.Global.entryQRPrefix + String(entry.id));
+                    qrCode = qr.imageSync(`${config.Global.hostURL}/vote/${this.props.event.id}/${entry.id}`);
                     doc.addImage(qrCode, 'PNG', 58, 20 + offset, 100, 100); // QR code
                     doc.text(entryTitle, 108, 20 + offset, 'center'); // entry title
                     doc.text(title, 108, 118 + offset, 'center'); // entry id

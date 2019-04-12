@@ -134,7 +134,7 @@ export default class AddEntryOrg extends Component {
                 </Button>
                 <br /><br />
                 <Typography variant="subtitle1" align="center">{this.state.alert}</Typography>
-                <Button variant="text" className="buttons" onClick={this.openInfo} >Click here for import requirements.</Button>
+                <Button variant="text" className="buttons" onClick={this.openInfo}>Click here for import requirements.</Button>
                 <Divider variant="middle" />
                 <form className="entryForm" onSubmit={() => this.submitEntries()}>
                     {
