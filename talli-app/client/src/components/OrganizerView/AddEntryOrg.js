@@ -88,7 +88,6 @@ export default class AddEntryOrg extends Component {
                 let lineURL;
                 for (let i = 1; i < lines.length; i++) {
                     line = lines[i].split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
-                    console.log(line)
                     if (line.length !== 3 && line.length !== 0 && line.length !== 4) {
                         a = 'File format is incorrect. Please see "Import Requirements" for correct formatting.';
                         this.setState({ entries: this.state.entries, alert: a });

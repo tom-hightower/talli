@@ -148,10 +148,10 @@ export default class SortContainer extends Component {
     }
 
     isValidURL(str) {
-        const a  = document.createElement('a');
+        const a = document.createElement('a');
         a.href = str;
         return (a.host && a.host !== window.location.host);
-     }
+    }
 
     render() {
         const SortableItem = SortableElement(({ value, item }) => (
@@ -170,7 +170,7 @@ export default class SortContainer extends Component {
                                             <b>Info URL: </b>
                                             {this.isValidURL(value.info_url) ? (
                                                 <a href={value.info_url}>{value.info_url}</a>
-                                            ) : value.info_url }
+                                            ) : value.info_url}
                                         </>
                                     )}
                                 </div>
