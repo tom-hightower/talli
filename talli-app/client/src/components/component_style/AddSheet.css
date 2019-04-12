@@ -1,0 +1,12 @@
+.addSheet {
+    text-align: center;
+}
+
+.addSheet > div {
+    border: 2px solid #03a9f4;
+    text-align: left;
+    font-size: 105%;
+    width: 50%;
+    margin-left: 25%;
+    margin-top: 1%;
+}
