@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Slide, Dialog, DialogTitle, DialogContent, DialogActions, Button, TextField } from '@material-ui/core';
+import { Slide, Dialog, DialogTitle, DialogContent, DialogActions, Button, TextField, FormControlLabel } from '@material-ui/core';
 import openSocket from 'socket.io-client';
 
 const config = require('../../../config.json');
@@ -25,6 +25,19 @@ export default class EditWeights extends Component {
                 '', '', ''
             ]
         };
+    }
+
+    componentWillReceiveProps() {
+        if (this.props.event.weights) {
+            this.setState({
+                open: this.state.open,
+                weights: [
+                    this.props.event.weights['first'],
+                    this.props.event.weights['second'],
+                    this.props.event.weights['third']
+                ]
+            });
+        }
     }
 
     handleOpen = () => {

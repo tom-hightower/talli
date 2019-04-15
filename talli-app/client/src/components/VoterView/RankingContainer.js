@@ -109,7 +109,8 @@ export default class SortContainer extends Component {
         const cookie = getCookie('UserID');
         const ref = firebase.database().ref(`event/${this.props.eventID}/attendees/${cookie}/rankings/`);
         for (let i = 0; i < items.length; i++) {
-            ref.child(items[i].id).set(i + 1);
+            // ref.child(items[i].id).set(i + 1);
+            ref.child(i + 1).set(items[i]);
         }
     }
 

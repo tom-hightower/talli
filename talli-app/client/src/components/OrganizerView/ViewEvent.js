@@ -78,7 +78,8 @@ export default class ViewEvent extends Component {
                         startVote: eventBase.startVote,
                         endVote: eventBase.endVote,
                         sheetURL: eventBase.sheetURL,
-                        entries: eventEntries
+                        entries: eventEntries,
+                        weights: eventBase.weights
                     },
                     urlConfirm: this.state.urlConfirm,
                     totalBallots: 0,
@@ -244,22 +245,15 @@ export default class ViewEvent extends Component {
                     if (event.attendees[user].submitted) {
                         totalSubmitted += 1;
                     }
-                    for (let entry in event.attendees[user].rankings) {
-                        if (!topVotes[entry]) {
-                            topVotes[entry] = 0;
-                        }
-                        switch (event.attendees[user].rankings[entry]) {
-                            case 1:
-                                topVotes[entry] += 3;
-                                break;
-                            case 2:
-                                topVotes[entry] += 2;
-                                break;
-                            case 3:
-                                topVotes[entry] += 1;
-                                break;
-                            default:
-                                break;
+                    let rankings = event.attendees[user].rankings;
+                    // fight me 
+                    let words = ['first', 'second', 'third'];
+                    for (let i = 1; i <= 3; i++) {
+                        if (rankings[i]) {
+                            if (!topVotes[rankings[i].id]) {
+                                topVotes[rankings[i].id] = 0;
+                            }
+                            topVotes[rankings[i].id] += this.state.event.weights[words[i - 1]];
                         }
                     }
                 }
