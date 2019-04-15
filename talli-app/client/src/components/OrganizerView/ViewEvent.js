@@ -114,7 +114,7 @@ export default class ViewEvent extends Component {
     }
 
     componentWillUnmount() {
-        socket.removeListener('error');
+        socket.removeAllListeners();
     }
 
     handleExport = () => {

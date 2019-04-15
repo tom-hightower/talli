@@ -83,7 +83,7 @@ io.on('connection', function (socket) {
                             }
                             sheet2.setHeaderRow(['RANK', 'FIRST', 'SECOND', 'THIRD', 'TOTAL'], (err4) => {
                                 if (err4) {
-                                    sendError('Could not set header row of weightes ranks sheet');
+                                    sendError('Could not set header row of weighted ranks sheet');
                                     return;
                                 }
                                 const row = { RANK: 'weights', FIRST: 3, SECOND: 2, THIRD: 1 };

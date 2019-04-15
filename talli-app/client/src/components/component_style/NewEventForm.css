@@ -7,3 +7,10 @@
 .votePeriodText {
     margin-top: 15px !important;
 }
+
+.eventForm .urlField {
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+    max-width: max-content;
+}

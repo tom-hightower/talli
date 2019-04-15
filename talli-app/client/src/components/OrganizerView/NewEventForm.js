@@ -3,10 +3,23 @@ import 'date-fns';
 import DateFnsUtils from '@date-io/date-fns';
 import { MuiPickersUtilsProvider, DateTimePicker, DatePicker } from 'material-ui-pickers';
 import { Typography, TextField, InputAdornment, Button, FormControlLabel, Switch } from '@material-ui/core';
+import SheetDialog from './Dialogs/SheetDialog'
+import ShowError from './Dialogs/ShowError';
 import CalendarIcon from '@material-ui/icons/DateRange';
 import '../component_style/NewEventForm.css';
 import '../component_style/Organizer.css';
 import firebase from '../../firebase';
+import openSocket from 'socket.io-client';
+
+
+const config = require('../../config.json');
+
+const socket = openSocket(
+    (config.Global.devMode ?
+        `http://localhost:${config.Global.serverPort}` :
+        `${(config.Global.sslEnabled ? "https" : "http")}://${config.Global.hostURL}:${config.Global.serverPort}`
+    )
+);
 
 export default class NewEventForm extends Component {
     constructor(props) {
@@ -28,12 +41,60 @@ export default class NewEventForm extends Component {
                     third: 1
                 }
             },
+            connecting: false,
         };
+        this.sheetDialog = React.createRef();
+        this.showError = React.createRef();
+    }
+
+    componentDidMount() {
+        socket.on('error', (data) => {
+            console.log(data.error);
+            this.handleError(data.error);
+            this.setState({
+                eventData: this.state.eventData,
+                connecting: false
+            });
+        });
+
+        socket.on('url_confirm', () => {
+            this.addEntries();
+        });
+    }
+
+    componentWillUnmount() {
+        socket.removeAllListeners();
+    }
+
+    handleError = (message) => {
+        this.showError.current.handleOpen(message);
+    }
+
+    openSheetDialog = () => {
+        this.sheetDialog.current.handleOpen();
+    }
+
+    checkUrlFormat = (url) => {
+        return url.split('/').length >= 5;
+    }
+
+    handleSubmit = (e) => {
+        // url check and next page if successful
+        e.preventDefault();
+        socket.emit('send_url', {
+            url: this.state.eventData.sheetURL,
+            googleId: null,
+            eventId: null
+        });
+        this.setState({
+            eventData: this.state.eventData,
+            connecting: true
+        });
     }
 
     // Sends form data to Firebase and navigates to the next page
-    AddEntries = (event) => {
-        event.preventDefault();
+    addEntries = () => {
+        // event.preventDefault();
         const item = this.state.eventData;
         if (!item.id) {
             item.id = Math.floor((Math.random() * 10000) + 1);
@@ -82,6 +143,7 @@ export default class NewEventForm extends Component {
         oldData.automate = !this.state.eventData.automate;
         this.setState({
             eventData: oldData,
+            connecting: this.state.connecting
         });
     }
 
@@ -90,6 +152,7 @@ export default class NewEventForm extends Component {
         oldData[field] = event.target.value;
         this.setState({
             eventData: oldData,
+            connecting: this.state.connecting
         });
     }
 
@@ -98,6 +161,7 @@ export default class NewEventForm extends Component {
         oldData[field] = date;
         this.setState({
             eventData: oldData,
+            connecting: this.state.connecting
         });
     }
 
@@ -108,8 +172,10 @@ export default class NewEventForm extends Component {
     render() {
         return (
             <div className="newEventForm">
+                <SheetDialog ref={this.sheetDialog} />
+                <ShowError ref={this.showError} />
                 <Typography variant="h4" align="center" gutterBottom>Create a new event</Typography>
-                <form className="eventForm" onSubmit={this.AddEntries}>
+                <form className="eventForm" onSubmit={this.handleSubmit}>
                     <Typography variant="h6">Event Details</Typography>
                     <TextField
                         required
@@ -138,6 +204,19 @@ export default class NewEventForm extends Component {
                         onChange={this.handleEventChange('location')}
                         InputLabelProps={{ shrink: true }}
                     />
+                    <br />
+                    <div className="urlField">
+                        <TextField
+                            required
+                            label="Google Sheet URL"
+                            margin="dense"
+                            className="entryFormText"
+                            value={this.state.eventData.sheetURL}
+                            onChange={this.handleEventChange('sheetURL')}
+                            InputLabelProps={{ shrink: true }}
+                        />
+                        <Button align="bottom" onClick={this.openSheetDialog}>Sheet setup requirements</Button>
+                    </div>
                     <br /> <br />
                     <MuiPickersUtilsProvider utils={DateFnsUtils}>
                         <DatePicker
@@ -235,6 +314,7 @@ export default class NewEventForm extends Component {
                     >
                         Next
                     </Button>
+                    { this.state.connecting && <Typography>Connecting to google sheet...</Typography>}
                 </form>
             </div>
         );
