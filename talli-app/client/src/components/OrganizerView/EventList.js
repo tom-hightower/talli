@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Typography, Grid, Button } from '@material-ui/core';
 import AddCircleIcon from '@material-ui/icons/AddCircle';
+import { navigate } from 'react-mini-router';
 import '../component_style/Organizer.css';
 import firebase from '../../firebase';
 
@@ -18,37 +19,39 @@ export default class EventList extends Component {
     }
 
     componentDidMount() {
-        const googleId = this.props.user.googleId;
-        const query = firebase.database().ref(`organizer/${googleId}/event`);
-        const allEvents = [];
-        query.on('value', (snapshot) => {
-            const events = snapshot.val();
-            for (let event in events) {
-                const refPrefix = `${event}/eventData`;
-                const id = snapshot.child(`${refPrefix}/id`).val();
-                const name = snapshot.child(`${refPrefix}/name`).val();
-                const location = snapshot.child(`${refPrefix}/location`).val();
-                const startDate = snapshot.child(`${refPrefix}/startDate`).val();
-                const endDate = snapshot.child(`${refPrefix}/endDate`).val();
-                const automate = snapshot.child(`${refPrefix}/automate`).val();
-                const startVote = snapshot.child(`${refPrefix}/startVote`).val();
-                const endVote = snapshot.child(`${refPrefix}/endVote`).val();
+        const googleId = sessionStorage.getItem('id');
+        if (googleId) {
+            const query = firebase.database().ref(`organizer/${googleId}/event`);
+            const allEvents = [];
+            query.on('value', (snapshot) => {
+                const events = snapshot.val();
+                for (let event in events) {
+                    const refPrefix = `${event}/eventData`;
+                    const id = snapshot.child(`${refPrefix}/id`).val();
+                    const name = snapshot.child(`${refPrefix}/name`).val();
+                    const location = snapshot.child(`${refPrefix}/location`).val();
+                    const startDate = snapshot.child(`${refPrefix}/startDate`).val();
+                    const endDate = snapshot.child(`${refPrefix}/endDate`).val();
+                    const automate = snapshot.child(`${refPrefix}/automate`).val();
+                    const startVote = snapshot.child(`${refPrefix}/startVote`).val();
+                    const endVote = snapshot.child(`${refPrefix}/endVote`).val();
 
-                allEvents.push({
-                    id,
-                    name,
-                    location,
-                    startDate,
-                    endDate,
-                    automate,
-                    startVote,
-                    endVote
+                    allEvents.push({
+                        id,
+                        name,
+                        location,
+                        startDate,
+                        endDate,
+                        automate,
+                        startVote,
+                        endVote
+                    });
+                }
+                this.setState({
+                    events: allEvents
                 });
-            }
-            this.setState({
-                events: allEvents
             });
-        });
+        }
     }
 
     parseDate(isoDate) {
@@ -66,6 +69,10 @@ export default class EventList extends Component {
     }
 
     render() {
+        const organizerId = sessionStorage.getItem('id');
+        if (!organizerId) {
+            navigate('/');
+        }
         return (
             <div>
                 <Typography variant="h4" align="center" gutterBottom>{sessionStorage.getItem('name')}&apos;s Events</Typography>

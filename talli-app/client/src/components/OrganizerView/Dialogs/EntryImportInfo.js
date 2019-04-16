@@ -42,7 +42,9 @@ export default class EntryImportInfo extends Component {
                     </DialogTitle>
                     <DialogContent>
                         Accepted file type: .csv <br /><br />
-                        Accepted file format: 3 columns in the order of Entry Titles, Presenters, Date(s) Attending
+                        Accepted file format: 3 columns in the order of Entry Titles, Presenters, Date(s)
+                        Attending. An optional Entry Info URL column is also accepted after the Date(s)
+                        column.
                         <br /><br />
                         *Data is read assuming there is a header row, so the first row will be skipped.
                         <br /><br />
@@ -53,10 +55,11 @@ export default class EntryImportInfo extends Component {
                                     <td>Entry Title</td>
                                     <td>Presenters</td>
                                     <td>Date(s) Attending</td>
+                                    <td>Entry Info URL (optional)</td>
                                 </tr>
-                                <tr><td /><td /><td /></tr>
-                                <tr><td /><td /><td /></tr>
-                                <tr><td /><td /><td /></tr>
+                                <tr><td /><td /><td /><td /></tr>
+                                <tr><td /><td /><td /><td /></tr>
+                                <tr><td /><td /><td /><td /></tr>
                             </tbody>
                         </table>
                     </DialogContent>

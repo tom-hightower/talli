@@ -74,6 +74,7 @@ export default class SortContainer extends Component {
                         id: entryId,
                         presenters: eventEntries[entryId].presenters,
                         entry_dates: eventEntries[entryId].entry_dates,
+                        info_url: eventEntries[entryId].info_url,
                         showInfo: false,
                     });
                     this.updateDatabaseRankings(itemList);
@@ -146,6 +147,12 @@ export default class SortContainer extends Component {
         });
     }
 
+    isValidURL(str) {
+        const a = document.createElement('a');
+        a.href = str;
+        return (a.host && a.host !== window.location.host);
+    }
+
     render() {
         const SortableItem = SortableElement(({ value, item }) => (
             <li className="rankings" onClick={() => this.toggleShowInfo(item)}>
@@ -157,7 +164,15 @@ export default class SortContainer extends Component {
                             (
                                 <div id="expandedInfo">
                                     <b>By:</b> {value.presenters} <br />
-                                    <b>Attendance:</b> {value.entry_dates}
+                                    <b>Attendance:</b> {value.entry_dates} <br />
+                                    {value.info_url && (
+                                        <>
+                                            <b>Info URL: </b>
+                                            {this.isValidURL(value.info_url) ? (
+                                                <a href={value.info_url}>{value.info_url}</a>
+                                            ) : value.info_url}
+                                        </>
+                                    )}
                                 </div>
                             ) : ''
                     }

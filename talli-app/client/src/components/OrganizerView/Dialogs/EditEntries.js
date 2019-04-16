@@ -14,7 +14,8 @@ export default class EditEntries extends Component {
             title: '',
             id: '',
             presenters: '',
-            entry_dates: ''
+            entry_dates: '',
+            info_url: '',
         };
     }
 
@@ -24,7 +25,8 @@ export default class EditEntries extends Component {
             title: this.props.event.entries[entryID].title,
             id: entryID,
             presenters: this.props.event.entries[entryID].presenters,
-            entry_dates: this.props.event.entries[entryID].entry_dates
+            entry_dates: this.props.event.entries[entryID].entry_dates,
+            info_url: this.props.event.entries[entryID].info_url,
         });
     }
 
@@ -48,6 +50,7 @@ export default class EditEntries extends Component {
         itemsRef.child('title').set(this.state.title);
         itemsRef.child('presenters').set(this.state.presenters);
         itemsRef.child('entry_dates').set(this.state.entry_dates);
+        itemsRef.child('info_url').set(this.state.info_url);
     }
 
     handleChange = name => event => {
@@ -93,6 +96,13 @@ export default class EditEntries extends Component {
                             className="entryFormText"
                             defaultValue={this.state.entry_dates}
                             onChange={this.handleChange('entry_dates')}
+                        />
+                        <TextField
+                            label="Entry Info URL"
+                            margin="dense"
+                            className="entryFormText"
+                            defaultValue={this.state.info_url}
+                            onChange={this.handleChange('info_url')}
                         />
                     </DialogContent>
                     <DialogActions>

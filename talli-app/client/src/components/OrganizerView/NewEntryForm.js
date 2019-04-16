@@ -11,7 +11,8 @@ export default class NewEntryForm extends Component {
             title: '',
             id: '',
             presenters: '',
-            entry_dates: ''
+            entry_dates: '',
+            info_url: '',
         };
     }
 
@@ -22,6 +23,7 @@ export default class NewEntryForm extends Component {
             id: this.props.currValue.id,
             presenters: this.props.currValue.presenters,
             entry_dates: this.props.currValue.entry_dates,
+            info_url: this.props.currValue.info_url,
         });
     }
 
@@ -70,6 +72,13 @@ export default class NewEntryForm extends Component {
                             className="entryFormText"
                             value={this.state.entry_dates}
                             onChange={this.handleChange('entry_dates')}
+                        />
+                        <TextField
+                            label="Project Info URL"
+                            margin="dense"
+                            className="entryFormText"
+                            value={this.state.info_url}
+                            onChange={this.handleChange('info_url')}
                         />
                     </div>
                     <RemoveCircleOutlineIcon color='primary' id='entryIcon' onClick={this.delEntry} />
