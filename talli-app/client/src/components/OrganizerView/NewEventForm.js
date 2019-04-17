@@ -106,7 +106,7 @@ export default class NewEventForm extends Component {
             });
 
             item.id = 1 + maxEvent;
-            
+
             ref.child(item.id).set({ 'organizer': googleId });
 
             const itemsRef = firebase.database().ref(`organizer/${googleId}/event/${item.id}`);
