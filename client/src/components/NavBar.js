@@ -19,7 +19,7 @@ import CookieWarning from './CookieWarning';
 
 /**
  * The NavBar contains the top AppBar as well as the navigation Drawer on
- * the left side, activated by the hamburger menu icon 
+ * the left side, activated by the hamburger menu icon
  */
 export default class NavBar extends Component {
     constructor(props) {

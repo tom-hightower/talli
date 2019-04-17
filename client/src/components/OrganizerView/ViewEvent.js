@@ -233,6 +233,18 @@ export default class ViewEvent extends Component {
         });
     }
 
+    getTopVotes(topVotes, rankings) {
+        const words = ['first', 'second', 'third'];
+        let newTop = topVotes;
+        for (let i = 1; i <= 3; i++) {
+            if (rankings[i]) {
+                if (!newTop[rankings[i].id]) newTop[rankings[i].id] = 0;
+                newTop[rankings[i].id] += this.state.event.weights[words[i - 1]];
+            }
+        }
+        return newTop;
+    }
+
     refreshStats = () => {
         firebase.database().ref(`event/${this.state.event.id}/`).once('value').then(snap => {
             const event = snap.val();
@@ -240,33 +252,22 @@ export default class ViewEvent extends Component {
             if (event.attendees) totalBallots += Object.keys(event.attendees).length;
             if (event.manual) totalBallots += Object.keys(event.manual).length;
             let totalSubmitted = 0;
-            const topVotes = {};
+            let topVotes = {};
             const sortVotes = [];
-            const words = ['first', 'second', 'third'];
             if (event.attendees) {
                 for (let user in event.attendees) {
                     if (event.attendees[user].submitted) {
                         totalSubmitted += 1;
                     }
-                    let rankings = event.attendees[user].rankings;
-                    for (let i = 1; i <= 3; i++) {
-                        if (rankings[i]) {
-                            if (!topVotes[rankings[i].id]) topVotes[rankings[i].id] = 0;
-                            topVotes[rankings[i].id] += this.state.event.weights[words[i - 1]];
-                        }
-                    }
+                    const rankings = event.attendees[user].rankings;
+                    topVotes = this.getTopVotes(topVotes, rankings);
                 }
             }
             if (event.manual) {
                 for (let user in event.manual) {
                     totalSubmitted += 1;
-                    let rankings = event.manual[user];
-                    for (let i = 1; i <= 3; i++) {
-                        if (rankings[i]) {
-                            if (!topVotes[rankings[i].id]) topVotes[rankings[i].id] = 0;
-                            topVotes[rankings[i].id] += this.state.event.weights[words[i - 1]];
-                        }
-                    }
+                    const rankings = event.manual[user];
+                    topVotes = this.getTopVotes(topVotes, rankings);
                 }
             }
             for (let ballot in topVotes) {
@@ -332,7 +333,7 @@ export default class ViewEvent extends Component {
                             <div className="box">
                                 {
                                     Object.values(this.state.event.entries).map((entry, index) => (
-                                        <Button key={index} className="listButtons" onClick={() => this.handleEntryEdit(entry.id)}>
+                                        <Button key={entry.id} className="listButtons" onClick={() => this.handleEntryEdit(entry.id)}>
                                             {entry.title} by {entry.presenters}
                                         </Button>
                                     ))
@@ -417,7 +418,7 @@ export default class ViewEvent extends Component {
                                         <div className="refreshButton">
                                             <Button variant="contained" size="small" color="default" onClick={this.refreshStats}>
                                                 Refresh Statistics
-                                        </Button>
+                                            </Button>
                                         </div>
                                     </div>
                                 </div>

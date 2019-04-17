@@ -328,7 +328,6 @@ io.on('connection', function (socket) {
                         }
                     }
                 }
-                // console.log(ballots);
                 const doc = new GoogleSpreadsheet(sheetID);
                 doc.useServiceAccountAuth(creds, (err) => {
                     if (err) {
@@ -361,8 +360,7 @@ io.on('connection', function (socket) {
                                     for (let item of ballots[i]) {
                                         // for some reason, there is an undefined at the beginning of these arrays
                                         if (item) {
-                                            console.log(item['name']);
-                                            curr[numToStr[j]] = item['name'];
+                                            curr[numToStr[j]] = item.name;
                                             j++;
                                         }
                                     }
@@ -370,27 +368,23 @@ io.on('connection', function (socket) {
                                 }
                             }
                             curr = {};
-                            console.log(rows);
-                            console.log(ballots.length);
                             for (let r = rows.length; r < ballots.length; r++) {
                                 for (let n = 1; n <= 10; n++) {
                                     curr[numToStr[n]] = '';
                                 }
                                 curr.submission_num = r + 1;
-                                j = 1;
+                                let j = 1;
                                 for (let item of ballots[r]) {
                                     if (item) {
-                                        curr[numToStr[j]] = item['title'];
+                                        curr[numToStr[j]] = item.title;
                                         j++;
                                     }
                                 }
-                                console.log(curr);
                                 votesSheet.addRow(curr, (err5) => {
                                     if (err5) {
                                         sendError('Could not add row to all votes sheet');
                                         return;
                                     }
-                                    console.log('row added');
                                 });
                             }
                             // if (rows.length > ballots.length) {

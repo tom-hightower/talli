@@ -57,7 +57,7 @@ export default class Organizer extends Component {
             case orgViews.VIEW:
                 return (<ViewEvent orgViews={orgViews} handler={this.setView} curEvent={this.state.curEventID} user={this.props.user} />);
             case orgViews.SHEET:
-                return (<AddSheet orgViews={orgViews} handler={this.setView} curEvent={this.state.curEventID} user={this.props.user} />)
+                return (<AddSheet orgViews={orgViews} handler={this.setView} curEvent={this.state.curEventID} user={this.props.user} />);
             default:
                 return (<EventList orgViews={orgViews} handler={this.setView} setEvent={this.setEvent} user={this.props.user} />);
         }
