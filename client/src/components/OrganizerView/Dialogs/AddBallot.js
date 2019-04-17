@@ -61,7 +61,7 @@ export default class AddVotes extends Component {
                 const entries = {};
                 let i = 1;
                 for (let entry of this.state.entries) {
-                    let entryData = this.props.event.entries[entry.id];
+                    const entryData = this.props.event.entries[entry.id];
                     entries[i] = entryData;
                     i++;
                 }

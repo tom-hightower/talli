@@ -12,15 +12,12 @@ const RouterMixin = require('react-mini-router').RouterMixin;
  * as error handling when a non-existant page is queried
  */
 const RoutedApp = createReactClass({
-
     getInitialState() {
         return { loggedIn: this.props.loggedIn };
     },
 
     mixins: [RouterMixin],
 
-    // TODO: Set up /vote/:text (voteWithID) to handle url-injected event IDs
-    //      (currently displays the same as /vote)
     routes: {
         '/': 'home',
         '/vote': 'vote',

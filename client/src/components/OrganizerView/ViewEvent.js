@@ -235,7 +235,7 @@ export default class ViewEvent extends Component {
 
     getTopVotes(topVotes, rankings) {
         const words = ['first', 'second', 'third'];
-        let newTop = topVotes;
+        const newTop = topVotes;
         for (let i = 1; i <= 3; i++) {
             if (rankings[i]) {
                 if (!newTop[rankings[i].id]) newTop[rankings[i].id] = 0;
@@ -333,7 +333,12 @@ export default class ViewEvent extends Component {
                             <div className="box">
                                 {
                                     Object.values(this.state.event.entries).map((entry, index) => (
-                                        <Button key={entry.id} className="listButtons" onClick={() => this.handleEntryEdit(entry.id)}>
+                                        <Button
+                                            key={entry.id}
+                                            className="listButtons"
+                                            onClick={() => this.handleEntryEdit(entry.id)}
+                                            index={index}
+                                        >
                                             {entry.title} by {entry.presenters}
                                         </Button>
                                     ))

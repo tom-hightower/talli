@@ -66,13 +66,6 @@ export default class Organizer extends Component {
     render() {
         return (
             <div className="content">
-                {/* <GoogleLogout 
-                    buttonText="Logout"
-                    render={renderProps => (
-                        <Button variant="contained" color="secondary" className="buttons" onClick={renderProps.onClick}>Logout</Button>
-                    )}
-                    onLogoutSuccess={this.logout.bind(this)} /> */}
-                {/* temp solution to logout issue */}
                 <Button variant="contained" color="secondary" className="buttons" onClick={this.logout.bind(this)}>Logout</Button>
                 <div>{this.getCurrView()}</div>
             </div>

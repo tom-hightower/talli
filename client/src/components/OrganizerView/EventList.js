@@ -88,6 +88,7 @@ export default class EventList extends Component {
                             id="openEvent"
                             onClick={() => this.viewEvent(event.id)}
                             key={event.id}
+                            index={index}
                         >
                             {event.name}
                             <br />
