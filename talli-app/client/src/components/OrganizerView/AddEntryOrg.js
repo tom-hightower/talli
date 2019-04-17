@@ -85,9 +85,10 @@ export default class AddEntryOrg extends Component {
                 let lineTitle;
                 let linePres;
                 let lineDate;
+                let lineURL;
                 for (let i = 1; i < lines.length; i++) {
                     line = lines[i].split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
-                    if (line.length !== 3 && line.length !== 0) {
+                    if (line.length !== 3 && line.length !== 0 && line.length !== 4) {
                         a = 'File format is incorrect. Please see "Import Requirements" for correct formatting.';
                         this.setState({ entries: this.state.entries, alert: a });
                         return;
@@ -95,13 +96,15 @@ export default class AddEntryOrg extends Component {
                     lineTitle = line[0];
                     linePres = line[1];
                     lineDate = line[2];
+                    lineURL = line[3] ? line[3] : '';
                     if (lineTitle && linePres && lineDate) {
                         tempEnt.push({
                             show: true,
                             title: lineTitle,
                             id: '',
                             presenters: linePres,
-                            entryDates: lineDate,
+                            entry_dates: lineDate,
+                            info_url: lineURL,
                         });
                     } else {
                         a = 'Some required data is missing. Please see "Import Requirements" for correct formatting.';

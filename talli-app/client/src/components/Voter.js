@@ -32,18 +32,18 @@ export default class Voter extends Component {
         this.setState({ rankingItems: itemList });
     }
 
-    changeView(newView, event = 'na', organizer = 'na', addedEntry = '') {
+    changeView(newView, event = 'na', organizer = 'na', entryToAdd = '') {
         if (event !== 'na' && organizer !== 'na') {
             this.setState({
                 curView: newView,
                 eventID: event,
                 organizerID: organizer,
-                entryToAdd: addedEntry
+                entryToAdd,
             });
         } else {
             this.setState({
                 curView: newView,
-                entryToAdd: addedEntry
+                entryToAdd,
             });
         }
     }

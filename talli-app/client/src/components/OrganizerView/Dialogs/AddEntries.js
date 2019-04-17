@@ -13,7 +13,8 @@ export default class AddEntries extends Component {
             open: false,
             title: '',
             presenters: '',
-            entry_dates: ''
+            entry_dates: '',
+            info_url: '',
         };
     }
 
@@ -28,7 +29,8 @@ export default class AddEntries extends Component {
             open: false,
             title: '',
             presenters: '',
-            entry_dates: ''
+            entry_dates: '',
+            info_url: '',
         });
     }
 
@@ -51,6 +53,7 @@ export default class AddEntries extends Component {
         itemsRef.child('id').set(tempId);
         itemsRef.child('presenters').set(this.state.presenters);
         itemsRef.child('entry_dates').set(this.state.entry_dates);
+        itemsRef.child('info_url').set(this.state.info_url);
         // close dialog
         this.handleClose();
     }
@@ -91,6 +94,13 @@ export default class AddEntries extends Component {
                             className="entryFormText"
                             defaultValue={this.state.entry_dates}
                             onChange={this.handleChange('entry_dates')}
+                        />
+                        <TextField
+                            label="Entry Info URL"
+                            margin="dense"
+                            className="entryFormText"
+                            defaultValue={this.state.info_url}
+                            onChange={this.handleChange('info_url')}
                         />
                     </DialogContent>
                     <DialogActions>
