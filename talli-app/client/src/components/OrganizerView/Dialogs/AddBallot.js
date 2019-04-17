@@ -67,7 +67,7 @@ export default class AddVotes extends Component {
                     i++;
                 }
 
-                ballotsRef.child(index).set(entries)
+                ballotsRef.child(index).set(entries);
 
                 this.setState({ entries: [] });
                 this.handleClose();

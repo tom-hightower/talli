@@ -3,13 +3,14 @@ import 'date-fns';
 import DateFnsUtils from '@date-io/date-fns';
 import { MuiPickersUtilsProvider, DateTimePicker, DatePicker } from 'material-ui-pickers';
 import { Typography, TextField, InputAdornment, Button, FormControlLabel, Switch } from '@material-ui/core';
-import SheetDialog from './Dialogs/SheetDialog'
-import ShowError from './Dialogs/ShowError';
 import CalendarIcon from '@material-ui/icons/DateRange';
+import openSocket from 'socket.io-client';
+import SheetDialog from './Dialogs/SheetDialog';
+import ShowError from './Dialogs/ShowError';
 import '../component_style/NewEventForm.css';
 import '../component_style/Organizer.css';
 import firebase from '../../firebase';
-import openSocket from 'socket.io-client';
+
 
 
 const config = require('../../config.json');

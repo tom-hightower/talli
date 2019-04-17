@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Slide, Dialog, DialogTitle, DialogContent, DialogActions, Button, TextField, FormControlLabel } from '@material-ui/core';
+import { Slide, Dialog, DialogTitle, DialogContent, DialogActions, Button, TextField } from '@material-ui/core';
 import openSocket from 'socket.io-client';
 
 const config = require('../../../config.json');

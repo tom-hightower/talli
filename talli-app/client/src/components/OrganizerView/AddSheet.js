@@ -23,7 +23,7 @@ export default class NewEntryForm extends Component {
         this.state = {
             sheetURL: "",
             urlConfirm: false,
-        }
+        };
         this.errorChild = React.createRef();
     }
 

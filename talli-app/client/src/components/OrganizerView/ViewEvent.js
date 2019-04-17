@@ -246,8 +246,8 @@ export default class ViewEvent extends Component {
                         totalSubmitted += 1;
                     }
                     let rankings = event.attendees[user].rankings;
-                    // fight me 
-                    let words = ['first', 'second', 'third'];
+                    // fight me
+                    const words = ['first', 'second', 'third'];
                     for (let i = 1; i <= 3; i++) {
                         if (rankings[i]) {
                             if (!topVotes[rankings[i].id]) {

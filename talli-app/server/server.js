@@ -316,12 +316,16 @@ io.on('connection', function (socket) {
                 const ballots = [];
                 if (event.attendees) {
                     for (let ballot in event.attendees) {
-                        ballots.push(event.attendees[ballot].rankings);
+                        if (event.attendees[ballot]) {
+                            ballots.push(event.attendees[ballot].rankings);
+                        }
                     }
                 }
                 if (event.manual) {
                     for (let ballot in event.manual) {
-                        ballots.push(event.manual[ballot]);
+                        if (event.manual[ballot]) {
+                            ballots.push(event.manual[ballot]);
+                        }
                     }
                 }
                 // console.log(ballots);
@@ -361,7 +365,6 @@ io.on('connection', function (socket) {
                                             curr[numToStr[j]] = item['name'];
                                             j++;
                                         }
-                                        
                                     }
                                     curr.save();
                                 }
