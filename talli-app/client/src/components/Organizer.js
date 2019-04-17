@@ -5,6 +5,7 @@ import NewEvent from './OrganizerView/NewEventForm';
 import EventList from './OrganizerView/EventList';
 import AddEntry from './OrganizerView/AddEntryOrg';
 import ViewEvent from './OrganizerView/ViewEvent';
+import AddSheet from './OrganizerView/AddSheet';
 import './component_style/Organizer.css';
 
 const orgViews = {
@@ -12,6 +13,7 @@ const orgViews = {
     CREATE: 'NewEvent',
     ADD: 'AddEntry',
     VIEW: 'ViewEvent',
+    SHEET: 'AddSheet',
 };
 
 /**
@@ -54,6 +56,8 @@ export default class Organizer extends Component {
                 return (<AddEntry orgViews={orgViews} handler={this.setView} curEvent={this.state.curEventID} user={this.props.user} />);
             case orgViews.VIEW:
                 return (<ViewEvent orgViews={orgViews} handler={this.setView} curEvent={this.state.curEventID} user={this.props.user} />);
+            case orgViews.SHEET:
+                return (<AddSheet orgViews={orgViews} handler={this.setView} curEvent={this.state.curEventID} user={this.props.user} />)
             default:
                 return (<EventList orgViews={orgViews} handler={this.setView} setEvent={this.setEvent} user={this.props.user} />);
         }

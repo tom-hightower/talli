@@ -83,7 +83,7 @@ io.on('connection', function (socket) {
                             }
                             sheet2.setHeaderRow(['RANK', 'FIRST', 'SECOND', 'THIRD', 'TOTAL'], (err4) => {
                                 if (err4) {
-                                    sendError('Could not set header row of weightes ranks sheet');
+                                    sendError('Could not set header row of weighted ranks sheet');
                                     return;
                                 }
                                 const row = { RANK: 'weights', FIRST: 3, SECOND: 2, THIRD: 1 };
@@ -300,6 +300,7 @@ io.on('connection', function (socket) {
         });
     };
 
+    // gonna be fixing this in the next PR, but for now it should take entry titles
     const finalizeResults = (data) => {
         const organizerId = data.googleId;
         const eventId = data.eventId;
@@ -315,14 +316,19 @@ io.on('connection', function (socket) {
                 const ballots = [];
                 if (event.attendees) {
                     for (let ballot in event.attendees) {
-                        ballots.push(event.attendees[ballot].rankings);
+                        if (event.attendees[ballot]) {
+                            ballots.push(event.attendees[ballot].rankings);
+                        }
                     }
                 }
-                if (event.ballots && event.ballots.manual) {
-                    for (let ballot in event.ballots.manual) {
-                        ballots.push(event.ballots.manual[ballot]);
+                if (event.manual) {
+                    for (let ballot in event.manual) {
+                        if (event.manual[ballot]) {
+                            ballots.push(event.manual[ballot]);
+                        }
                     }
                 }
+                // console.log(ballots);
                 const doc = new GoogleSpreadsheet(sheetID);
                 doc.useServiceAccountAuth(creds, (err) => {
                     if (err) {
@@ -344,36 +350,54 @@ io.on('connection', function (socket) {
                             for (let i = 0; i < rows.length; i++) {
                                 if (ballots[i]) {
                                     curr = rows[i];
+                                    // clear the row
                                     for (let n = 1; n <= 10; n++) {
                                         curr[numToStr[n]] = '';
                                     }
+                                    // set submission num
                                     curr.submission_num = i + 1;
-                                    for (let item in ballots[i]) {
-                                        curr[numToStr[ballots[i][item]]] = item;
+                                    // set rankings
+                                    let j = 1;
+                                    for (let item of ballots[i]) {
+                                        // for some reason, there is an undefined at the beginning of these arrays
+                                        if (item) {
+                                            console.log(item['name']);
+                                            curr[numToStr[j]] = item['name'];
+                                            j++;
+                                        }
                                     }
                                     curr.save();
                                 }
                             }
+                            curr = {};
+                            console.log(rows);
+                            console.log(ballots.length);
                             for (let r = rows.length; r < ballots.length; r++) {
                                 for (let n = 1; n <= 10; n++) {
                                     curr[numToStr[n]] = '';
                                 }
                                 curr.submission_num = r + 1;
-                                for (let item in ballots[r]) {
-                                    curr[numToStr[ballots[r][item]]] = item;
+                                j = 1;
+                                for (let item of ballots[r]) {
+                                    if (item) {
+                                        curr[numToStr[j]] = item['title'];
+                                        j++;
+                                    }
                                 }
+                                console.log(curr);
                                 votesSheet.addRow(curr, (err5) => {
                                     if (err5) {
                                         sendError('Could not add row to all votes sheet');
                                         return;
                                     }
+                                    console.log('row added');
                                 });
                             }
-                            if (rows.length > ballots.length) {
-                                for (let y = ballots.length; y < rows.length; y++) {
-                                    rows[y].del();
-                                }
-                            }
+                            // if (rows.length > ballots.length) {
+                            //     for (let y = ballots.length; y < rows.length; y++) {
+                            //         rows[y].del();
+                            //     }
+                            // }
                         });
                     });
                 });

@@ -24,6 +24,14 @@
     border: solid 1px white;
 }
 
+.addSheet.instructions {
+    border: 2px solid #03a9f4;
+    text-align: left;
+    font-size: 105%;
+    width: 50%;
+    left: 25%;
+}
+
 .eventContainer {
     height: 200px;
     width: 200px;

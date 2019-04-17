@@ -68,7 +68,7 @@ export default class AddEntryOrg extends Component {
                 itemsRef.child(item.id).set(item);
             }
         }
-        this.props.handler(this.props.orgViews.MAIN);
+        this.props.handler(this.props.orgViews.VIEW);
     }
 
     readCSV = event => {
