@@ -51,7 +51,8 @@ export default class EditVoting extends Component {
     getVotingState() {
         if (this.props.event.startVote === 'none' || (this.props.event.startVote > new Date().toISOString())) { // not open yet
             return 'before';
-        } else if (this.props.event.endVote === 'none' || (this.props.event.endVote > new Date().toISOString())) { // open
+        }
+        if (this.props.event.endVote === 'none' || (this.props.event.endVote > new Date().toISOString())) { // open
             return 'open';
         }
         return 'closed';

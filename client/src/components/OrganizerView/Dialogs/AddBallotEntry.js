@@ -90,7 +90,8 @@ export default class AddVoteEntryForm extends Component {
                     <RemoveCircleOutlineIcon className="removeCircleOutlineIcon" color="primary" id="entryIcon" onClick={this.delEntry} />
                 </div>
             );
-        } else if (this.state.show && !this.state.duplicate) {
+        }
+        if (this.state.show && !this.state.duplicate) {
             return (
                 <div className="addEntry">
                     <br />
@@ -116,7 +117,8 @@ export default class AddVoteEntryForm extends Component {
                     <RemoveCircleOutlineIcon className="removeCircleOutlineIcon" color="primary" id="entryIcon" onClick={this.delEntry} />
                 </div>
             );
-        } else if (this.state.show && this.state.duplicate) {
+        }
+        if (this.state.show && this.state.duplicate) {
             return (
                 <div className="addEntry">
                     <br />

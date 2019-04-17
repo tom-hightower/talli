@@ -12,7 +12,6 @@ import '../component_style/Organizer.css';
 import firebase from '../../firebase';
 
 
-
 const config = require('../../config.json');
 
 const socket = openSocket(
@@ -73,10 +72,6 @@ export default class NewEventForm extends Component {
 
     openSheetDialog = () => {
         this.sheetDialog.current.handleOpen();
-    }
-
-    checkUrlFormat = (url) => {
-        return url.split('/').length >= 5;
     }
 
     handleSubmit = (e) => {
