@@ -236,42 +236,54 @@ export default class ViewEvent extends Component {
     refreshStats = () => {
         firebase.database().ref(`event/${this.state.event.id}/`).once('value').then(snap => {
             const event = snap.val();
+            let totalBallots = 0;
+            if (event.attendees) totalBallots += Object.keys(event.attendees).length;
+            if (event.manual) totalBallots += Object.keys(event.manual).length;
+            let totalSubmitted = 0;
+            const topVotes = {};
+            const sortVotes = [];
+            const words = ['first', 'second', 'third'];
             if (event.attendees) {
-                const totalBallots = Object.keys(event.attendees).length;
-                let totalSubmitted = 0;
-                const topVotes = {};
-                const sortVotes = [];
                 for (let user in event.attendees) {
                     if (event.attendees[user].submitted) {
                         totalSubmitted += 1;
                     }
                     let rankings = event.attendees[user].rankings;
-                    // fight me
-                    const words = ['first', 'second', 'third'];
                     for (let i = 1; i <= 3; i++) {
                         if (rankings[i]) {
-                            if (!topVotes[rankings[i].id]) {
-                                topVotes[rankings[i].id] = 0;
-                            }
+                            if (!topVotes[rankings[i].id]) topVotes[rankings[i].id] = 0;
                             topVotes[rankings[i].id] += this.state.event.weights[words[i - 1]];
                         }
                     }
                 }
-                for (let ballot in topVotes) {
-                    sortVotes.push([ballot, topVotes[ballot]]);
-                }
-                sortVotes.sort((a, b) => b[1] - a[1]);
-                const topThree = {
-                    first: this.state.event.entries[sortVotes[0]] ? this.state.event.entries[sortVotes[0][0]].title : '',
-                    second: this.state.event.entries[sortVotes[1]] ? this.state.event.entries[sortVotes[1][0]].title : '',
-                    third: this.state.event.entries[sortVotes[2]] ? this.state.event.entries[sortVotes[2][0]].title : '',
-                };
-                this.setState({
-                    totalBallots,
-                    totalSubmitted,
-                    topThree
-                });
             }
+            if (event.manual) {
+                for (let user in event.manual) {
+                    totalSubmitted += 1;
+                    let rankings = event.manual[user];
+                    for (let i = 1; i <= 3; i++) {
+                        if (rankings[i]) {
+                            if (!topVotes[rankings[i].id]) topVotes[rankings[i].id] = 0;
+                            topVotes[rankings[i].id] += this.state.event.weights[words[i - 1]];
+                        }
+                    }
+                }
+            }
+            for (let ballot in topVotes) {
+                sortVotes.push([ballot, topVotes[ballot]]);
+            }
+            sortVotes.sort((a, b) => b[1] - a[1]);
+            const { entries } = this.state.event;
+            const topThree = {
+                first: (entries && sortVotes[0]) ? entries[sortVotes[0][0]].title : '',
+                second: (entries && sortVotes[1]) ? entries[sortVotes[1][0]].title : '',
+                third: (entries && sortVotes[2]) ? entries[sortVotes[2][0]].title : '',
+            };
+            this.setState({
+                totalBallots,
+                totalSubmitted,
+                topThree
+            });
         });
     }
 
