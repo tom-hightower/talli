@@ -50,22 +50,25 @@ export default class AddVotes extends Component {
             }
         }
         if (!hasError && numOfEntries > 0) {
-            const itemRef = firebase.database().ref(`event/${this.props.event.id}/ballots`);
-            itemRef.once('value', (snapshot) => {
-                let nonDigitVoteSize = snapshot.child('count').val();
-                if (nonDigitVoteSize === '' || nonDigitVoteSize === null) {
-                    nonDigitVoteSize = 0;
+            const ballotsRef = firebase.database().ref(`event/${this.props.event.id}/manual`);
+            ballotsRef.once('value', (snapshot) => {
+                let ballots = snapshot.val();
+                let index;
+                if (ballots === null) {
+                    index = '0';
+                } else {
+                    index = ballots.length + '';
                 }
-                nonDigitVoteSize += 1;
-                this.setState({ voteID: nonDigitVoteSize });
-                itemRef.child('count').set(this.state.voteID);
-                for (let x = 0; x < this.state.entries.length; x++) {
-                    const item = this.state.entries[x];
-                    if (item.show) {
-                        const itemsRef = firebase.database().ref(`event/${this.props.event.id}/ballots/manual/vote${this.state.voteID}`);
-                        itemsRef.child(item.id).set(item.rank);
-                    }
+                let entries = {};
+                let i = 1;
+                for (let entry of this.state.entries) {
+                    let entryData = this.props.event.entries[entry.id];
+                    entries[i] = entryData;
+                    i++;
                 }
+
+                ballotsRef.child(index).set(entries)
+
                 this.setState({ entries: [] });
                 this.handleClose();
             });
