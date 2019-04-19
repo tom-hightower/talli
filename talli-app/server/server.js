@@ -314,13 +314,13 @@ io.on('connection', function (socket) {
             ballotQuery.on('value', (snapshot) => {
                 const event = snapshot.val();
                 const ballots = [];
-                // if (event.attendees) {
-                //     for (let ballot in event.attendees) {
-                //         if (event.attendees[ballot] && event.attendees[ballot].rankings && !event.attendees[ballot].submitted) {
-                //             ballots.push(event.attendees[ballot].rankings);
-                //         }
-                //     }
-                // }
+                if (event.attendees) {
+                    for (let ballot in event.attendees) {
+                        if (event.attendees[ballot] && event.attendees[ballot].rankings && !event.attendees[ballot].submitted) {
+                            ballots.push(event.attendees[ballot].rankings);
+                        }
+                    }
+                }
                 if (event.manual) {
                     for (let ballot in event.manual) {
                         if (event.manual[ballot]) {
@@ -347,7 +347,7 @@ io.on('connection', function (socket) {
                             }
                             let row;
                             for (let i = 0; i < ballots.length; i++) {
-                                console.log(ballots[i]);
+                                
                                 row = {};
                                 for (let j = 1; j <= 10; j++) {
                                     if (ballots[i][j]) {
@@ -355,13 +355,13 @@ io.on('connection', function (socket) {
                                     }
                                 }
                                 row['submission_num'] = rows.length + 1 + i;
-                                console.log(row);
+                                
                                 votesSheet.addRow(row, (err5) => {
                                     if (err5) {
                                         sendError('Could not add row to all votes sheet');
                                         return;
                                     }
-                                    console.log('row added');
+                                    
                                 });
                             }
                         });
