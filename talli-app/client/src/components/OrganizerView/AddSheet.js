@@ -17,7 +17,7 @@ const socket = openSocket(
 );
 
 export default class NewEntryForm extends Component {
-    
+
     constructor(props) {
         super(props);
         this.state = {
@@ -128,7 +128,7 @@ export default class NewEntryForm extends Component {
                     <Button variant="contained" color="default" className="buttons" onClick={this.handleSkip}>Skip</Button>
                 </div>
             </div>
-            
+
         );
     }
 }
