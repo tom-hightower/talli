@@ -12,7 +12,6 @@ import '../component_style/Organizer.css';
 import firebase from '../../firebase';
 
 
-
 const config = require('../../config.json');
 
 const socket = openSocket(
@@ -75,10 +74,6 @@ export default class NewEventForm extends Component {
         this.sheetDialog.current.handleOpen();
     }
 
-    checkUrlFormat = (url) => {
-        return url.split('/').length >= 5;
-    }
-
     handleSubmit = (e) => {
         // url check and next page if successful
         e.preventDefault();
@@ -95,31 +90,17 @@ export default class NewEventForm extends Component {
 
     // Sends form data to Firebase and navigates to the next page
     addEntries = () => {
-        // event.preventDefault();
         const item = this.state.eventData;
-        if (!item.id) {
-            item.id = Math.floor((Math.random() * 10000) + 1);
-        }
         const googleId = this.props.user.googleId;
 
         const ref = firebase.database().ref('event');
         ref.once('value', (snapshot) => {
-            let idExists = false;
+            let maxEvent = 100;
             snapshot.forEach((childSnapshot) => {
-                if (childSnapshot.key === item.id) {
-                    idExists = true;
-                }
+                maxEvent = childSnapshot.key;
             });
-            while (idExists === true) {
-                idExists = false;
-                item.id = Math.floor((Math.random() * 10000) + 1);
-                // eslint-disable-next-line
-                snapshot.forEach((childSnapshot) => {
-                    if (childSnapshot.key === item.id) {
-                        idExists = true;
-                    }
-                });
-            }
+
+            item.id = 1 + maxEvent;
 
             ref.child(item.id).set({ 'organizer': googleId });
 
@@ -187,15 +168,6 @@ export default class NewEventForm extends Component {
                         onChange={this.handleEventChange('name')}
                         InputLabelProps={{ shrink: true }}
                     />
-                    <TextField
-                        label="ID (auto if blank)"
-                        margin="dense"
-                        className="entryFormText"
-                        value={this.state.eventData.id}
-                        onChange={this.handleEventChange('id')}
-                        InputLabelProps={{ shrink: true }}
-                    />
-                    <br />
                     <TextField
                         required
                         label="Location"

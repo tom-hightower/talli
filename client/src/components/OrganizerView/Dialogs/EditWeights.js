@@ -32,9 +32,9 @@ export default class EditWeights extends Component {
             this.setState({
                 open: this.state.open,
                 weights: [
-                    this.props.event.weights['first'],
-                    this.props.event.weights['second'],
-                    this.props.event.weights['third']
+                    this.props.event.weights.first,
+                    this.props.event.weights.second,
+                    this.props.event.weights.third
                 ]
             });
         }

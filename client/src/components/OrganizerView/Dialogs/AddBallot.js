@@ -14,7 +14,6 @@ export default class AddVotes extends Component {
         this.state = {
             open: false,
             entries: [],
-            voteID: '',
         };
     }
 
@@ -52,17 +51,17 @@ export default class AddVotes extends Component {
         if (!hasError && numOfEntries > 0) {
             const ballotsRef = firebase.database().ref(`event/${this.props.event.id}/manual`);
             ballotsRef.once('value', (snapshot) => {
-                let ballots = snapshot.val();
+                const ballots = snapshot.val();
                 let index;
                 if (ballots === null) {
                     index = '0';
                 } else {
-                    index = ballots.length + '';
+                    index = `${ballots.length}`;
                 }
-                let entries = {};
+                const entries = {};
                 let i = 1;
                 for (let entry of this.state.entries) {
-                    let entryData = this.props.event.entries[entry.id];
+                    const entryData = this.props.event.entries[entry.id];
                     entries[i] = entryData;
                     i++;
                 }

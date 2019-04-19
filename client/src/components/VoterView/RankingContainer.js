@@ -189,7 +189,7 @@ export default class SortContainer extends Component {
                     {items.length !== 0 ? <div /> : <div>Tap the Plus to add an entry</div>}
                     {items.map((value, index) => (
                         <SortableItem
-                            key={`item-${index}`}
+                            key={value.id}
                             item={index}
                             index={index}
                             value={value}

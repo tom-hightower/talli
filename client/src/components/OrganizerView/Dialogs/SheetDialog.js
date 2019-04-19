@@ -3,19 +3,18 @@ import { Slide, Dialog, DialogTitle, DialogContent, DialogActions, Button, Typog
 
 
 function Transition(props) {
-    return <Slide direction="up" {...props} />;
+    return <Slide direction='up' {...props} />;
 }
 
 // maybe for future, have it load current weights into text fields
 export default class SheetDialog extends Component {
-
     constructor(props) {
         super(props);
         this.state = {
             open: false
         };
     }
-    
+
     handleOpen = () => {
         this.setState({ open: true });
     }

@@ -1,10 +1,8 @@
 import React, { Component } from 'react';
+import openSocket from 'socket.io-client';
 import { TextField, Typography, Button } from '@material-ui/core';
 import CheckCircle from '@material-ui/icons/CheckCircle';
 import ShowError from './Dialogs/ShowError';
-
-import openSocket from 'socket.io-client';
-
 import '../component_style/AddSheet.css';
 
 const config = require('../../config.json');
@@ -12,16 +10,15 @@ const config = require('../../config.json');
 const socket = openSocket(
     (config.Global.devMode ?
         `http://localhost:${config.Global.serverPort}` :
-        `${(config.Global.sslEnabled ? "https" : "http")}://${config.Global.hostURL}:${config.Global.serverPort}`
+        `${(config.Global.sslEnabled ? 'https' : 'http')}://${config.Global.hostURL}:${config.Global.serverPort}`
     )
 );
 
 export default class NewEntryForm extends Component {
-
     constructor(props) {
         super(props);
         this.state = {
-            sheetURL: "",
+            sheetURL: '',
             urlConfirm: false,
         };
         this.errorChild = React.createRef();
@@ -45,7 +42,7 @@ export default class NewEntryForm extends Component {
 
     handleError = (message) => {
         this.errorChild.current.handleOpen(message);
-        if (message === "Could not get sheet information" || message === "Error with sheet authentication") {
+        if (message === 'Could not get sheet information' || message === 'Error with sheet authentication') {
             this.setState({
                 sheetURL: this.state.sheetURL,
                 urlConfirm: false,
@@ -54,7 +51,6 @@ export default class NewEntryForm extends Component {
     }
 
     handleSkip = () => {
-        console.log('skipped');
         this.props.handler(this.props.orgViews.VIEW);
     }
 
@@ -75,7 +71,7 @@ export default class NewEntryForm extends Component {
     }
 
     handleURLChange = (e) => {
-        let newURL = e.target.value;
+        const newURL = e.target.value;
         this.setState({
             sheetURL: newURL,
             urlConfirm: this.state.urlConfirm

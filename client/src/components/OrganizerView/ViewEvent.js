@@ -233,45 +233,58 @@ export default class ViewEvent extends Component {
         });
     }
 
+    getTopVotes(topVotes, rankings) {
+        const words = ['first', 'second', 'third'];
+        const newTop = topVotes;
+        for (let i = 1; i <= 3; i++) {
+            if (rankings[i]) {
+                if (!newTop[rankings[i].id]) newTop[rankings[i].id] = 0;
+                newTop[rankings[i].id] += this.state.event.weights[words[i - 1]];
+            }
+        }
+        return newTop;
+    }
+
     refreshStats = () => {
         firebase.database().ref(`event/${this.state.event.id}/`).once('value').then(snap => {
             const event = snap.val();
+            let totalBallots = 0;
+            if (event.attendees) totalBallots += Object.keys(event.attendees).length;
+            if (event.manual) totalBallots += Object.keys(event.manual).length;
+            let totalSubmitted = 0;
+            let topVotes = {};
+            const sortVotes = [];
             if (event.attendees) {
-                const totalBallots = Object.keys(event.attendees).length;
-                let totalSubmitted = 0;
-                const topVotes = {};
-                const sortVotes = [];
                 for (let user in event.attendees) {
                     if (event.attendees[user].submitted) {
                         totalSubmitted += 1;
                     }
-                    let rankings = event.attendees[user].rankings;
-                    // fight me
-                    const words = ['first', 'second', 'third'];
-                    for (let i = 1; i <= 3; i++) {
-                        if (rankings[i]) {
-                            if (!topVotes[rankings[i].id]) {
-                                topVotes[rankings[i].id] = 0;
-                            }
-                            topVotes[rankings[i].id] += this.state.event.weights[words[i - 1]];
-                        }
-                    }
+                    const rankings = event.attendees[user].rankings;
+                    topVotes = this.getTopVotes(topVotes, rankings);
                 }
-                for (let ballot in topVotes) {
-                    sortVotes.push([ballot, topVotes[ballot]]);
-                }
-                sortVotes.sort((a, b) => b[1] - a[1]);
-                const topThree = {
-                    first: this.state.event.entries[sortVotes[0][0]] ? this.state.event.entries[sortVotes[0][0]].title : '',
-                    second: this.state.event.entries[sortVotes[1][0]] ? this.state.event.entries[sortVotes[1][0]].title : '',
-                    third: this.state.event.entries[sortVotes[2][0]] ? this.state.event.entries[sortVotes[2][0]].title : '',
-                };
-                this.setState({
-                    totalBallots,
-                    totalSubmitted,
-                    topThree
-                });
             }
+            if (event.manual) {
+                for (let user in event.manual) {
+                    totalSubmitted += 1;
+                    const rankings = event.manual[user];
+                    topVotes = this.getTopVotes(topVotes, rankings);
+                }
+            }
+            for (let ballot in topVotes) {
+                sortVotes.push([ballot, topVotes[ballot]]);
+            }
+            sortVotes.sort((a, b) => b[1] - a[1]);
+            const { entries } = this.state.event;
+            const topThree = {
+                first: (entries && sortVotes[0][0]) ? entries[sortVotes[0][0]].title : '',
+                second: (entries && sortVotes[1][0]) ? entries[sortVotes[1][0]].title : '',
+                third: (entries && sortVotes[2][0]) ? entries[sortVotes[2][0]].title : '',
+            };
+            this.setState({
+                totalBallots,
+                totalSubmitted,
+                topThree
+            });
         });
     }
 
@@ -320,7 +333,12 @@ export default class ViewEvent extends Component {
                             <div className="box">
                                 {
                                     Object.values(this.state.event.entries).map((entry, index) => (
-                                        <Button key={index} className="listButtons" onClick={() => this.handleEntryEdit(entry.id)}>
+                                        <Button
+                                            key={entry.id}
+                                            className="listButtons"
+                                            onClick={() => this.handleEntryEdit(entry.id)}
+                                            index={index}
+                                        >
                                             {entry.title} by {entry.presenters}
                                         </Button>
                                     ))
@@ -405,7 +423,7 @@ export default class ViewEvent extends Component {
                                         <div className="refreshButton">
                                             <Button variant="contained" size="small" color="default" onClick={this.refreshStats}>
                                                 Refresh Statistics
-                                        </Button>
+                                            </Button>
                                         </div>
                                     </div>
                                 </div>
