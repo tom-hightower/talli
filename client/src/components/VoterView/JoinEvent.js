@@ -218,7 +218,6 @@ export default class JoinEvent extends React.Component {
                 const itemList = [];
                 for (let i = 0; i < items.length; i++) {
                     const entry = event.entries[items[i]];
-                    console.log(entry);
                     if (entry) {
                         itemList.push({
                             name: entry.title,
