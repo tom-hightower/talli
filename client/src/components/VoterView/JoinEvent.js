@@ -207,7 +207,8 @@ export default class JoinEvent extends React.Component {
             if (rankings) {
                 for (const item in rankings) {
                     if (item) {
-                        items[rankings[item] - 1] = item;
+                        // console.log(item);
+                        items[item - 1] = rankings[item].id;
                     }
                 }
             }

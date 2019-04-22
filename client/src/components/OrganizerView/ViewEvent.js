@@ -276,9 +276,9 @@ export default class ViewEvent extends Component {
             sortVotes.sort((a, b) => b[1] - a[1]);
             const { entries } = this.state.event;
             const topThree = {
-                first: (entries && sortVotes[0]) ? entries[sortVotes[0][0]].title : '',
-                second: (entries && sortVotes[1]) ? entries[sortVotes[1][0]].title : '',
-                third: (entries && sortVotes[2]) ? entries[sortVotes[2][0]].title : '',
+                first: (entries && sortVotes[0][0]) ? entries[sortVotes[0][0]].title : '',
+                second: (entries && sortVotes[1][0]) ? entries[sortVotes[1][0]].title : '',
+                third: (entries && sortVotes[2][0]) ? entries[sortVotes[2][0]].title : '',
             };
             this.setState({
                 totalBallots,
