@@ -212,7 +212,6 @@ export default class JoinEvent extends React.Component {
                     }
                 }
             }
-            console.log(items);
             firebase.database().ref('organizer/').once('value').then(snapshot => {
                 const organizer = snapshot.val();
                 const event = organizer[this.state.organizerID].event[this.state.eventID];
