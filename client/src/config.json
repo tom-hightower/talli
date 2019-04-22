@@ -2,7 +2,7 @@
     "Global": {
         "hostURL": "tallivote.com",
         "sslEnabled": true,
-        "serverPort": "5000",
+        "serverPort": "4000",
         "devMode": true
     }
 }

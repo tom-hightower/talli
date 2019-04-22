@@ -17,7 +17,7 @@ const config = require('../../config.json');
 const socket = openSocket(
     (config.Global.devMode ?
         `http://localhost:${config.Global.serverPort}` :
-        `${(config.Global.sslEnabled ? "https" : "http")}://${config.Global.hostURL}:${config.Global.serverPort}`
+        `${(config.Global.sslEnabled ? "https" : "http")}://${config.Global.hostURL}`
     )
 );
 const DragHandle = SortableHandle(() => <span><SliderIcon className="Sliders" /></span>);
