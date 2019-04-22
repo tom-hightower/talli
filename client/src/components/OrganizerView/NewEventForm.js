@@ -100,7 +100,7 @@ export default class NewEventForm extends Component {
                 maxEvent = childSnapshot.key;
             });
 
-            item.id = 1 + parseInt(maxEvent);
+            item.id = 1 + parseInt(maxEvent, 10);
 
             ref.child(item.id).set({ 'organizer': googleId });
 
