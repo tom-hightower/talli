@@ -203,7 +203,6 @@ export default class JoinEvent extends React.Component {
         const cookie = getCookie('UserID');
         firebase.database().ref(`event/${this.state.eventID}/attendees/${cookie}/rankings/`).once('value').then(rankSnap => {
             const rankings = rankSnap.val();
-            console.log(rankings);
             const items = [];
             if (rankings) {
                 for (const item in rankings) {
@@ -213,14 +212,12 @@ export default class JoinEvent extends React.Component {
                     }
                 }
             }
-            console.log(items);
             firebase.database().ref('organizer/').once('value').then(snapshot => {
                 const organizer = snapshot.val();
                 const event = organizer[this.state.organizerID].event[this.state.eventID];
                 const itemList = [];
                 for (let i = 0; i < items.length; i++) {
                     const entry = event.entries[items[i]];
-                    console.log(entry);
                     if (entry) {
                         itemList.push({
                             name: entry.title,
