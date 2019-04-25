@@ -1,10 +1,19 @@
 import React, { Component } from 'react';
 import { Typography, Button, Divider } from '@material-ui/core';
 import AddCircleIcon from '@material-ui/icons/AddCircle';
+import openSocket from 'socket.io-client';
 import NewEntryForm from './NewEntryForm';
 import EntryImportInfo from './Dialogs/EntryImportInfo';
 import '../component_style/Organizer.css';
 import firebase from '../../firebase';
+const config = require('../../config.json');
+
+const socket = openSocket(
+    (config.Global.devMode ?
+        `http://localhost:${config.Global.serverPort}` :
+        `${(config.Global.sslEnabled ? "https" : "http")}://${config.Global.hostURL}`
+    )
+);
 
 /**
  * OrganizerView > AddEntryOrg
@@ -68,6 +77,11 @@ export default class AddEntryOrg extends Component {
                 itemsRef.child(item.id).set(item);
             }
         }
+        socket.emit('send_entries', {
+            eventId: eventID,
+            googleId: googleId,
+            entries: this.state.entries
+        });
         this.props.handler(this.props.orgViews.VIEW);
     }
 

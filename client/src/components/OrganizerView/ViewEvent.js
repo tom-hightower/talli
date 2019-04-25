@@ -237,7 +237,7 @@ export default class ViewEvent extends Component {
         const words = ['first', 'second', 'third'];
         const newTop = topVotes;
         for (let i = 1; i <= 3; i++) {
-            if (rankings[i]) {
+            if (rankings && rankings[i]) {
                 if (!newTop[rankings[i].id]) newTop[rankings[i].id] = 0;
                 newTop[rankings[i].id] += this.state.event.weights[words[i - 1]];
             }
@@ -276,9 +276,9 @@ export default class ViewEvent extends Component {
             sortVotes.sort((a, b) => b[1] - a[1]);
             const { entries } = this.state.event;
             const topThree = {
-                first: (entries && sortVotes[0][0]) ? entries[sortVotes[0][0]].title : '',
-                second: (entries && sortVotes[1][0]) ? entries[sortVotes[1][0]].title : '',
-                third: (entries && sortVotes[2][0]) ? entries[sortVotes[2][0]].title : '',
+                first: (entries && sortVotes[0]) ? entries[sortVotes[0][0]].title : '',
+                second: (entries && sortVotes[1]) ? entries[sortVotes[1][0]].title : '',
+                third: (entries && sortVotes[2]) ? entries[sortVotes[2][0]].title : '',
             };
             this.setState({
                 totalBallots,

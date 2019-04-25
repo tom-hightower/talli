@@ -114,6 +114,7 @@ io.on('connection', function (socket) {
 
             const tasks = [
                 function auth(cb) {
+                    console.log('auth');
                     doc.useServiceAccountAuth(creds, (err) => {
                         if (err) {
                             return cb(err);
@@ -123,6 +124,7 @@ io.on('connection', function (socket) {
                     });
                 },
                 function getSheetInfo(cb) {
+                    console.log('get sheet info')
                     response.doc.getInfo((err, info) => {
                         if (err) {
                             return cb(err);
@@ -132,6 +134,7 @@ io.on('connection', function (socket) {
                     });
                 },
                 function getSheetRows(cb) {
+                    console.log('get sheet rows')
                     response.info.worksheets[1].getRows((err, rows) => {
                         if (err) {
                             return cb(err);
@@ -141,6 +144,7 @@ io.on('connection', function (socket) {
                     });
                 },
                 function addSheetRows(cb) {
+                    console.log('add sheet rows')
                     const rows = response.rows;
                     const existing = [];
                     for (let i = 0; i < rows.length; i++) {
@@ -159,12 +163,14 @@ io.on('connection', function (socket) {
                                 if (err) {
                                     return cb(err);
                                 }
+                                console.log('callback')
                                 return cb(null, cbRow);
                             });
                         }
                     }
                 },
                 function applyFormulas(cb) {
+                    console.log('apply formulas')
                     response.doc.getInfo((err, info) => {
                         if (err) {
                             return cb(err);
@@ -371,12 +377,96 @@ io.on('connection', function (socket) {
         });
     };
 
-    socket.on('send_url', (data) => {
-        connectUrl(data);
+    const getSheetId = (googleId, eventId) => {
+        return new Promise((resolve) => {
+            const query = firebase.database().ref(`organizer/${googleId}/event/${eventId}/eventData/sheetURL`);
+            query.on('value', (snapshot) => {
+                const url = snapshot.val();
+                const id = url.split('/')[5];
+                resolve(id);
+            });
+        });
+    }
+
+
+    const getSheets = (sheetId) => {
+        return new Promise((resolve, reject) => {
+            const doc = new GoogleSpreadsheet(sheetId);
+            doc.useServiceAccountAuth(creds, (err) => {
+                if (err) {
+                    reject(err);
+                }
+                doc.getInfo((err2, info) => {
+                    if (err2) {
+                        reject(err2);
+                    }
+                    resolve(info.worksheets);
+                });
+            });
+        });
+    }
+
+    /**
+     * Creates a row from each entry and adds it to google sheet.
+     * Used an array of promises so that we don't apply the formulas
+     * until each row has been added
+     */
+    const addEntries = (entries, worksheet) => {
+        let promises = [];
+        for (let i = 0; i < entries.length; i++) {
+            const row = {
+                RANK: entries[i].title,
+                FIRST: 0,
+                SECOND: 0,
+                THIRD: 0,
+                TOTAL: 0,
+            };
+            promises.push(new Promise((resolve, reject) => {
+                worksheet.addRow(row, err => {
+                    if (err) {
+                        reject(err);
+                    }
+                    resolve();
+                });
+            }));
+        }
+        return Promise.all(promises);
+        
+    }
+
+    const addFormulas = (worksheet) => {
+        let promises = [];
+        worksheet.getRows((err, rows) => {
+            if (err) {
+                reject(err);
+            }
+            let row;
+            for (let i = 1; i < rows.length; i++) {
+                row = rows[i];
+                promises.push(new Promise((resolve) => {
+                    row.first = `=countif('all votes'!B1:B999, "${row.rank}")`;
+                    row.second = `=countif('all votes'!C1:C999, "${row.rank}")`;
+                    row.third = `=countif('all votes'!D1:D999, "${row.rank}")`;
+                    row.total = `=B2*B${i + 2}+C2*C${i + 2}+D2*D${i + 2}`;
+                    row.save(() => {
+                        resolve();
+                    });
+                }));
+            }
+            return Promise.all(promises)
+        });
+    }
+
+    socket.on('send_entries', async (data) => {
+        const { eventId, googleId, entries } = data;
+        let id = await getSheetId(googleId, eventId);
+        let sheets = await getSheets(id).catch(err => { sendErr(err); });
+        await addEntries(entries, sheets[1]);
+        await addFormulas(sheets[1]);
     });
 
-    socket.on('send_entries', (data) => {
-        sendEntries(data);
+    socket.on('send_url', (data) => {
+        connectUrl(data);
     });
 
     socket.on('send_weights', (data) => {
