@@ -121,13 +121,13 @@ export default class SortContainer extends Component {
 
     submitted() {
         const items = this.state.items;
-        const organizerId = this.props.organizer;
+        const googleId = this.props.organizer;
         const eventId = this.state.event.id;
         const cookie = getCookie('UserID');
         firebase.database().ref(`event/${eventId}/attendees/${cookie}`).child('submitted').set(true);
         socket.emit('send_votes', {
             eventId,
-            organizerId,
+            googleId,
             votes: items
         });
         this.props.handler(this.props.voteViews.SUBMITTED);

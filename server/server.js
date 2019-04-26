@@ -46,61 +46,6 @@ io.on('connection', function (socket) {
         });
     };
 
-    const connectUrl = (data) => {
-        if (data.url.length > 0) {
-            const { url, googleId, eventId } = data;
-            if (googleId && eventId) {
-                const eventData = firebase.database().ref(`organizer/${googleId}/event/${eventId}/eventData`);
-                eventData.child('sheetURL').set(url);
-            }
-
-            // best way to parse for id?
-            const id = url.split('/')[5];
-            const doc = new GoogleSpreadsheet(id);
-
-            doc.useServiceAccountAuth(creds, (err) => {
-                if (err) {
-                    sendError('Error with sheet authentication');
-                    return;
-                }
-                doc.getInfo((err2, info) => {
-                    if (err2) {
-                        sendError('Could not get sheet information');
-                        return;
-                    }
-                    io.emit('url_confirm');
-                    if (info.worksheets.length < 2) {
-                        const sheet = info.worksheets[0];
-                        sheet.setTitle('all votes');
-                        sheet.setHeaderRow(['submission_num', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'ten']);
-
-                        doc.addWorksheet({
-                            title: 'weighted rankings'
-                        }, (err3, sheet2) => {
-                            if (err3) {
-                                sendError('Could not add new worksheet');
-                                return;
-                            }
-                            sheet2.setHeaderRow(['RANK', 'FIRST', 'SECOND', 'THIRD', 'TOTAL'], (err4) => {
-                                if (err4) {
-                                    sendError('Could not set header row of weighted ranks sheet');
-                                    return;
-                                }
-                                const row = { RANK: 'weights', FIRST: 3, SECOND: 2, THIRD: 1 };
-                                sheet2.addRow(row, (err5) => {
-                                    if (err5) {
-                                        sendError('Could not add row to weighted ranks sheet');
-                                        return;
-                                    }
-                                });
-                            });
-                        });
-                    }
-                });
-            });
-        }
-    };
-
     const sendEntries = (data) => {
         const { eventId, googleId, entries } = data;
 
@@ -200,108 +145,6 @@ io.on('connection', function (socket) {
                     sendError('Problem with executing asynchronously');
                     return;
                 }
-            });
-        });
-    };
-
-    const sendWeights = (data) => {
-        const { weights, eventId, googleId } = data;
-        const query = firebase.database().ref(`organizer/${googleId}/event/${eventId}/eventData/sheetURL`);
-
-        const eventData = firebase.database().ref(`organizer/${googleId}/event/${eventId}/eventData`);
-        eventData.child('weights').set({
-            first: weights[0],
-            second: weights[1],
-            third: weights[2],
-        });
-
-        query.on('value', (snapshot) => {
-            const url = snapshot.val();
-            const id = url.split('/')[5];
-            const doc = new GoogleSpreadsheet(id);
-
-            doc.useServiceAccountAuth(creds, (err) => {
-                if (err) {
-                    sendError('Could not authenticate sheet');
-                    return;
-                }
-                doc.getInfo((err2, info) => {
-                    if (err2) {
-                        sendError('Could not get information from weighted ranks sheet');
-                        return;
-                    }
-                    const weightsSheet = info.worksheets[1];
-                    weightsSheet.getRows((err3, rows) => {
-                        if (err3) {
-                            sendError('Could not get rows from weighted ranks sheet');
-                            return;
-                        }
-                        rows[0].FIRST = weights[0];
-                        rows[0].SECOND = weights[1];
-                        rows[0].THIRD = weights[2];
-                        rows[0].save();
-                    });
-                });
-            });
-        });
-    };
-
-    const sendVotes = (data) => {
-        const { votes, eventId, organizerId } = data;
-        const finalVotes = {};
-        const top3 = [];
-
-        for (let i = 0; i < votes.length; i++) {
-            if (i < 3) {
-                top3.push(votes[i].id);
-            }
-            finalVotes[numToStr[i + 1]] = votes[i].name;
-        }
-
-        const query = firebase.database().ref(`organizer/${organizerId}/event/${eventId}/eventData/sheetURL`);
-        query.on('value', (snapshot) => {
-            const url = snapshot.val();
-            const id = url.split('/')[5];
-            const doc = new GoogleSpreadsheet(id);
-
-            doc.useServiceAccountAuth(creds, (err) => {
-                if (err) {
-                    sendError('Could not authenticate sheet');
-                    return;
-                }
-                doc.getInfo((err2, info) => {
-                    if (err2) {
-                        sendError('Could not get info about sheets document');
-                        return;
-                    }
-                    const sheet = info.worksheets[0];
-                    sheet.getRows((err3, rows) => {
-                        if (err3) {
-                            sendError('Could not access votes sheet');
-                            return;
-                        }
-                        finalVotes.submission_num = rows.length + 1;
-                        sheet.addRow(finalVotes, (err4) => {
-                            if (err4) {
-                                sendError('Could not add rows to votes sheet');
-                                return;
-                            }
-                        });
-                    });
-                });
-                // doc.getRows(1, (err2, rows) => {
-                //     if (err2) {
-                //         sendError('Could not get information from weighted ranks sheet');
-                //         return;
-                //     }
-                //     final_votes.submission_num = rows.length + 1;
-                //     doc.addRow(1, final_votes, (err3) => {
-                //         if (err3) {
-                //             sendError('Could not add row to votes sheet');
-                //             return;
-                //         }
-                //     });
-                // });
             });
         });
     };
@@ -457,6 +300,113 @@ io.on('connection', function (socket) {
         });
     }
 
+    const updateDbWeights = (googleId, eventId, weights) => {
+        return new Promise((resolve) => {
+            const eventData = firebase.database().ref(`organizer/${googleId}/event/${eventId}/eventData`);
+            eventData.child('weights').set({
+                first: weights[0],
+                second: weights[1],
+                third: weights[2],
+            }, () => {
+                resolve();
+            });
+        });
+    }
+
+    const addWeights = (weights, sheet) => {
+        return new Promise((resolve, reject) => {
+            sheet.getRows((err, rows) => {
+                if (err) {
+                    reject(err);
+                }
+                rows[0].FIRST = weights[0];
+                rows[0].SECOND = weights[1];
+                rows[0].THIRD = weights[2];
+                rows[0].save(() => {
+                    resolve();
+                });
+            });
+        });
+    }
+
+    const updateDbURL = (googleId, eventId, url) => {
+        return new Promise((resolve) => {
+            const eventData = firebase.database().ref(`organizer/${googleId}/event/${eventId}/eventData`);
+            eventData.child('sheetURL').set(url, () => {
+                resolve();
+            });
+        });
+    }
+
+    const testURL = (url) => {
+        return new Promise((resolve, reject) => {
+            const id = url.split('/')[5];
+            const doc1 = new GoogleSpreadsheet(id);
+
+            doc1.useServiceAccountAuth(creds, (err) => {
+                if (err) {
+                    reject(err);
+                }
+                doc1.getInfo((err2, info) => {
+                    if (err2) {
+                        reject(err2);
+                    }
+                    io.emit('url_confirm');
+                    resolve({
+                        doc: doc1,
+                        sheets: info.worksheets
+                    });
+                });
+            });
+        });
+    }
+
+    const readySheet = (doc, sheets) => {
+        return new Promise((resolve, reject) => {
+            const sheet1 = sheets[0];
+            sheet1.setTitle('all votes');
+            sheet1.setHeaderRow(['submission_num', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'ten']);
+
+            doc.addWorksheet({
+                title: 'weighted rankings'
+            }, (err, sheet2) => {
+                if (err) {
+                    reject(err);
+                }
+                sheet2.setHeaderRow(['RANK', 'FIRST', 'SECOND', 'THIRD', 'TOTAL'], (err2) => {
+                    if (err2) {
+                        reject(err2);
+                    }
+                    const row = { RANK: 'weights', FIRST: 3, SECOND: 2, THIRD: 1 };
+                    sheet2.addRow(row, (err3) => {
+                        if (err3) {
+                            reject(err3);
+                        }
+                        resolve();
+                    });
+                });
+            });
+        });
+    }
+
+    const addVote = (votes, sheets) => {
+        return new Promise((resolve, reject) => {
+            const sheet = sheets[0];
+            sheet.getRows((err, rows) => {
+                if (err) {
+                    reject(err);
+                }
+                votes.submission_num = rows.length + 1;
+                sheet.addRow(votes, (err2) => {
+                    if (err2) {
+                        reject(err2)
+                    }
+                    resolve();
+                });
+            });
+        })
+    }
+
     socket.on('send_entries', async (data) => {
         const { eventId, googleId, entries } = data;
         let id = await getSheetId(googleId, eventId);
@@ -465,16 +415,38 @@ io.on('connection', function (socket) {
         await addFormulas(sheets[1]);
     });
 
-    socket.on('send_url', (data) => {
-        connectUrl(data);
+    socket.on('send_weights', async (data) => {
+        const { weights, eventId, googleId } = data;
+        await updateDbWeights(googleId, eventId, weights);
+        let id = await getSheetId(googleId, eventId);
+        let sheets = await getSheets(id).catch(err => { sendErr(err); });
+        await addWeights(weights, sheets[1]).catch(err => { sendErr(err); });
     });
 
-    socket.on('send_weights', (data) => {
-        sendWeights(data);
+    socket.on('send_url', async (data) => {
+        // connectUrl(data);
+        const { url, googleId, eventId } = data;
+        if (url.length > 0) {
+            let { doc, sheets } = await testURL(url).catch(err => { sendErr(err); });
+            if (googleId && eventId) {
+                await updateDbURL(googleId, eventId, url);
+                if (sheets.length < 2) {
+                    await readySheet(doc, sheets).catch(err => { sendErr(err); });
+                }
+            }
+        }
     });
 
-    socket.on('send_votes', (data) => {
-        sendVotes(data);
+    socket.on('send_votes', async (data) => {
+        const { eventId, googleId, votes } = data;
+        const finalVotes = {};
+        for (let i = 0; i < votes.length && i < 10; i++) {
+            finalVotes[numToStr[i + 1]] = votes[i].name;
+        }
+
+        let id = await getSheetId(googleId, eventId);
+        let sheets = await getSheets(id).catch(err => { sendErr(err); });
+        await addVote(finalVotes, sheets).catch(err => { sendErr(err); });
     });
 
     socket.on('finalize_results', (data) => {
