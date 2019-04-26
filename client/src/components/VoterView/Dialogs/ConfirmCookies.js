@@ -26,7 +26,6 @@ export default class ConfirmCookies extends Component {
     }
 
     handleConfirm = () => {
-        console.log("got here")
         const consentValue = getCookie('TalliConsent');
         if (consentValue === '') {
             setCookie('TalliConsent', true, 30);
