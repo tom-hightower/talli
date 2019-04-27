@@ -234,71 +234,6 @@ io.on('connection', function (socket) {
         });
     }
 
-    socket.on('send_entries', async (data) => {
-        const { eventId, googleId, entries } = data;
-        let id = await getSheetId(googleId, eventId);
-        let sheets = await getSheets(id).catch(err => { sendError(err); });
-        await addEntries(entries, sheets[1]);
-        await addFormulas(sheets[1]);
-    });
-
-    socket.on('send_weights', async (data) => {
-        const { weights, eventId, googleId } = data;
-        await updateDbWeights(googleId, eventId, weights);
-        let id = await getSheetId(googleId, eventId);
-        let sheets = await getSheets(id).catch(err => { sendError(err); });
-        let rows = await getRows(sheets[1]).catch(err => { sendError(err); });
-        await addWeights(weights, rows);
-    });
-
-    socket.on('send_url', async (data) => {
-        const { url, googleId, eventId } = data;
-        if (url.length > 0) {
-            let { doc, sheets } = await testURL(url).catch(err => { sendError(err); });
-            if (googleId && eventId) {
-                await updateDbURL(googleId, eventId, url);
-            }
-            if (sheets.length < 2) {
-                await readySheet(doc, sheets).catch(err => { sendError(err); });
-            }
-        }
-    });
-
-    socket.on('send_votes', async (data) => {
-        const { eventId, googleId, votes } = data;
-        const finalVotes = {};
-        for (let i = 0; i < votes.length && i < 10; i++) {
-            finalVotes[numToStr[i + 1]] = votes[i].name;
-        }
-
-        let id = await getSheetId(googleId, eventId);
-        let sheets = await getSheets(id).catch(err => { sendError(err); });
-        let rows = await getRows(sheets[0]).catch(err => { sendError(err); });
-        await addVote(finalVotes, sheets[0], rows).catch(err => { sendError(err); });
-    });
-
-    /**
-     * Gets ballots that were never submitted and that were manually submitted
-     * and adds them to the google sheet
-     */
-    socket.on('finalize_results', async (data) => {
-        const { googleId, eventId } = data;
-        let { ballots, sheetId } = await getRemainingBallots(googleId, eventId);
-        let sheets = await getSheets(sheetId).catch(err => { sendError(err); });
-        let rows = await getRows(sheets[0]).catch(err => { sendError(err); });
-        await addRemaining(rows, ballots, sheets[0]);
-    });
-
-    socket.on('update_entries', async (data) => {
-        const { eventId, googleId, entries } = data;
-        let id = await getSheetId(googleId, eventId);
-        let sheets = await getSheets(id).catch(err => { sendError(err); });
-        let rows = await getRows(sheets[1]).catch(err => { sendError(err); });
-        let newEntries = getNewEntries(entries, rows);
-        await addEntries(newEntries, sheets[1]);
-        await addFormulas(sheets[1]);
-    });
-
     const getNewEntries = (entries, rows) => {
         const existing = [];
         let entries_arr = [];
@@ -375,6 +310,71 @@ io.on('connection', function (socket) {
             });
         });
     }
+
+    socket.on('send_entries', async (data) => {
+        const { eventId, googleId, entries } = data;
+        let id = await getSheetId(googleId, eventId);
+        let sheets = await getSheets(id).catch(err => { sendError(err); });
+        await addEntries(entries, sheets[1]);
+        await addFormulas(sheets[1]);
+    });
+
+    socket.on('send_weights', async (data) => {
+        const { weights, eventId, googleId } = data;
+        await updateDbWeights(googleId, eventId, weights);
+        let id = await getSheetId(googleId, eventId);
+        let sheets = await getSheets(id).catch(err => { sendError(err); });
+        let rows = await getRows(sheets[1]).catch(err => { sendError(err); });
+        await addWeights(weights, rows);
+    });
+
+    socket.on('send_url', async (data) => {
+        const { url, googleId, eventId } = data;
+        if (url.length > 0) {
+            let { doc, sheets } = await testURL(url).catch(err => { sendError(err); });
+            if (googleId && eventId) {
+                await updateDbURL(googleId, eventId, url);
+            }
+            if (sheets.length < 2) {
+                await readySheet(doc, sheets).catch(err => { sendError(err); });
+            }
+        }
+    });
+
+    socket.on('send_votes', async (data) => {
+        const { eventId, googleId, votes } = data;
+        const finalVotes = {};
+        for (let i = 0; i < votes.length && i < 10; i++) {
+            finalVotes[numToStr[i + 1]] = votes[i].name;
+        }
+
+        let id = await getSheetId(googleId, eventId);
+        let sheets = await getSheets(id).catch(err => { sendError(err); });
+        let rows = await getRows(sheets[0]).catch(err => { sendError(err); });
+        await addVote(finalVotes, sheets[0], rows).catch(err => { sendError(err); });
+    });
+
+    /**
+     * Gets ballots that were never submitted and that were manually submitted
+     * and adds them to the google sheet
+     */
+    socket.on('finalize_results', async (data) => {
+        const { googleId, eventId } = data;
+        let { ballots, sheetId } = await getRemainingBallots(googleId, eventId);
+        let sheets = await getSheets(sheetId).catch(err => { sendError(err); });
+        let rows = await getRows(sheets[0]).catch(err => { sendError(err); });
+        await addRemaining(rows, ballots, sheets[0]);
+    });
+
+    socket.on('update_entries', async (data) => {
+        const { eventId, googleId, entries } = data;
+        let id = await getSheetId(googleId, eventId);
+        let sheets = await getSheets(id).catch(err => { sendError(err); });
+        let rows = await getRows(sheets[1]).catch(err => { sendError(err); });
+        let newEntries = getNewEntries(entries, rows);
+        await addEntries(newEntries, sheets[1]);
+        await addFormulas(sheets[1]);
+    });
 });
 
 io.listen(config.Global.serverPort);
