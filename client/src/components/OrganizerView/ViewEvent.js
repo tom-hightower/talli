@@ -226,7 +226,7 @@ export default class ViewEvent extends Component {
     }
 
     sendEntries = () => {
-        socket.emit('send_entries', {
+        socket.emit('update_entries', {
             googleId: this.props.user.googleId,
             eventId: this.state.event.id,
             entries: this.state.event.entries
@@ -434,7 +434,7 @@ export default class ViewEvent extends Component {
                                             placement="bottom"
                                         >
                                             <Button className="listButtons" onClick={this.sendEntries}>
-                                                Sync entries
+                                                Update entries
                                             </Button>
                                         </Tooltip>
                                     </div>

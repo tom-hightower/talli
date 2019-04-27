@@ -46,180 +46,6 @@ io.on('connection', function (socket) {
         });
     };
 
-    const sendEntries = (data) => {
-        const { eventId, googleId, entries } = data;
-
-        const query = firebase.database().ref(`organizer/${googleId}/event/${eventId}/eventData/sheetURL`);
-
-        query.on('value', (snapshot) => {
-            const url = snapshot.val();
-            const id = url.split('/')[5];
-            const doc = new GoogleSpreadsheet(id);
-            const response = {};
-
-            const tasks = [
-                function auth(cb) {
-                    console.log('auth');
-                    doc.useServiceAccountAuth(creds, (err) => {
-                        if (err) {
-                            return cb(err);
-                        }
-                        response.doc = doc;
-                        return cb(null, doc);
-                    });
-                },
-                function getSheetInfo(cb) {
-                    console.log('get sheet info')
-                    response.doc.getInfo((err, info) => {
-                        if (err) {
-                            return cb(err);
-                        }
-                        response.info = info;
-                        return cb(null, info);
-                    });
-                },
-                function getSheetRows(cb) {
-                    console.log('get sheet rows')
-                    response.info.worksheets[1].getRows((err, rows) => {
-                        if (err) {
-                            return cb(err);
-                        }
-                        response.rows = rows;
-                        return cb(null, rows);
-                    });
-                },
-                function addSheetRows(cb) {
-                    console.log('add sheet rows')
-                    const rows = response.rows;
-                    const existing = [];
-                    for (let i = 0; i < rows.length; i++) {
-                        existing.push(rows[i].rank);
-                    }
-                    for (let entry in entries) {
-                        if (!existing.includes(entries[entry].title)) {
-                            const row = {
-                                RANK: entries[entry].title,
-                                FIRST: 0,
-                                SECOND: 0,
-                                THIRD: 0,
-                                TOTAL: 0,
-                            };
-                            response.info.worksheets[1].addRow(row, (err, cbRow) => {
-                                if (err) {
-                                    return cb(err);
-                                }
-                                console.log('callback')
-                                return cb(null, cbRow);
-                            });
-                        }
-                    }
-                },
-                function applyFormulas(cb) {
-                    console.log('apply formulas')
-                    response.doc.getInfo((err, info) => {
-                        if (err) {
-                            return cb(err);
-                        }
-                        const sheet = info.worksheets[1];
-                        sheet.getRows((err1, rows) => {
-                            if (err1) {
-                                return cb(err);
-                            }
-                            let curr;
-                            for (let i = 1; i < rows.length; i++) {
-                                curr = rows[i];
-                                curr.first = `=countif('all votes'!B1:B999, "${curr.rank}")`;
-                                curr.second = `=countif('all votes'!C1:C999, "${curr.rank}")`;
-                                curr.third = `=countif('all votes'!D1:D999, "${curr.rank}")`;
-                                curr.total = `=B2*B${i + 2}+C2*C${i + 2}+D2*D${i + 2}`;
-                                curr.save();
-                            }
-                            response.rows = rows;
-                        });
-                    });
-                }
-            ];
-
-            async.series(tasks, (err) => {
-                if (err) {
-                    sendError('Problem with executing asynchronously');
-                    return;
-                }
-            });
-        });
-    };
-
-    // gonna be fixing this in the next PR, but for now it should take entry titles
-    const finalizeResults = (data) => {
-        const organizerId = data.googleId;
-        const eventId = data.eventId;
-        const eventDataQuery = firebase.database().ref(`organizer/${organizerId}/event/${eventId}/eventData/`);
-        eventDataQuery.child('endVote').set(new Date().toISOString());
-        eventDataQuery.on('value', (snap) => {
-            const eventData = snap.val();
-            const sheetID = eventData.sheetURL.split('/')[5];
-
-            const ballotQuery = firebase.database().ref(`event/${eventId}`);
-            ballotQuery.on('value', (snapshot) => {
-                const event = snapshot.val();
-                const ballots = [];
-                if (event.attendees) {
-                    for (let ballot in event.attendees) {
-                        if (event.attendees[ballot] && event.attendees[ballot].rankings && !event.attendees[ballot].submitted) {
-                            ballots.push(event.attendees[ballot].rankings);
-                        }
-                    }
-                }
-                if (event.manual) {
-                    for (let ballot in event.manual) {
-                        if (event.manual[ballot]) {
-                            ballots.push(event.manual[ballot]);
-                        }
-                    }
-                }
-                const doc = new GoogleSpreadsheet(sheetID);
-                doc.useServiceAccountAuth(creds, (err) => {
-                    if (err) {
-                        sendError('Could not authenticate sheet');
-                        return;
-                    }
-                    doc.getInfo((err2, info) => {
-                        if (err2) {
-                            sendError('Could not get information from weighted ranks sheet');
-                            return;
-                        }
-                        const votesSheet = info.worksheets[0];
-                        votesSheet.getRows((err3, rows) => {
-                            if (err3) {
-                                sendError('Could not get rows from all votes sheet');
-                                return;
-                            }
-                            let row;
-                            for (let i = 0; i < ballots.length; i++) {
-                                
-                                row = {};
-                                for (let j = 1; j <= 10; j++) {
-                                    if (ballots[i][j]) {
-                                        row[numToStr[j]] = ballots[i][j]['title'];
-                                    }
-                                }
-                                row['submission_num'] = rows.length + 1 + i;
-                                
-                                votesSheet.addRow(row, (err5) => {
-                                    if (err5) {
-                                        sendError('Could not add row to all votes sheet');
-                                        return;
-                                    }
-                                    
-                                });
-                            }
-                        });
-                    });
-                });
-            });
-        });
-    };
-
     const getSheetId = (googleId, eventId) => {
         return new Promise((resolve) => {
             const query = firebase.database().ref(`organizer/${googleId}/event/${eventId}/eventData/sheetURL`);
@@ -245,6 +71,17 @@ io.on('connection', function (socket) {
                     }
                     resolve(info.worksheets);
                 });
+            });
+        });
+    }
+
+    const getRows = (sheet) => {
+        return new Promise((resolve, reject) => {
+            sheet.getRows((err, rows) => {
+                if (err) {
+                    reject(err);
+                }
+                resolve(rows);
             });
         });
     }
@@ -281,7 +118,8 @@ io.on('connection', function (socket) {
         let promises = [];
         worksheet.getRows((err, rows) => {
             if (err) {
-                reject(err);
+                sendError(err);
+                return;
             }
             let row;
             for (let i = 1; i < rows.length; i++) {
@@ -313,18 +151,13 @@ io.on('connection', function (socket) {
         });
     }
 
-    const addWeights = (weights, sheet) => {
-        return new Promise((resolve, reject) => {
-            sheet.getRows((err, rows) => {
-                if (err) {
-                    reject(err);
-                }
-                rows[0].FIRST = weights[0];
-                rows[0].SECOND = weights[1];
-                rows[0].THIRD = weights[2];
-                rows[0].save(() => {
-                    resolve();
-                });
+    const addWeights = (weights, rows) => {
+        return new Promise((resolve) => {
+            rows[0].FIRST = weights[0];
+            rows[0].SECOND = weights[1];
+            rows[0].THIRD = weights[2];
+            rows[0].save(() => {
+                resolve();
             });
         });
     }
@@ -389,28 +222,22 @@ io.on('connection', function (socket) {
         });
     }
 
-    const addVote = (votes, sheets) => {
+    const addVote = (votes, sheet, rows) => {
         return new Promise((resolve, reject) => {
-            const sheet = sheets[0];
-            sheet.getRows((err, rows) => {
+            votes.submission_num = rows.length + 1;
+            sheet.addRow(votes, (err) => {
                 if (err) {
-                    reject(err);
+                    reject(err)
                 }
-                votes.submission_num = rows.length + 1;
-                sheet.addRow(votes, (err2) => {
-                    if (err2) {
-                        reject(err2)
-                    }
-                    resolve();
-                });
+                resolve();
             });
-        })
+        });
     }
 
     socket.on('send_entries', async (data) => {
         const { eventId, googleId, entries } = data;
         let id = await getSheetId(googleId, eventId);
-        let sheets = await getSheets(id).catch(err => { sendErr(err); });
+        let sheets = await getSheets(id).catch(err => { sendError(err); });
         await addEntries(entries, sheets[1]);
         await addFormulas(sheets[1]);
     });
@@ -419,20 +246,20 @@ io.on('connection', function (socket) {
         const { weights, eventId, googleId } = data;
         await updateDbWeights(googleId, eventId, weights);
         let id = await getSheetId(googleId, eventId);
-        let sheets = await getSheets(id).catch(err => { sendErr(err); });
-        await addWeights(weights, sheets[1]).catch(err => { sendErr(err); });
+        let sheets = await getSheets(id).catch(err => { sendError(err); });
+        let rows = await getRows(sheets[1]).catch(err => { sendError(err); });
+        await addWeights(weights, rows);
     });
 
     socket.on('send_url', async (data) => {
-        // connectUrl(data);
         const { url, googleId, eventId } = data;
         if (url.length > 0) {
-            let { doc, sheets } = await testURL(url).catch(err => { sendErr(err); });
+            let { doc, sheets } = await testURL(url).catch(err => { sendError(err); });
             if (googleId && eventId) {
                 await updateDbURL(googleId, eventId, url);
-                if (sheets.length < 2) {
-                    await readySheet(doc, sheets).catch(err => { sendErr(err); });
-                }
+            }
+            if (sheets.length < 2) {
+                await readySheet(doc, sheets).catch(err => { sendError(err); });
             }
         }
     });
@@ -445,13 +272,109 @@ io.on('connection', function (socket) {
         }
 
         let id = await getSheetId(googleId, eventId);
-        let sheets = await getSheets(id).catch(err => { sendErr(err); });
-        await addVote(finalVotes, sheets).catch(err => { sendErr(err); });
+        let sheets = await getSheets(id).catch(err => { sendError(err); });
+        let rows = await getRows(sheets[0]).catch(err => { sendError(err); });
+        await addVote(finalVotes, sheets[0], rows).catch(err => { sendError(err); });
     });
 
-    socket.on('finalize_results', (data) => {
-        finalizeResults(data);
+    /**
+     * Gets ballots that were never submitted and that were manually submitted
+     * and adds them to the google sheet
+     */
+    socket.on('finalize_results', async (data) => {
+        const { googleId, eventId } = data;
+        let { ballots, sheetId } = await getRemainingBallots(googleId, eventId);
+        let sheets = await getSheets(sheetId).catch(err => { sendError(err); });
+        let rows = await getRows(sheets[0]).catch(err => { sendError(err); });
+        await addRemaining(rows, ballots, sheets[0]);
     });
+
+    socket.on('update_entries', async (data) => {
+        const { eventId, googleId, entries } = data;
+        let id = await getSheetId(googleId, eventId);
+        let sheets = await getSheets(id).catch(err => { sendError(err); });
+        let rows = await getRows(sheets[1]).catch(err => { sendError(err); });
+        let newEntries = getNewEntries(entries, rows);
+        await addEntries(newEntries, sheets[1]);
+        await addFormulas(sheets[1]);
+    });
+
+    const getNewEntries = (entries, rows) => {
+        const existing = [];
+        let entries_arr = [];
+        for (let entry in entries) {
+            entries_arr.push(entries[entry]);
+        }
+        for (let i = 0; i < rows.length; i++) {
+            existing.push(rows[i].rank);
+        }
+        entries_arr = entries_arr.filter(entry => !existing.includes(entry.title));
+        return entries_arr;
+    }
+
+    const addRemaining = (rows, ballots, sheet) => {
+        let promises = [];
+        let row;
+        for (let i = 0; i < ballots.length; i++) {
+            row = {};
+            for (let j = 1; j <= 10; j++) {
+                if (ballots[i][j]) {
+                    if (ballots[i][j]['title']) {
+                        row[numToStr[j]] = ballots[i][j]['title'];
+                    } else if (ballots[i][j]['name']) {
+                        row[numToStr[j]] = ballots[i][j]['name'];
+                    }
+                }
+            }
+            row['submission_num'] = rows.length + 1 + i;
+            promises.push(new Promise((resolve, reject) => {
+                sheet.addRow(row, (err) => {
+                    if (err) {
+                        reject(err)
+                    }
+                    resolve();
+                });
+            }));
+        }
+        return Promise.all(promises);
+    }
+
+    const getRemainingBallots = (googleId, eventId) => {
+        return new Promise((resolve) => {
+            const eventDataQuery = firebase.database().ref(`organizer/${googleId}/event/${eventId}/eventData/`);
+            eventDataQuery.child('endVote').set(new Date().toISOString());
+            eventDataQuery.on('value', (snap) => {
+                const eventData = snap.val();
+                const sheetId = eventData.sheetURL.split('/')[5];
+
+                const ballotQuery = firebase.database().ref(`event/${eventId}`);
+                ballotQuery.on('value', (snapshot) => {
+                    const event = snapshot.val();
+                    const ballots = [];
+                    // get ballots that haven't been submitted
+                    if (event.attendees) {
+                        for (let ballot in event.attendees) {
+                            if (event.attendees[ballot] && event.attendees[ballot].rankings && !event.attendees[ballot].submitted) {
+                                ballots.push(event.attendees[ballot].rankings);
+                            }
+                        }
+                    }
+                    // get manually submitted ballots
+                    if (event.manual) {
+                        for (let ballot in event.manual) {
+                            if (event.manual[ballot]) {
+                                ballots.push(event.manual[ballot]);
+                            }
+                        }
+                    }
+                    resolve({
+                        ballots,
+                        sheetId,
+                    });
+                });
+            });
+        });
+    }
 });
 
 io.listen(config.Global.serverPort);
