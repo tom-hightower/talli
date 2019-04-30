@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import { Slide, Dialog, DialogTitle, DialogContent, DialogActions, Button, Typography } from '@material-ui/core';
 
+import secretConfig from '../../../secret.config.json';
+
 
 function Transition(props) {
     return <Slide direction='up' {...props} />;
@@ -37,7 +39,7 @@ export default class SheetDialog extends Component {
                         <br />
                         <Typography>1. Create a new Google Sheet in a desired location in your drive</Typography>
                         <Typography>2. Share the spreadsheet with editing rights with:</Typography>
-                        <Typography align="center"><b>talli-455@talli-229017.iam.gserviceaccount.com</b></Typography>
+                        <Typography align="center"><b>{secretConfig.ClientSecret.client_email}</b></Typography>
                         <Typography>3. Copy and paste the entire URL of the spreadsheet into the text field</Typography>
                     </DialogContent>
                     <DialogActions>

@@ -15,6 +15,7 @@ import ConfirmFinalize from './Dialogs/ConfirmFinalize';
 import '../component_style/ViewEvent.css';
 
 const config = require('../../config.json');
+const secretConfig = require('../../secret.config.json');
 
 const socket = openSocket(
     (config.Global.devMode ?
@@ -378,7 +379,7 @@ export default class ViewEvent extends Component {
                                             2. Share the spreadsheet with editing rights with:
                                         <br />
                                             <div className="main">
-                                                <b>talli-455@talli-229017.iam.gserviceaccount.com</b>
+                                                <b>{secretConfig.ClientSecret.client_email}</b>
                                             </div>
                                         </div>
                                         <div>

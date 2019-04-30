@@ -1,7 +1,6 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const GoogleSpreadsheet = require('google-spreadsheet');
-const async = require('async');
 
 const app = express();
 
