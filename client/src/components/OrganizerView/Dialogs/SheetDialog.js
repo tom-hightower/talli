@@ -39,7 +39,7 @@ export default class SheetDialog extends Component {
                         <br />
                         <Typography>1. Create a new Google Sheet in a desired location in your drive</Typography>
                         <Typography>2. Share the spreadsheet with editing rights with:</Typography>
-                        <Typography align="center"><b>{secretConfig.ClientSecret.client_email}</b></Typography>
+                        <Typography align="center"><b>{secretConfig.SheetConfig.client_email}</b></Typography>
                         <Typography>3. Copy and paste the entire URL of the spreadsheet into the text field</Typography>
                     </DialogContent>
                     <DialogActions>

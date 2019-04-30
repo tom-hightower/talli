@@ -379,7 +379,7 @@ export default class ViewEvent extends Component {
                                             2. Share the spreadsheet with editing rights with:
                                         <br />
                                             <div className="main">
-                                                <b>{secretConfig.ClientSecret.client_email}</b>
+                                                <b>{secretConfig.SheetConfig.client_email}</b>
                                             </div>
                                         </div>
                                         <div>
