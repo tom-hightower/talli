@@ -43,7 +43,7 @@ This file contains private API keys, client secrets, and authorization urls.  It
         "storageBucket": "talli-00000.appspot.com",
         "messagingSenderId": "000000000000"
     },
-    "ClientSecret": {
+    "SheetConfig": {
         "type": "service_account",
         "project_id": "talli-000000",
         "private_key_id": "0000000000000000000000000000000000000000",
