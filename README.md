@@ -60,3 +60,7 @@ This file contains private API keys, client secrets, and authorization urls.  It
 }
 ```
 The keys and other information needed for this file can be obtained from your Firebase and Google API consoles.
+
+## Releases
+
+A list of released versions with notes and links to the frozen source code is available at Talli's [releases page](https://github.com/tom-hightower/talli/releases "Releases").

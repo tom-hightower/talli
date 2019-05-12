@@ -17,7 +17,7 @@ const config = require('../../config.json');
 const socket = openSocket(
     (config.Global.devMode ?
         `http://localhost:${config.Global.serverPort}` :
-        `${(config.Global.sslEnabled ? "https" : "http")}://${config.Global.hostURL}:${config.Global.serverPort}`
+        `${(config.Global.sslEnabled ? "https" : "http")}://${config.Global.hostURL}`
     )
 );
 
@@ -100,7 +100,7 @@ export default class NewEventForm extends Component {
                 maxEvent = childSnapshot.key;
             });
 
-            item.id = 1 + maxEvent;
+            item.id = 1 + parseInt(maxEvent, 10);
 
             ref.child(item.id).set({ 'organizer': googleId });
 
