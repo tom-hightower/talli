@@ -37,7 +37,6 @@ process.on('uncaughtException', (err) => {
     }
 });
 
-// might need to store their rankings in the DB on disconnect
 io.on('connection', function (socket) {
     const sendError = (message) => {
         io.emit('error', {
