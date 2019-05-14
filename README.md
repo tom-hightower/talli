@@ -16,6 +16,8 @@ otherwise `npm i` followed by `npm run client-install` followed by `npm run serv
 Run this before trying to run prod
 
 ### Run production build
+See this guide for setting up a production environment: [SETUP.md](https://github.com/tom-hightower/talli/blob/master/SETUP.md)
+<br/>Or to run a production build locally:<br/>
 `npm run prod`
 
 ***
