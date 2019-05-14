@@ -5,7 +5,6 @@ import { navigate } from 'react-mini-router';
 import './component_style/MainPage.css';
 import firebase from '../firebase';
 import { setCookie, getCookie } from '../cookies';
-
 import HelpView from './Help';
 import CookieConsent from './CookieConsent';
 import CookieWarning from './CookieWarning';

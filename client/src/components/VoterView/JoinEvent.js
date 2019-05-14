@@ -11,6 +11,7 @@ import ClosedJoin from './Dialogs/ClosedJoin';
 import RejoinClosed from './Dialogs/RejoinClosed';
 import NotFound from './Dialogs/NotFound';
 import RejoinEvent from './Dialogs/RejoinEvent';
+import ConfirmCookies from './Dialogs/ConfirmCookies';
 
 const config = require('../../config.json');
 
@@ -45,10 +46,19 @@ export default class JoinEvent extends React.Component {
         this.notFoundChild = React.createRef();
         this.rejoinChild = React.createRef();
         this.rejoinClosedChild = React.createRef();
+        this.cookieConsentChild = React.createRef();
     }
 
     componentDidMount() {
         const cookie = getCookie('UserID');
+        if (cookie !== '') {
+            this.handleJoinCheck(cookie);
+        } else {
+            this.cookieConsentChild.current.handleOpen();
+        }
+    }
+
+    handleJoinCheck(cookie) {
         firebase.database().ref('/').once('value').then(snapshot => {
             const root = snapshot.val();
             if (root.attendees) {
@@ -93,6 +103,10 @@ export default class JoinEvent extends React.Component {
                 firebase.database().ref(`attendees/${cookie}/currentEvent`).set('');
             }
         });
+    }
+
+    handleCookieConfirm = (cookie) => {
+        this.handleJoinCheck(cookie);
     }
 
     getVotingState(event) {
@@ -267,6 +281,7 @@ export default class JoinEvent extends React.Component {
     render() {
         return (
             <div>
+                <ConfirmCookies handleCookieConfirm={this.handleCookieConfirm} ref={this.cookieConsentChild} />
                 <RejoinEvent entryName={this.state.eventName} ref={this.rejoinChild} handler={this.handleRejoinEvent} />
                 <NotFound ref={this.notFoundChild} idType="Event" id={this.state.eventID} />
                 <EntryConfirmation entryName={this.state.eventName} ref={this.confirmChild} handler={this.handleJoinEvent} />
