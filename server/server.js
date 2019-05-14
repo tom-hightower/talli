@@ -133,7 +133,7 @@ io.on('connection', function (socket) {
                     });
                 }));
             }
-            return Promise.all(promises)
+            return Promise.all(promises);
         });
     }
 
@@ -226,7 +226,7 @@ io.on('connection', function (socket) {
             votes.submission_num = rows.length + 1;
             sheet.addRow(votes, (err) => {
                 if (err) {
-                    reject(err)
+                    reject(err);
                 }
                 resolve();
             });
@@ -264,7 +264,7 @@ io.on('connection', function (socket) {
             promises.push(new Promise((resolve, reject) => {
                 sheet.addRow(row, (err) => {
                     if (err) {
-                        reject(err)
+                        reject(err);
                     }
                     resolve();
                 });
