@@ -9,6 +9,8 @@ import HelpView from './Help';
 import CookieConsent from './CookieConsent';
 import CookieWarning from './CookieWarning';
 
+import secretConfig from '../secret.config.json';
+
 
 /**
  * Main View, just contains buttons for navigating to organizer and voting
@@ -70,7 +72,7 @@ export default class MainPage extends Component {
 
                         <ListItem>
                             <GoogleLogin
-                                clientId="1061225539650-cp3lrdn3p1u49tsq320l648hcuvg8plb.apps.googleusercontent.com"
+                                clientId={secretConfig.web.client_id}
                                 render={renderProps => (
                                     <Button variant="contained" color="primary" className="buttons" onClick={renderProps.onClick}>Login as an Event Organizer</Button>
                                 )}

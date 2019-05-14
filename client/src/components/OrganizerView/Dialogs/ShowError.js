@@ -5,7 +5,6 @@ function Transition(props) {
     return <Slide direction="up" {...props} />;
 }
 
-// maybe for future, have it load current weights into text fields
 export default class ShowError extends Component {
     constructor(props) {
         super(props);
@@ -45,7 +44,15 @@ export default class ShowError extends Component {
                         <b>{this.state.message}</b>
                         <br />
                         <br />
-                        You may want to double check the URL you posted for correctness and format.
+                        Make sure that:
+                        <br />
+                        <br />
+                        1. The URL you posted is correct
+                        <br />
+                        2. The spreadsheet is shared with the correct email, giving it editing permissions.
+                        <br />
+                        <br />
+                        Re-read the spreadsheet setup instructions for more details.
                     </DialogContent>
                     <DialogActions>
                         <Button onClick={this.handleClose} color="default">Close</Button>

@@ -15,6 +15,7 @@ import ConfirmFinalize from './Dialogs/ConfirmFinalize';
 import '../component_style/ViewEvent.css';
 
 const config = require('../../config.json');
+const secretConfig = require('../../secret.config.json');
 
 const socket = openSocket(
     (config.Global.devMode ?
@@ -226,7 +227,7 @@ export default class ViewEvent extends Component {
     }
 
     sendEntries = () => {
-        socket.emit('send_entries', {
+        socket.emit('update_entries', {
             googleId: this.props.user.googleId,
             eventId: this.state.event.id,
             entries: this.state.event.entries
@@ -237,7 +238,7 @@ export default class ViewEvent extends Component {
         const words = ['first', 'second', 'third'];
         const newTop = topVotes;
         for (let i = 1; i <= 3; i++) {
-            if (rankings[i]) {
+            if (rankings && rankings[i]) {
                 if (!newTop[rankings[i].id]) newTop[rankings[i].id] = 0;
                 newTop[rankings[i].id] += this.state.event.weights[words[i - 1]];
             }
@@ -276,9 +277,9 @@ export default class ViewEvent extends Component {
             sortVotes.sort((a, b) => b[1] - a[1]);
             const { entries } = this.state.event;
             const topThree = {
-                first: (entries && sortVotes[0][0]) ? entries[sortVotes[0][0]].title : '',
-                second: (entries && sortVotes[1][0]) ? entries[sortVotes[1][0]].title : '',
-                third: (entries && sortVotes[2][0]) ? entries[sortVotes[2][0]].title : '',
+                first: (entries && sortVotes[0]) ? entries[sortVotes[0][0]].title : '',
+                second: (entries && sortVotes[1]) ? entries[sortVotes[1][0]].title : '',
+                third: (entries && sortVotes[2]) ? entries[sortVotes[2][0]].title : '',
             };
             this.setState({
                 totalBallots,
@@ -378,7 +379,7 @@ export default class ViewEvent extends Component {
                                             2. Share the spreadsheet with editing rights with:
                                         <br />
                                             <div className="main">
-                                                <b>talli-455@talli-229017.iam.gserviceaccount.com</b>
+                                                <b>{secretConfig.SheetConfig.client_email}</b>
                                             </div>
                                         </div>
                                         <div>
@@ -434,7 +435,7 @@ export default class ViewEvent extends Component {
                                             placement="bottom"
                                         >
                                             <Button className="listButtons" onClick={this.sendEntries}>
-                                                Sync entries
+                                                Update entries
                                             </Button>
                                         </Tooltip>
                                     </div>
