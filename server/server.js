@@ -14,7 +14,7 @@ const config = require('../client/src/config.json');
 const firebase = require('../client/src/firebase');
 
 
-const creds = secretConfig.ClientSecret;
+const creds = secretConfig.SheetConfig;
 
 const numToStr = {
     1: 'one',
