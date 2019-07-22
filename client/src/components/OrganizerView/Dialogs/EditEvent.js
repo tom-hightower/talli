@@ -206,7 +206,7 @@ export default class EditEvent extends Component {
                                         }}
                                     />
                                 </MuiPickersUtilsProvider>
-                                <p>Times listed are based on your device's current timezone.</p>
+                                <p>Times listed are based on your device&apos;s current timezone.</p>
                             </div>
                         )}
                         <br />
