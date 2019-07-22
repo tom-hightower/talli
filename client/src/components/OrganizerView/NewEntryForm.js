@@ -11,7 +11,7 @@ export default class NewEntryForm extends Component {
             title: '',
             id: '',
             presenters: '',
-            entry_dates: '',
+            entry_dates: 'Entire Event',
             info_url: '',
         };
     }

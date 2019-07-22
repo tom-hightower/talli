@@ -50,7 +50,7 @@ export default class NewEventForm extends Component {
     componentDidMount() {
         socket.on('error', (data) => {
             console.log(data.error);
-            this.handleError(data.error);
+            this.handleError(data.error.toString());
             this.setState({
                 eventData: this.state.eventData,
                 connecting: false

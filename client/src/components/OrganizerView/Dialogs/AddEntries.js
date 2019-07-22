@@ -13,7 +13,7 @@ export default class AddEntries extends Component {
             open: false,
             title: '',
             presenters: '',
-            entry_dates: '',
+            entry_dates: 'Entire Event',
             info_url: '',
         };
     }
