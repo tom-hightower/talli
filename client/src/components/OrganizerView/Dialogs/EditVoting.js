@@ -73,7 +73,7 @@ export default class EditVoting extends Component {
 
     parseTime(isoDate) {
         const date = new Date(isoDate);
-        const timeString = `${date.getHours()}:${this.addLeadingZeros(date.getMinutes())}`;
+        const timeString = `${date.getHours()}:${this.addLeadingZeros(date.getMinutes())} UTC-${date.toString().slice(29, 33)}`;
         return timeString;
     }
 

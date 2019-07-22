@@ -267,6 +267,7 @@ export default class NewEventForm extends Component {
                                         ),
                                     }}
                                 />
+                                <p>Times listed are based on your device&apos;s current timezone.</p>
                             </MuiPickersUtilsProvider>
                         </div>
                     )}
