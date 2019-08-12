@@ -45,18 +45,6 @@ This file contains private API keys, client secrets, and authorization urls.  It
         "storageBucket": "talli-00000.appspot.com",
         "messagingSenderId": "000000000000"
     },
-    "SheetConfig": {
-        "type": "service_account",
-        "project_id": "talli-000000",
-        "private_key_id": "0000000000000000000000000000000000000000",
-        "private_key": "-----BEGIN PRIVATE KEY-----\n<Your key here>\n-----END PRIVATE KEY-----\n",
-        "client_email": "talli-000@talli-000000.iam.gserviceaccount.com",
-        "client_id": "000000000000000000000",
-        "auth_uri": "https://accounts.google.com/o/oauth2/auth",
-        "token_uri": "https://oauth2.googleapis.com/token",
-        "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
-        "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/talli-000%40talli-000000.iam.gserviceaccount.com"
-    },
     "web": {
         "client_id": "000000000000000000000000000000000000000000000.apps.googleusercontent.com",
         "project_id": "talli-000000",
@@ -73,9 +61,22 @@ This file contains private API keys, client secrets, and authorization urls.  It
             "https://tallivote.com"
         ]
     },
+    "SheetConfig": {
+        "type": "service_account",
+        "project_id": "talli-000000",
+        "private_key_id": "0000000000000000000000000000000000000000",
+        "private_key": "-----BEGIN PRIVATE KEY-----\n<Your key here>\n-----END PRIVATE KEY-----\n",
+        "client_email": "talli-000@talli-000000.iam.gserviceaccount.com",
+        "client_id": "000000000000000000000",
+        "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+        "token_uri": "https://oauth2.googleapis.com/token",
+        "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+        "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/talli-000%40talli-000000.iam.gserviceaccount.com"
+    }
 }
 ```
-The keys and other information needed for this file can be obtained from your Firebase and Google API consoles.
+The keys and other information needed for this file can be obtained from your Firebase and Google API consoles by following the
+steps outlined [here](https://github.com/tom-hightower/talli/blob/master/API_CONFIG.md).
 
 ## Releases
 
