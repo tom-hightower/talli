@@ -4,7 +4,8 @@
 Makes sure your configuration files are set up as described in [README.md](https://github.com/tom-hightower/talli/blob/master/README.md) (`secret.config.json` and `config.json`). In `config.json`, the sslEnabled field should be set to true if you want to enable QR scanning in the application (Note that you will also need to enable SSL for the site's domain for this option to work), and the devMode field should be set to false (this causes the application to use the hostURL for server communication instead of localhost).
 
 ## Step 2: Copy Directories
-Clone the git repository (or copy via ftp) to your server's filesystem under `/var/www/tallivote.com/` (This guide assumes a linux-based server).
+Clone the git repository (or copy via ftp) to your server's filesystem under `/var/www/tallivote.com/` (This guide assumes a linux-based server). Note that if you clone the git repository directly you will need to edit your `config.json` and add your `secret.config.json` after cloning.
+<br/>
 The structure should look like the following:
 ```
 /var/www/
